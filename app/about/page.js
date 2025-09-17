@@ -11,7 +11,7 @@ const AboutSections = () => {
           <div
             className="w-full h-full bg-cover bg-center bg-no-repeat"
             style={{
-              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/participants-practice-yoga-sunrise-tranquil-studio-surrounded-by-nature-panoramic-views.jpg')`,
+              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/Desktop - 14.png')`,
             }}
           />
         </div>
@@ -54,7 +54,7 @@ const AboutSections = () => {
                 {/* Main Image Container with Rounded Corners */}
                 <div className="relative overflow-hidden rounded-2xl shadow-2xl">
                   <Image
-                    src="/participants-practice-yoga-sunrise-tranquil-studio-surrounded-by-nature-panoramic-views.jpg"
+                    src="/Frame 4291.png"
                     alt="Meditation space with mountain view"
                     width={1200} // Set appropriate width
                     height={380} // Match the height from lg:h-[380px]
@@ -75,99 +75,128 @@ const AboutSections = () => {
       </section>
 
       {/* Our Guide And Facilitators Section */}
-      <section className="py-16 md:py-24 lg:py-12 bg-gray-50">
-        <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-18">
-          {/* Section Title */}
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 mb-4">
-              Our Guide And Facilitators
-            </h2>
-          </div>
+<section className="py-16 md:py-24 lg:py-12 bg-gray-50">
+  <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-18">
+    {/* Section Title */}
+    <div className="text-center mb-16">
+      <h2 className="text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 mb-4">
+        Our Guide And Facilitators
+      </h2>
+    </div>
 
-          {/* Team Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="text-center group">
-                <div className="relative mb-6 mx-auto">
-                  <div className="w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 mx-auto rounded-full overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                    <Image
-                      src="/new1.png"
-                      alt="Devesh - Founder and lead teacher"
-                      width={256} // Match lg:w-64
-                      height={256} // Match lg:h-64
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                </div>
-                <h3 className="text-xl md:text-2xl font-medium text-gray-900 mb-2">
-                  Devesh
-                </h3>
-                <p className="text-gray-600 text-sm md:text-base">
-                  Founder and lead teacher
-                </p>
-              </div>
-            ))}
+    {/* Team Grid */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+      {[
+        {
+          name: 'Devesh',
+          role: 'Founder and lead teacher',
+          src: '/new1.png', // Replace with actual image path for Devesh
+          alt: 'Devesh - Founder and lead teacher',
+        },
+        {
+          name: 'Jane Doe',
+          role: 'Senior Yoga Instructor',
+          src: '/new1.png', // Replace with actual image path for Jane
+          alt: 'Jane Doe - Senior Yoga Instructor',
+        },
+        {
+          name: 'John Smith',
+          role: 'Meditation Guide',
+          src: '/new1.png', // Replace with actual image path for John
+          alt: 'John Smith - Meditation Guide',
+        },
+        {
+          name: 'Alice Johnson',
+          role: 'Wellness Facilitator',
+          src: '/new1.png', // Replace with actual image path for Alice
+          alt: 'Alice Johnson - Wellness Facilitator',
+        },
+      ].map((facilitator, index) => (
+        <div key={index} className="text-center group">
+          <div className="relative mb-6 mx-auto">
+            <div className="w-48 h-48 md:w-56 md:h-66 lg:w-69 lg:h-70 mx-auto rounded-full overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+              <Image
+                src={facilitator.src}
+                alt={facilitator.alt}
+                width={256} // Match lg:w-64
+                height={256} // Match lg:h-64
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
           </div>
+          <h3 className="text-2xl md:text-2xl font-medium text-gray-900 mb-2">
+            {facilitator.name}
+          </h3>
+          <p className="text-gray-600 text-xl md:text-base">
+            {facilitator.role}
+          </p>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* Our Values Section */}
-      <section className="py-16 md:py-24 lg:py-12 bg-white">
-        <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Section Title */}
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 mb-4">
-              Our Values
-            </h2>
-          </div>
+<section className="py-16 md:py-24 lg:py-12 bg-white">
+  <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-18">
+    {/* Section Title */}
+    <div className="text-center mb-16">
+      <h2 className="text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 mb-4">
+        Our Values
+      </h2>
+    </div>
 
-          {/* Values Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
-            {[
-              {
-                title: 'Integrity',
-                description: 'Staying true to our essence',
-                alt: 'Integrity - Group meditation',
-              },
-              {
-                title: 'Intimacy',
-                description: 'Authentic human bonds',
-                alt: 'Intimacy - Balanced stones',
-              },
-              {
-                title: 'Presence',
-                description: 'Living with moment',
-                alt: 'Presence - Silhouette meditation',
-              },
-              {
-                title: 'Simplicity',
-                description: 'Beauty in minimalism',
-                alt: 'Simplicity - Peaceful nature',
-              },
-            ].map((value, index) => (
-              <div key={index} className="text-center group">
-                <div className="relative mb-6 mx-auto">
-                  <div className="w-full h-48 md:h-56 lg:h-64 rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                    <Image
-                      src="/new1.png"
-                      alt={value.alt}
-                      width={400} // Adjust based on your image size
-                      height={256} // Match lg:h-64
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                </div>
-                <h3 className="text-xl md:text-2xl font-medium text-gray-900 mb-2">
-                  {value.title}
-                </h3>
-                <p className="text-gray-600 text-sm md:text-base">
-                  {value.description}
-                </p>
-              </div>
-            ))}
+    {/* Values Grid */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+      {[
+        {
+          title: 'Integrity',
+          description: 'Staying true to our essence',
+          src: '/Frame 4316.png', // Add unique image for Integrity
+          alt: 'Integrity - Group meditation',
+        },
+        {
+          title: 'Intimacy',
+          description: 'Authentic human bonds',
+          src: '/Frame 4317.png', // Add unique image for Intimacy
+          alt: 'Intimacy - Balanced stones',
+        },
+        {
+          title: 'Presence',
+          description: 'Living with moment',
+          alt: 'Presence - Silhouette meditation',
+          src: '/Frame 4318.png', // Add unique image for Presence
+        },
+        {
+          title: 'Simplicity',
+          description: 'Beauty in minimalism',
+          src: '/Frame 4319.png', // Add unique image for Simplicity
+          alt: 'Simplicity - Peaceful nature',
+        },
+      ].map((value, index) => (
+        <div key={index} className="text-center group">
+          <div className="relative mb-6 mx-auto">
+            <div className="w-full h-68 md:h-56 lg:h-64 rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+              <Image
+                src={value.src} // Use unique src from the object
+                alt={value.alt}
+                width={400} // Adjust based on your image size
+                height={256} // Match lg:h-64
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
           </div>
+          <h3 className="text-2xl md:text-2xl font-medium text-gray-900 mb-2">
+            {value.title}
+          </h3>
+          <p className="text-gray-600 text-xl md:text-bold">
+            {value.description}
+          </p>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* Our Philosophy Section */}
       <section className="py-16 md:py-24 mb-10 lg:py-10 bg-gray-50">
@@ -209,7 +238,7 @@ const AboutSections = () => {
             ].map((philosophy, index) => (
               <div key={index} className="text-center group">
                 <div className="relative mb-6 mx-auto">
-                  <div className="w-20 h-20 md:w-44 md:h-44 lg:w-48 lg:h-48 mx-auto group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-40 h-40 md:w-44 md:h-44 lg:w-48 lg:h-48 mx-auto group-hover:scale-110 transition-transform duration-300">
                     <Image
                       src={philosophy.src}
                       alt={philosophy.alt}
@@ -219,10 +248,10 @@ const AboutSections = () => {
                     />
                   </div>
                 </div>
-                <h3 className="text-lg md:text-xl lg:text-2xl font-medium text-gray-900 mb-2">
+                <h3 className="text-2xl md:text-xl lg:text-2xl font-medium text-gray-900 mb-2">
                   {philosophy.title}
                 </h3>
-                <p className="text-gray-600 text-sm md:text-base">
+                <p className="text-gray-600 text-xl lg:text-xl md:text-base">
                   {philosophy.description}
                 </p>
               </div>
