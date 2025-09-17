@@ -228,7 +228,7 @@ const HeroSection = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
             <p className="text-sm lg:text-base font-medium leading-tight">
-              A retreat is not escape—it's reflection with purpose
+              A retreat is not escape—its reflection with purpose
             </p>
           </div>
         </div>
