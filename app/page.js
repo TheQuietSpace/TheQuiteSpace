@@ -3,6 +3,7 @@ import React from 'react'
 import Image from 'next/image'
 import { useState } from 'react'
 import RetreatsSection from './components/RetreatsSection';
+import TestimonialsSection from './components/TestimonialsSection';
 const HeroSection = () => {
   const services = [
     {
@@ -254,6 +255,7 @@ const HeroSection = () => {
     </div>
   </div>
 </section>
+<TestimonialsSection/>
     </div>
   )
 }
