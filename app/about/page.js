@@ -203,7 +203,7 @@ const AboutSections = () => {
               {
                 title: 'Connection',
                 description: 'With self and other',
-                src: '/vector4.png',
+                src: '/vectorr.png',
                 alt: 'Connection philosophy icon',
               },
             ].map((philosophy, index) => (
