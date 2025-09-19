@@ -25,7 +25,7 @@ const Navbar = () => {
           {/* Logo Section */}
           <div className="flex items-center flex-shrink-0">
             <Link href="/" className="flex items-center" onClick={closeMobileMenu}>
-              <div className="relative w-30 h-30 sm:w-42 sm:h-42 lg:w-60 lg:h-60">
+              <div className="relative w-30 h-30 sm:w-72 sm:h-72 lg:w-70 lg:h-70">
                 <Image
                   src="/logo.svg"
                   alt="The Quiet Space Logo"

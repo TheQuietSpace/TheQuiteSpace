@@ -1,5 +1,7 @@
+
 "use client";
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 const RetreatPage = () => {
   const [retreats, setRetreats] = useState([]);
@@ -121,9 +123,12 @@ const RetreatPage = () => {
                   <h3 className="text-lg font-semibold text-gray-900 mb-1">{retreat.title || 'The Quiet Space'}</h3>
                   <p className="text-gray-600 mb-1">Date: {retreat.date || 'N/A'}</p>
                   <p className="text-gray-600 mb-2">Location: {retreat.location || 'N/A'}</p>
-                  <button className="w-full bg-gray-200 text-gray-800 py-1.5 rounded-lg hover:bg-gray-300 transition-colors">
+                  <Link 
+                    href={`/retreat/${retreat.id}`} 
+                    className="block w-full bg-gray-200 text-gray-800 py-1.5 rounded-lg hover:bg-gray-300 transition-colors text-center"
+                  >
                     View details
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))
