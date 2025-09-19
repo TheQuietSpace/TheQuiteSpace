@@ -126,7 +126,7 @@ export default function RetreatDetails() {
 
             {/* What's included */}
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-6">What's included</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-6">Whats included</h2>
               <div className="flex justify-between items-center">
                 {includedItems.map((item, index) => (
                   <div key={index} className="flex flex-col items-center text-center">
