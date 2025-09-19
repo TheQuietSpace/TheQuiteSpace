@@ -27,21 +27,21 @@ const HeroSection = () => {
   ]
    const [activeTab, setActiveTab] = React.useState('retreats')
   return (
-    <div className=" bg-white mt-4 mb-4 shadow-sm max-w-360 mx-auto">
+    <div className=" bg-white    max-w-360 mx-auto">
       {/* Background Vector Image -  bg-white mt-4 mb-4 shadow-sm max-w-360 mx-auto Hidden on mobile */}
       <div 
         className="hidden lg:block absolute inset-0 w-full h-full opacity-10 sm:opacity-15 z-0"
         style={{
           backgroundImage: "url('/Vector.png')",
           backgroundRepeat: 'no-repeat',
-          backgroundPosition: '74%  80%',
+          backgroundPosition: '70%  80%',
         }}
       />
       
-      <div className="relative container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-50 h-full px-4 sm:px-6 md:px-8">
+      <div className=" container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-50 h-full w-full   sm:w-42 sm:h-42 lg:w-full lg:h-160 ">
         {/* Left Content - Overlaid on image in mobile */}
-      <div className="flex items-center justify-center px-4 sm:px-6 md:px-8 lg:pl-12 xl:pl-16 pt-12 sm:pt-16 md:pt-20 pb-6 sm:pb-8 lg:pb-0 order-2 lg:order-1 z-10 min-h-[50vh] sm:min-h-[60vh] lg:min-h-0">
-      <div className="space-y-4 sm:space-y-6 md:space-y-8 max-w-[90%] sm:max-w-md md:max-w-lg w-full text-center lg:text-left">
+      <div className="flex items-center  px-4 sm:px-6 md:px-8 lg:pl-12 xl:pl-16 pt-12 sm:pt-16 md:pt-1 pb-6 sm:pb-8 lg:pb-0 order-2 lg:order-1 z-10 min-h-[50vh] sm:min-h-[60vh] lg:min-h-0">
+      <div className="space-y-4 sm:space-y-6 md:space-y-8 max-w-[100%] sm:max-w-md md:max-w-lg w-full text-center lg:text-left">
         <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light text-white lg:text-gray-900 leading-tight drop-shadow-md lg:drop-shadow-none">
           A sanctuary for{' '}
           <span className="block">stillness, soul and</span>
@@ -66,19 +66,19 @@ const HeroSection = () => {
       </div>
     </div>
         {/* Right Image */}
-        <div className="min-h-[2vh] sm:min-h-[20vh] md:min-h-[60vh] lg:min-h-[85vh] w-full order-1 lg:order-2 overflow-hidden">
+        <div className="min-h-[2vh] sm:min-h-[20vh]  md:min-h-[60vh] lg:min-h-[85vh] w-full order-1 lg:order-2 overflow-hidden">
           <Image
             src="/woman-practices-yoga-morning-terrace-fresh-air (2).jpg"
             alt="Woman practicing yoga on a wooden terrace with mountain views"
             fill
-            className="object-cover object-right lg:object-contain"
+            className="object-cover border   rounded-3xl  object-right lg:object-contain "
             priority
           />
           <div className="absolute inset-0  lg:bg-none bg-gradient-to-t sm:bg-gradient-to-l from-transparent via-transparent to-blue-50/30"></div>
         </div>
       </div>
     
-      <section className="py-16 lg:py-24 bg-white">
+      <section className="py-16 lg:py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Title */}
         <div className="text-center mb-12 lg:mb-16">

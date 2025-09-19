@@ -5,11 +5,11 @@ const AboutSections = () => {
   return (
     <div className="w-full">
       {/* Hero Section */}
-      <section className="h-[75vh] w-full overflow-hidden">
+      <section className="h-[50vh] w-full overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
           <div
-            className="w-full h-full bg-cover bg-center bg-no-repeat"
+            className="w-full h-130  sm:w-42 sm:h-42 lg:w-full lg:h-150 bg-cover bg-center bg-no-repeat"
             style={{
               backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/Desktop - 14.png')`,
             }}

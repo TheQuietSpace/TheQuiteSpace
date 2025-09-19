@@ -41,9 +41,9 @@ const RetreatPage = () => {
   return (
     <div className="w-full bg-gray-50">
       {/* Hero Section */}
-      <section className="relative mt-5 h-[50vh] sm:h-[76vh] w-full">
+      <section className=" mt-5 h-[50vh] sm:h-[64vh] w-full">
         <div
-          className="absolute inset-0 bg-cover bg-center z-0"
+          className="absolute inset-0 bg-cover bg-center z-0 w-full h-130  sm:w-42 sm:h-42 lg:w-full lg:h-150  bg-no-repeat"
           style={{
             backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/Frame 4386.png')`,
           }}

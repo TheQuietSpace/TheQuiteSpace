@@ -34,7 +34,7 @@ export default function RetreatsSection() {
 
   return (
     <section className="py-1">
-      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-14">
+      <div className="max-w-9xl mx-auto px-4 sm:px-3 lg:px-1">
         <h2 className="text-3xl font-bold text-gray-900 text-center mb-14 ">Retreats</h2>
         <div className="overflow-x-auto whitespace-nowrap pb-4 scrollbar-hide">
           {retreats.length === 0 ? (
@@ -44,9 +44,9 @@ export default function RetreatsSection() {
               {retreats.map((retreat) => (
                 <div
                   key={retreat.id}
-                  className="inline-block w-72 bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                  className="inline-block w-92 bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
-                  <div className="relative w-full h-48">
+                  <div className="relative w-full h-88">
                     <Image
                       src={retreat.image_url}
                       alt={retreat.title}
