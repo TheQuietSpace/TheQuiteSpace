@@ -1,6 +1,9 @@
 // next.config.js
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   images: {
-    domains: ['mwksuvwpcokftxvfbdax.supabase.co'],
+    domains: ["mwksuvwpcokftxvfbdax.supabase.co"],
   },
 };
+
+module.exports = nextConfig;

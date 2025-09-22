@@ -100,41 +100,54 @@ const RetreatPage = () => {
       </section>
 
       {/* Content Section */}
-      <div className="container mx-auto px-4 py-6 -mt-4">
-        {/* Retreats Grid */}
-        <h2 className="text-3xl font-semibold mt-6 sm:mt-12 text-gray-800 mb-8 text-center sm:text-2xl md:text-3xl">
-          Upcoming Retreats
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {filteredRetreats.length === 0 ? (
-            <p className="text-gray-600 text-center col-span-full">No retreats found matching your criteria.</p>
-          ) : (
-            filteredRetreats.map((retreat) => (
-              <div
-                key={retreat.id}
-                className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 max-w-xs sm:max-w-md mx-auto"
-              >
+<div className="container mx-auto px-4 py-6 -mt-4">
+  {/* Retreats Grid */}
+  <h2 className="text-2xl sm:text-3xl font-semibold mt-6 sm:mt-12 text-gray-800 mb-8 text-center">
+    Upcoming Retreats
+  </h2>
+  <div className="max-w-9xl mx-10">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+      {filteredRetreats.length === 0 ? (
+        <div className="col-span-full text-center py-12">
+          <p className="text-gray-600 text-lg">No retreats found matching your criteria.</p>
+        </div>
+      ) : (
+        filteredRetreats.map((retreat) => (
+          <div key={retreat.id} className="w-full">
+            <div className="w-full bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+              <div className="aspect-[4/3] overflow-hidden">
                 <img
                   src={retreat.image_url || '/placeholder.jpg'}
                   alt={retreat.title}
-                  className="w-full h-64 sm:h-80 object-cover"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 />
-                <div className="p-4 text-center">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">{retreat.title || 'The Quiet Space'}</h3>
-                  <p className="text-gray-600 mb-1">Date: {retreat.date || 'N/A'}</p>
-                  <p className="text-gray-600 mb-2">Location: {retreat.location || 'N/A'}</p>
-                  <Link 
-                    href={`/retreat/${retreat.id}`} 
-                    className="block w-full bg-gray-200 text-gray-800 py-1.5 rounded-lg hover:bg-gray-300 transition-colors text-center"
-                  >
-                    View details
-                  </Link>
-                </div>
               </div>
-            ))
-          )}
-        </div>
-      </div>
+              <div className="p-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  {retreat.title || 'The Quiet Space'}
+                </h3>
+                <div className="space-y-1 mb-4">
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium">Date:</span> {retreat.date || 'N/A'}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium">Location:</span> {retreat.location || 'N/A'}
+                  </p>
+                </div>
+                <Link 
+                  href={`/retreat/${retreat.id}`} 
+                  className="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-md border border-gray-300 transition-colors duration-200 text-center"
+                >
+                  View details
+                </Link>
+              </div>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+</div>
     </div>
   );
 };

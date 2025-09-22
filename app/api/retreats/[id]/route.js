@@ -3,14 +3,13 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request, { params }) {
   try {
-    // Fix: Await params before destructuring
     const { id } = await params;
 
     const { data, error } = await supabase
       .from('retreats')
-      .select('id, title, date, location, description, schedule, image_url')
+      .select('id, title, date, location, description, schedule, included, image_url, gallery_images, teachers, faqs')
       .eq('id', id)
-      .single(); // Use .single() to fetch one record by ID
+      .single();
 
     if (error || !data) {
       return NextResponse.json(
