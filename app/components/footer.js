@@ -75,18 +75,18 @@ const Footer = () => {
               <h3 className="text-2xl lg:text-3xl font-bold mb-4">
                 Get Still, Stay Connected
               </h3>
-              <p className="text-sm lg:text-base opacity-90 mb-6 leading-relaxed">
+              <p className="text-sm lg:text-base opacity-90 mb-6 leading-relaxed text-center">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh mauris,nec turpis orci lectus maecenas. Suspendisses sed magna eget nibh inturpis.
               </p>
               
               {/* Email Signup */}
-              <div className="flex bg-white rounded-full overflow-hidden shadow-lg max-w-md mx-auto lg:mx-0">
+              <div className="flex bg-white rounded-full overflow-hidden shadow-lg max-w-md mx-auto">
                 <input
                   type="email"
                   placeholder="Enter Your Email"
                   className="flex-1 px-4 lg:px-6 py-3 text-sm lg:text-base text-gray-800 outline-none placeholder-gray-500"
                 />
-                <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 lg:px-8 py-3 text-sm lg:text-base font-semibold transition-colors duration-200">
+                <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 lg:px-8 py-3 text-sm lg:text-base font-semibold transition-colors duration-200 whitespace-nowrap flex items-center justify-center">
                   Sign Up
                 </button>
               </div>

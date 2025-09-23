@@ -75,7 +75,7 @@ const AboutSections = () => {
       </section>
 
       {/* Our Guide And Facilitators Section */}
-<section className="py-16 md:py-24 lg:py-12 bg-gray-50">
+<section className="py-16 md:py-24 lg:py-12 bg-[#FAF8F5]">
   <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-18">
     {/* Section Title */}
     <div className="text-center mb-16">
@@ -199,7 +199,7 @@ const AboutSections = () => {
 </section>
 
       {/* Our Philosophy Section */}
-      <section className="py-16 md:py-24 mb-10 lg:py-10 bg-gray-50">
+      <section className="py-16 md:py-24 mb-10 lg:py-10">
         <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-15">
           {/* Section Title */}
           <div className="text-center mb-16">
