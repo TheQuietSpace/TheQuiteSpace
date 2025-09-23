@@ -180,31 +180,7 @@ const WorkshopComponent = () => {
             ) : (
               filteredWorkshops.map((workshop) => (
                 <tr key={workshop.id} className="hover:bg-gray-50 hover:shadow-md transition-all duration-200">
-                  <td className="px-6 py-4">{workshop.name}</td>
-                  <td className="px-6 py-4">{workshop.description?.slice(0, 50)}...</td>
-                  <td className="px-6 py-4">
-                    {workshop.event_date ? new Date(workshop.event_date).toLocaleString() : "N/A"}
-                  </td>
-                  <td className="px-6 py-4">{workshop.location || "N/A"}</td> {/* added */}
-                  <td className="px-6 py-4">
-                    {workshop.image_url ? (
-                      <img src={workshop.image_url} alt="Workshop" className="w-16 h-10 object-cover rounded-lg" />
-                    ) : "No image"}
-                  </td>
-                  <td className="px-6 py-4 flex gap-3">
-                    <button
-                      onClick={() => handleEdit(workshop)}
-                      className="text-blue-500 hover:text-blue-700 transition-all duration-200"
-                    >
-                      <Pencil className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(workshop.id)}
-                      className="text-red-500 hover:text-red-700 transition-all duration-200"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </td>
+                  <td className="px-6 py-4">{workshop.name}</td><td className="px-6 py-4">{workshop.description?.slice(0, 50)}...</td><td className="px-6 py-4">{workshop.event_date ? new Date(workshop.event_date).toLocaleString() : "N/A"}</td><td className="px-6 py-4">{workshop.location || "N/A"}</td><td className="px-6 py-4">{workshop.image_url ? (<img src={workshop.image_url} alt="Workshop" className="w-16 h-10 object-cover rounded-lg" />) : "No image"}</td><td className="px-6 py-4 flex gap-3"><button onClick={() => handleEdit(workshop)} className="text-blue-500 hover:text-blue-700 transition-all duration-200"><Pencil className="w-5 h-5" /></button><button onClick={() => handleDelete(workshop.id)} className="text-red-500 hover:text-red-700 transition-all duration-200"><Trash2 className="w-5 h-5" /></button></td>
                 </tr>
               ))
             )}
