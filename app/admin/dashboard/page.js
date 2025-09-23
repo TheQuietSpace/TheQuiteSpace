@@ -19,7 +19,8 @@ import {
   Presentation,
   Search,
   Pencil,
-  Trash2
+  Trash2,
+  TrendingUp
 } from "lucide-react";
 
 const supabase = createClient(
@@ -75,7 +76,7 @@ const menuItems = [
 const Sidebar = ({ activeComponent, setActiveComponent, isOpen, setIsOpen, user }) => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    window.location.href = "/admin/login";
+    window.location.href = "/admin";
   };
 
   return (

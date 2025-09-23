@@ -167,12 +167,7 @@ const WorkshopComponent = () => {
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
-              <th className="px-6 py-3">Name</th>
-              <th className="px-6 py-3">Description</th>
-              <th className="px-6 py-3">Date</th>
-              <th className="px-6 py-3">Location</th> {/* added */}
-              <th className="px-6 py-3">Image</th>
-              <th className="px-6 py-3">Actions</th>
+              <th className="px-6 py-3">Name</th><th className="px-6 py-3">Description</th><th className="px-6 py-3">Date</th><th className="px-6 py-3">Location</th><th className="px-6 py-3">Image</th><th className="px-6 py-3">Actions</th>
             </tr>
           </thead>
           <tbody className="text-sm text-gray-700 divide-y divide-gray-200">
