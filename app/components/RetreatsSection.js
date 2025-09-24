@@ -33,9 +33,9 @@ export default function RetreatsSection() {
   if (error) return <p className="text-center text-red-600 py-10">Error: {error}</p>;
 
   return (
-    <section className="py-1">
+    <section className="py-1 md:mt-18 mt-8 bg-[#FAF8F5]">
       <div className="max-w-9xl mx-auto px-4 sm:px-3 lg:px-1">
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-14 ">Retreats</h2>
+        <h2 className="text-4xl font-semibold text-gray-900 text-center mb-14 ">Retreats</h2>
         <div className="overflow-x-auto whitespace-nowrap pb-4 scrollbar-hide">
           {retreats.length === 0 ? (
             <p className="text-center text-gray-500 py-10">No retreats available.</p>
@@ -55,10 +55,10 @@ export default function RetreatsSection() {
                     />
                   </div>
                   <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{retreat.title}</h3>
-                    <p className="text-sm text-gray-600 mb-1">Date: {retreat.date}</p>
-                    <p className="text-sm text-gray-600 mb-4">Location: {retreat.location}</p>
-                    <button className="w-full bg-blue-100 text-blue-700 py-2 px-4 rounded-md hover:bg-blue-200 transition duration-200">
+                    <h3 className="text-xl font-normal text-gray-900 mb-2">{retreat.title}</h3>
+                    <p className="text-md text-gray-900 mb-1">Date: {retreat.date}</p>
+                    <p className="text-md text-gray-900 mb-4">Location: {retreat.location}</p>
+                    <button className="w-full bg-white text-black font-semibold py-2 px-4 rounded-md border border-black hover:bg-black hover:text-white transition duration-200">
                       View Details
                     </button>
                   </div>
