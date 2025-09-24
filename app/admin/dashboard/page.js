@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import RetreatsComponent from "@/app/components/RetreatsComponent";
 import WorkshopComponent from "@/app/components/WorkshopComponent";
+import BlogsManagement from "@/app/components/BlogsManagement";
 import { 
   LayoutDashboard, 
   Calendar, 
@@ -209,7 +210,7 @@ export default function AdminDashboard() {
       case "Instructors":
         return <PlaceholderComponent title="Instructors Management" />;
       case "Content":
-        return <PlaceholderComponent title="Content Management" />;
+        return <BlogsManagement/>;
       case "Inquiries":
         return <PlaceholderComponent title="Inquiries Management" />;
       case "Settings":
