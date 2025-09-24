@@ -27,7 +27,7 @@ const HeroSection = () => {
   ]
    const [activeTab, setActiveTab] = React.useState('retreats')
   return (
-    <div className=" bg-white    max-w-360 mx-auto">
+    <div className="bg-[#FAF8F5] max-w-none w-full -mt-21 pt-0">
       {/* Background Vector Image -  bg-white mt-4 mb-4 shadow-sm max-w-360 mx-auto Hidden on mobile */}
       <div 
         className="hidden lg:block absolute inset-0 w-full h-full opacity-10 sm:opacity-15 z-0"
@@ -38,43 +38,45 @@ const HeroSection = () => {
         }}
       />
       
-      <div className=" container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-50 h-full w-full   sm:w-42 sm:h-42 lg:w-full lg:h-160 ">
-        {/* Left Content - Overlaid on image in mobile */}
-      <div className="flex items-center  px-4 sm:px-6 md:px-8 lg:pl-12 xl:pl-16 pt-12 sm:pt-16 md:pt-1 pb-6 sm:pb-8 lg:pb-0 order-2 lg:order-1 z-10 min-h-[50vh] sm:min-h-[60vh] lg:min-h-0">
-      <div className="space-y-4 sm:space-y-6 md:space-y-8 max-w-[100%] sm:max-w-md md:max-w-lg w-full text-center lg:text-left">
-        <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light text-white lg:text-gray-900 leading-tight drop-shadow-md lg:drop-shadow-none">
-          A sanctuary for{' '}
-          <span className="block">stillness, soul and</span>
-          <span className="block">self discovery</span>
-        </h1>
-        
-        <p className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl text-gray-100 lg:text-gray-600 leading-relaxed drop-shadow-sm lg:drop-shadow-none">
-          Modern wellness retreats and training experiences for global travelers.
-        </p>
-        
-        <button className="inline-flex items-center px-3 xs:px-4 sm:px-6 md:px-8 py-2 xs:py-2.5 sm:py-3 md:py-4  hover:from-coral-600  hover:to-yellow-600 bg-yellow-600 text-black font-medium rounded-full transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 text-xs xs:text-sm sm:text-base">
-          Explore retreats
-          <svg 
-            className="ml-1 xs:ml-2 w-3 h-3 xs:w-4 xs:h-4 sm:w-4 sm:h-4 md:w-5 md:h-5" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
-    </div>
-        {/* Right Image */}
-        <div className="min-h-[2vh] sm:min-h-[20vh]  md:min-h-[60vh] lg:min-h-[85vh] w-full order-1 lg:order-2 overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[80vh] lg:min-h-screen w-full pt-0 mt-0 relative">
+        {/* Mobile: Text overlay on image, Desktop: Left side content */}
+        <div className="absolute inset-0 lg:relative lg:inset-auto flex items-center px-4 sm:px-6 md:px-8 lg:pl-12 xl:pl-16 pt-16 sm:pt-20 md:pt-4 pb-6 sm:pb-8 lg:pb-0 order-1 lg:order-1 z-10 min-h-[80vh] lg:min-h-0">
+          <div className="space-y-4 sm:space-y-6 md:space-y-8 max-w-[100%] sm:max-w-md md:max-w-lg lg:max-w-none w-full text-center lg:text-left">
+            <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white lg:text-gray-900 leading-tight drop-shadow-md lg:drop-shadow-none font-serif">
+              A sanctuary for{' '}
+              <span className="block">stillness, soul and</span>
+              <span className="block">self discovery</span>
+            </h1>
+            
+            <p className="text-sm xs:text-base sm:text-lg md:text-lg lg:text-xl text-gray-100 lg:text-gray-600 leading-relaxed drop-shadow-sm lg:drop-shadow-none">
+              Modern wellness retreats and training experiences for global travelers.
+            </p>
+            
+            <button className="relative inline-flex items-center px-4 xs:px-6 sm:px-8 md:px-10 py-2 xs:py-2.5 sm:py-3 md:py-4 bg-[#C7A961] hover:bg-[#b8985a] text-white font-medium rounded-full transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 text-xs xs:text-sm sm:text-base">
+              <span className="mr-4 xs:mr-5 sm:mr-6 md:mr-7 text-white">Explore retreats</span>
+              <div className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-white rounded-full w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center">
+                <svg 
+                  className="w-4 h-4 xs:w-4 xs:h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 text-[#C7A961]" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14m-7-7l7 7-7 7" />
+                </svg>
+              </div>
+            </button>
+          </div>
+        </div>
+        {/* Mobile: Background image, Desktop: Right side image */}
+        <div className="min-h-[80vh] lg:min-h-screen w-full order-2 lg:order-2 overflow-hidden rounded-none lg:rounded-bl-3xl relative">
           <Image
             src="/woman-practices-yoga-morning-terrace-fresh-air (2).jpg"
             alt="Woman practicing yoga on a wooden terrace with mountain views"
             fill
-            className="object-cover border   rounded-3xl  object-right lg:object-contain "
+            className="object-cover object-right lg:object-contain"
             priority
           />
-          <div className="absolute inset-0  lg:bg-none bg-gradient-to-t sm:bg-gradient-to-l from-transparent via-transparent to-blue-50/30"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent lg:bg-none"></div>
         </div>
       </div>
     
@@ -82,7 +84,7 @@ const HeroSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Title */}
         <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light text-gray-900 mb-8">
+          <h2 className="text-4xl font-semibold text-gray-900 mb-8">
             What We Bring To You
           </h2>
           
@@ -94,8 +96,8 @@ const HeroSection = () => {
                   onClick={() => setActiveTab(service.id)}
                   className={`text-lg lg:text-xl font-medium transition-all duration-300 hover:scale-105 ${
                     activeTab === service.id
-                      ? 'text-amber-600 font-semibold'
-                      : 'text-gray-600 hover:text-amber-500'
+                      ? 'text-[#C1A050] font-bold'
+                      : 'text-gray-600 hover:text-[#C1A050]'
                   }`}
                 >
                   {service.title}
@@ -161,11 +163,11 @@ const HeroSection = () => {
       </div>
     </section>
       <RetreatsSection/>
-     <section className="py-20 px-4">
+     <section className="py-20 px-4 bg-white">
   <div className="max-w-7xl mx-auto">
     {/* Main Heading */}
     <div className="text-center mb-12">
-      <h2 className="text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-tight">
+      <h2 className="text-4xl font-semibold text-gray-900 leading-tight">
         Our Mission Is To Teach, Share, And Transform.
       </h2>
     </div>
