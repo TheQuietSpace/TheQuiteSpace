@@ -10,6 +10,7 @@ export default function RetreatsComponent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [editRetreat, setEditRetreat] = useState(null); // for edit mode
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [instructorFilter, setInstructorFilter] = useState("");
@@ -71,6 +72,12 @@ export default function RetreatsComponent() {
     else fetchRetreats();
   };
 
+  // Edit retreat: open form with data
+  const handleEdit = (retreat) => {
+    setEditRetreat(retreat);
+    setShowForm(true);
+  };
+
   // Get unique instructors with their original indices
   const getUniqueInstructors = () => {
     const allInstructors = retreats.flatMap((r, index) =>
@@ -94,21 +101,19 @@ export default function RetreatsComponent() {
     return [...new Set(allStatuses)];
   };
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-      </div>
-    );
-
   return (
     <div className="min-h-screen bg-gray-50">
+      {loading ? (
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+        </div>
+      ) : (
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4">
           <h1 className="text-3xl font-bold text-gray-900">Retreats Management</h1>
           <button
-            onClick={() => setShowForm(true)}
+            onClick={() => { setShowForm(true); setEditRetreat(null); }}
             className="bg-orange-400 hover:bg-orange-500 text-white px-6 py-3 rounded-xl font-medium transition-colors duration-200 shadow-sm"
           >
             Create new retreat
@@ -234,7 +239,6 @@ export default function RetreatsComponent() {
                             {retreat.date} ({days} days)
                           </p>
                         </div>
-                        
                         {retreat.status === "Upcoming" && (
                           <div className="flex items-center gap-1">
                             <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
@@ -261,8 +265,14 @@ export default function RetreatsComponent() {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center justify-between">
-                      
+                      <div className="flex items-center gap-4">
+                        <button
+                          onClick={() => handleEdit(retreat)}
+                          className="text-blue-500 hover:text-blue-700 text-sm font-medium flex items-center gap-1 transition-colors"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                          Edit
+                        </button>
                         <button
                           onClick={() => handleDelete(retreat.id)}
                           className="text-red-500 hover:text-red-700 text-sm font-medium flex items-center gap-1 transition-colors"
@@ -284,21 +294,26 @@ export default function RetreatsComponent() {
           <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center overflow-auto p-4">
             <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl relative my-8">
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <h2 className="text-2xl font-bold text-gray-900">Create New Retreat</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{editRetreat ? "Edit Retreat" : "Create New Retreat"}</h2>
                 <button
-                  onClick={() => setShowForm(false)}
+                  onClick={() => { setShowForm(false); setEditRetreat(null); }}
                   className="text-gray-400 hover:text-gray-600 text-2xl font-light transition-colors"
                 >
                   ×
                 </button>
               </div>
               <div className="p-0">
-                <AddRetreatPage onClose={() => { setShowForm(false); fetchRetreats(); }} />
+                <AddRetreatPage
+                  onClose={() => { setShowForm(false); setEditRetreat(null); fetchRetreats(); }}
+                  initialData={editRetreat}
+                  isEdit={!!editRetreat}
+                />
               </div>
             </div>
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }

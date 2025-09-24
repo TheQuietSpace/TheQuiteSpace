@@ -171,7 +171,7 @@ const AboutSections = () => {
       <section className="py-12 px-2 sm:px-8">
         <div className="flex flex-col items-center mb-8">
           <h2 className="text-3xl font-bold text-center mb-4">Popular Workshops</h2>
-          <button className="border border-gray-400 rounded-lg px-6 py-2 text-gray-900 font-medium hover:bg-gray-100 transition-all duration-200">View all</button>
+         
         </div>
         {loadingPopular ? (
           <div className="text-center py-10 text-gray-600">Loading...</div>
@@ -180,31 +180,64 @@ const AboutSections = () => {
         ) : popularWorkshops.length === 0 ? (
           <div className="text-center py-10 text-gray-500">No popular workshops</div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {popularWorkshops.map((workshop) => (
-              <div key={workshop.id} className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 flex flex-col">
-                <div className="w-full h-48 rounded-xl overflow-hidden mb-4 flex items-center justify-center">
-                  {workshop.image_url ? (
-                    <img
-                      src={workshop.image_url}
-                      alt={workshop.name}
-                      className="object-cover w-full h-full"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
-                      <ImageIcon className="w-12 h-12 border " />
-                    </div>
-                  )}
+          <div className="relative">
+            {popularWorkshops.length > 3 && (
+              <>
+                <button
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2 disabled:opacity-30"
+                  onClick={() => {
+                    const container = document.getElementById('popular-workshops-scroll');
+                    if (container) container.scrollLeft -= 350;
+                  }}
+                  aria-label="Scroll left"
+                >
+                  ◀
+                </button>
+                <button
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2 disabled:opacity-30"
+                  onClick={() => {
+                    const container = document.getElementById('popular-workshops-scroll');
+                    if (container) container.scrollLeft += 350;
+                  }}
+                  aria-label="Scroll right"
+                >
+                  ▶
+                </button>
+              </>
+            )}
+            <div
+              id="popular-workshops-scroll"
+              className="flex overflow-x-auto gap-8 scrollbar-hide px-2 py-2"
+              style={{ scrollBehavior: 'smooth' }}
+            >
+              {popularWorkshops.map((workshop) => (
+                <div
+                  key={workshop.id}
+                  className="min-w-[320px] max-w-xs flex-shrink-0 bg-white rounded-2xl shadow-lg border border-gray-200 p-4 flex flex-col"
+                >
+                  <div className="w-full h-48 rounded-xl overflow-hidden mb-4 flex items-center justify-center">
+                    {workshop.image_url ? (
+                      <img
+                        src={workshop.image_url}
+                        alt={workshop.name}
+                        className="object-cover w-full h-full"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
+                        <ImageIcon className="w-12 h-12 border " />
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{workshop.name}</h3>
+                  <div className="text-gray-700 text-sm mb-1">
+                    <span className="block"><span className="font-medium">Date:</span> {workshop.event_date ? new Date(workshop.event_date).toLocaleDateString() : "No date"}</span>
+                    <span className="block"><span className="font-medium">Time:</span> {workshop.event_date ? new Date(workshop.event_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "No time"}</span>
+                    <span className="block"><span className="font-medium">Location:</span> {workshop.location || "No location"}</span>
+                  </div>
+                  <button className="w-full border border-gray-400 text-gray-900 py-2 rounded-lg font-medium mt-4 hover:bg-gray-100 transition-all duration-200">Register now</button>
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{workshop.name}</h3>
-                <div className="text-gray-700 text-sm mb-1">
-                  <span className="block"><span className="font-medium">Date:</span> {workshop.event_date ? new Date(workshop.event_date).toLocaleDateString() : "No date"}</span>
-                  <span className="block"><span className="font-medium">Time:</span> {workshop.event_date ? new Date(workshop.event_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "No time"}</span>
-                  <span className="block"><span className="font-medium">Location:</span> {workshop.location || "No location"}</span>
-                </div>
-                <button className="w-full border border-gray-400 text-gray-900 py-2 rounded-lg font-medium mt-4 hover:bg-gray-100 transition-all duration-200">Register now</button>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
       </section>

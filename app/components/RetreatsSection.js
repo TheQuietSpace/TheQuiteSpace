@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function RetreatsSection() {
   const [retreats, setRetreats] = useState([]);
@@ -33,20 +34,20 @@ export default function RetreatsSection() {
   if (error) return <p className="text-center text-red-600 py-10">Error: {error}</p>;
 
   return (
-    <section className="py-1">
-      <div className="max-w-9xl mx-auto px-4 sm:px-3 lg:px-1">
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-14 ">Retreats</h2>
-        <div className="overflow-x-auto whitespace-nowrap pb-4 scrollbar-hide">
-          {retreats.length === 0 ? (
-            <p className="text-center text-gray-500 py-10">No retreats available.</p>
-          ) : (
-            <div className="flex space-x-10">
-              {retreats.map((retreat) => (
+    <section className="py-12">
+      <div className="max-w-9xl mx-2 ">
+        <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Retreats</h2>
+        <div className="relative">
+          <div className="flex overflow-x-auto space-x-6 pb-4 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            {retreats.length === 0 ? (
+              <p className="text-center text-gray-500 py-10 w-full">No retreats available.</p>
+            ) : (
+              retreats.map((retreat) => (
                 <div
                   key={retreat.id}
-                  className="inline-block w-92 bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                  className="flex-none w-80 bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 snap-center"
                 >
-                  <div className="relative w-full h-88">
+                  <div className="relative w-full h-64">
                     <Image
                       src={retreat.image_url}
                       alt={retreat.title}
@@ -54,18 +55,20 @@ export default function RetreatsSection() {
                       className="object-cover"
                     />
                   </div>
-                  <div className="p-4">
+                  <div className="p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">{retreat.title}</h3>
                     <p className="text-sm text-gray-600 mb-1">Date: {retreat.date}</p>
                     <p className="text-sm text-gray-600 mb-4">Location: {retreat.location}</p>
-                    <button className="w-full bg-blue-100 text-blue-700 py-2 px-4 rounded-md hover:bg-blue-200 transition duration-200">
-                      View Details
-                    </button>
+                    <Link href={`/retreat/${retreat.id}`}>
+                      <button className="w-full bg-blue-100 text-blue-700 py-2 px-4 rounded-md hover:bg-blue-200 transition duration-200">
+                        View Details
+                      </button>
+                    </Link>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+              ))
+            )}
+          </div>
         </div>
       </div>
     </section>
