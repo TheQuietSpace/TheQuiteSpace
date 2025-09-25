@@ -298,7 +298,15 @@ const AboutSections = () => {
               <p className="text-gray-700 text-lg sm:text-xl mb-10 leading-relaxed">
                 Each month, we pause to gather the quiet moments, the lessons from our journeys, and the whispers of stillness carried back from retreat. These reflections and travel diaries are an offering of wisdom and wonder.
               </p>
-              <button className="group inline-flex items-center bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold px-10 py-4 rounded-2xl text-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
+              <button
+                className="group inline-flex items-center bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold px-10 py-4 rounded-2xl text-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
+                onClick={() => {
+                  const el = document.getElementById('featured-articles');
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              >
                 <span>Explore Stories</span>
                 <svg className="w-6 h-6 ml-3 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -310,7 +318,7 @@ const AboutSections = () => {
       </section>
 
       {/* Enhanced Articles Section */}
-      <section className="w-full py-16 sm:py-24 bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white relative overflow-hidden">
+  <section id="featured-articles" className="w-full py-16 sm:py-24 bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-gradient-to-br from-amber-400/20 to-transparent"></div>
         </div>

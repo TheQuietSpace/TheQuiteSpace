@@ -1,7 +1,46 @@
-import React from 'react'
+"use client";
+import React, { useState } from 'react'
 import Image from 'next/image'
+import { supabase } from '@/lib/supabse'
 
-const contacpage = () => {
+const ContactPage = () => {
+  const [form, setForm] = useState({ retreat_name: '', email: '', phone: '' });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess(false);
+    // Basic validation
+    if (!form.retreat_name || !form.email || !form.phone) {
+      setError('All fields are required.');
+      setLoading(false);
+      return;
+    }
+    try {
+      const { error } = await supabase.from('contact_requests').insert({
+        retreat_name: form.retreat_name,
+        email: form.email,
+        phone: form.phone,
+        created_at: new Date().toISOString(),
+      });
+      if (error) throw error;
+      setSuccess(true);
+      setForm({ retreat_name: '', email: '', phone: '' });
+    } catch (err) {
+      setError(err.message || 'Submission failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className='w-full'>
      <section className="h-[50vh] w-full overflow-hidden">
@@ -15,7 +54,7 @@ const contacpage = () => {
           />
         </div>
       </section>
-      <section className="py-16 mt-30  bg-white">
+      <section className="py-16 mt-50  bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row items-start justify-between mb-16">
           <div className="lg:w-2/5 mb-10 lg:mb-0">
@@ -26,36 +65,54 @@ const contacpage = () => {
             </p>
           </div>
           <div className="lg:w-2/5">
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="space-y-4">
+            <div className="bg-white p-8 rounded-2xl shadow-lg">
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Retreat name</label>
+                  <label className="block text-base font-medium text-gray-900 mb-2">Retreat name</label>
                   <input
                     type="text"
+                    name="retreat_name"
+                    autoComplete="off"
+                    value={form.retreat_name}
+                    onChange={handleChange}
                     placeholder="Enter retreat name"
-                    className="mt-1 w-full p-2 border border-gray-300 rounded-md"
+                    className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:border-transparent text-gray-700 text-base placeholder-gray-400"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
+                  <label className="block text-base font-medium text-gray-900 mb-2">Email</label>
                   <input
                     type="email"
+                    name="email"
+                    autoComplete="off"
+                    value={form.email}
+                    onChange={handleChange}
                     placeholder="Enter your email"
-                    className="mt-1 w-full p-2 border border-gray-300 rounded-md"
+                    className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:border-transparent text-gray-700 text-base placeholder-gray-400"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Phone</label>
+                  <label className="block text-base font-medium text-gray-900 mb-2">Phone</label>
                   <input
                     type="tel"
+                    name="phone"
+                    autoComplete="off"
+                    value={form.phone}
+                    onChange={handleChange}
                     placeholder="Enter your phone number"
-                    className="mt-1 w-full p-2 border border-gray-300 rounded-md"
+                    className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:border-transparent text-gray-700 text-base placeholder-gray-400"
                   />
                 </div>
-                <button className="w-full bg-yellow-600 text-white py-2 px-4 rounded-md hover:bg-yellow-700 transition duration-200">
-                  Acquire now
+                {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+                {success && <div className="text-green-600 text-sm text-center">Submitted successfully!</div>}
+                <button
+                  type="submit"
+                  className="w-full bg-[#bfa46f] text-white font-semibold py-3 rounded-xl text-lg mt-4 hover:bg-[#a68c5c] transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? 'Submitting...' : 'Acquire now'}
                 </button>
-              </div>
+              </form>
             </div>
           </div>
         </div>
@@ -136,4 +193,4 @@ const contacpage = () => {
   )
 }
 
-export default contacpage
+export default ContactPage

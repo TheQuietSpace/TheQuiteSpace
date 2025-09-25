@@ -1,13 +1,12 @@
 "use client";
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image'; // Import Next.js Image component
-import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabse';
 import {
   Calendar as CalendarIcon,
   Image as ImageIcon
 } from "lucide-react";
-
 
 const highlights = [
   {
@@ -39,10 +38,15 @@ const AboutSections = () => {
   const [popularWorkshops, setPopularWorkshops] = useState([]);
   const [loadingPopular, setLoadingPopular] = useState(true);
   const [errorPopular, setErrorPopular] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedWorkshop, setSelectedWorkshop] = useState(null);
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+  const [formError, setFormError] = useState(null);
+  const [formLoading, setFormLoading] = useState(false);
 
   useEffect(() => {
-  fetchWorkshops();
-  fetchPopularWorkshops();
+    fetchWorkshops();
+    fetchPopularWorkshops();
   }, []);
 
   const fetchWorkshops = async () => {
@@ -79,6 +83,46 @@ const AboutSections = () => {
     setLoadingPopular(false);
   };
 
+  const openModal = (workshop) => {
+    setSelectedWorkshop(workshop);
+    setIsModalOpen(true);
+    setFormData({ name: '', email: '', phone: '' });
+    setFormError(null);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedWorkshop(null);
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email) {
+      setFormError('Name and Email are required.');
+      return;
+    }
+    setFormLoading(true);
+    const { error } = await supabase
+      .from('workshop_registrations')
+      .insert({
+        workshop_id: selectedWorkshop.id,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+      });
+    if (error) {
+      setFormError(error.message);
+    } else {
+      alert('Registration successful!');
+      closeModal();
+    }
+    setFormLoading(false);
+  };
+
   if (loading) return <div className="text-center py-10 text-gray-600">Loading...</div>;
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
   if (workshops.length === 0)
@@ -86,7 +130,6 @@ const AboutSections = () => {
 
   return (
     <div className="w-full">
-      {/* Hero Section */}
       {/* Hero Section */}
       <section className="h-[50vh] w-full overflow-hidden">
         {/* Background Image */}
@@ -128,42 +171,48 @@ const AboutSections = () => {
           <div className="flex justify-center">
             <h2 className="text-2xl font-bold mb-6 text-center">Upcoming Workshops</h2>
           </div>
-          <div className="flex flex-col gap-6 md:flex-row md:space-x-6 overflow-x-auto snap-x snap-mandatory py-4 scrollbar-hide">
-            {workshops.map((workshop) => (
-              <div
-                key={workshop.id}
-                className="bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col md:flex-row items-stretch min-w-[90vw] max-w-[100vw] md:min-w-[900px] md:max-w-[1000px] h-auto md:h-80 flex-shrink-0 hover:scale-105 transition-transform duration-300 snap-start"
-              >
-                {/* Image Section */}
-                <div className="md:w-1/3 w-full flex items-center justify-center p-4 md:p-0">
-                  {workshop.image_url ? (
-                    <img
-                      src={workshop.image_url}
-                      alt={workshop.name}
-                      className="rounded-xl object-cover w-full h-48 md:h-64 md:w-64"
-                    />
-                  ) : (
-                    <div className="w-full h-48 md:h-64 bg-gray-100 flex items-center justify-center rounded-xl text-gray-400">
-                      <ImageIcon className="w-12 h-12 border " />
-                    </div>
-                  )}
-                </div>
-                {/* Details Section */}
-                <div className="flex-1 flex flex-col justify-center px-4 py-4 md:py-0 md:px-8">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{workshop.name}</h3>
-                  <div className="text-gray-700 text-sm mb-1">
-                    <span className="block"><span className="font-medium">Date:</span> {workshop.event_date ? new Date(workshop.event_date).toLocaleDateString() : "No date"}</span>
-                    <span className="block"><span className="font-medium">Time:</span> {workshop.event_date ? new Date(workshop.event_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "No time"}</span>
-                    <span className="block"><span className="font-medium">Location:</span> {workshop.location || "No location"}</span>
+            <div
+              className="flex flex-row flex-nowrap gap-6 md:gap-10 overflow-x-auto snap-x snap-mandatory py-4 scrollbar-hide px-1 md:px-8"
+              style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth' }}
+            >
+              {workshops.map((workshop) => (
+                <div
+                  key={workshop.id}
+                  className="bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col md:flex-row items-stretch min-w-[85vw] max-w-[90vw] md:min-w-[600px] md:max-w-[700px] h-auto md:h-96 flex-shrink-0 hover:scale-105 transition-transform duration-300 snap-start"
+                >
+                  {/* Image Section */}
+                  <div className="w-full md:w-2/5 flex items-center justify-center p-4 md:p-6">
+                    {workshop.image_url ? (
+                      <img
+                        src={workshop.image_url}
+                        alt={workshop.name}
+                        className="rounded-xl object-cover w-full h-40 md:h-72 md:w-72"
+                      />
+                    ) : (
+                      <div className="w-full h-40 md:h-72 bg-gray-100 flex items-center justify-center rounded-xl text-gray-400">
+                        <ImageIcon className="w-12 h-12 border " />
+                      </div>
+                    )}
                   </div>
-                  <p className="text-gray-600 text-sm mt-2 mb-6 line-clamp-4">{workshop.description}</p>
-                  <button className="w-full border border-gray-400 text-gray-900 py-2 rounded-lg font-medium hover:bg-gray-100 transition-all duration-200">
-                    Register now
-                  </button>
+                  {/* Details Section */}
+                  <div className="flex-1 flex flex-col justify-center px-4 py-4 md:py-0 md:px-10">
+                    <h3 className="text-lg md:text-2xl font-bold text-gray-900 mb-2 md:mb-4">{workshop.name}</h3>
+                    <div className="text-gray-700 text-sm md:text-base mb-1 md:mb-2">
+                      <span className="block"><span className="font-medium">Date:</span> {workshop.event_date ? new Date(workshop.event_date).toLocaleDateString() : "No date"}</span>
+                      <span className="block"><span className="font-medium">Time:</span> {workshop.event_date ? new Date(workshop.event_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "No time"}</span>
+                      <span className="block"><span className="font-medium">Location:</span> {workshop.location || "No location"}</span>
+                    </div>
+                    <p className="text-gray-600 text-sm md:text-base mt-2 mb-6 line-clamp-4">{workshop.description}</p>
+                    <button 
+                      onClick={() => openModal(workshop)}
+                      className="w-full border border-gray-400 text-gray-900 py-2 rounded-lg font-medium hover:bg-gray-100 transition-all duration-200"
+                    >
+                      Register now
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
         </div>
       </section>
 
@@ -234,13 +283,81 @@ const AboutSections = () => {
                     <span className="block"><span className="font-medium">Time:</span> {workshop.event_date ? new Date(workshop.event_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "No time"}</span>
                     <span className="block"><span className="font-medium">Location:</span> {workshop.location || "No location"}</span>
                   </div>
-                  <button className="w-full border border-gray-400 text-gray-900 py-2 rounded-lg font-medium mt-4 hover:bg-gray-100 transition-all duration-200">Register now</button>
+                  <button 
+                    onClick={() => openModal(workshop)}
+                    className="w-full border border-gray-400 text-gray-900 py-2 rounded-lg font-medium mt-4 hover:bg-gray-100 transition-all duration-200"
+                  >
+                    Register now
+                  </button>
                 </div>
               ))}
             </div>
           </div>
         )}
       </section>
+
+      {/* Registration Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+            <h2 className="text-xl font-bold mb-4">Register for {selectedWorkshop?.name}</h2>
+            {formError && <p className="text-red-500 mb-4">{formError}</p>}
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone (optional)</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                />
+              </div>
+              <div className="flex justify-end gap-4">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={formLoading}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {formLoading ? 'Submitting...' : 'Submit'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

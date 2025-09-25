@@ -5,6 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 import RetreatsComponent from "@/app/components/RetreatsComponent";
 import WorkshopComponent from "@/app/components/WorkshopComponent";
 import BlogsManagement from "@/app/components/BlogsManagement";
+import AdminInquiries from "@/app/components/AdminInquiries";
 import { 
   LayoutDashboard, 
   Calendar, 
@@ -212,7 +213,7 @@ export default function AdminDashboard() {
       case "Content":
         return <BlogsManagement/>;
       case "Inquiries":
-        return <PlaceholderComponent title="Inquiries Management" />;
+        return <AdminInquiries/>;
       case "Settings":
         return <PlaceholderComponent title="Settings" />;
       default:

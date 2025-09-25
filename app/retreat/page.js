@@ -139,27 +139,30 @@ const RetreatPage = () => {
 
 
       {/* Content Section - Upcoming Retreats (Horizontal Scroll) */}
-      <div className="container mx-auto px-4 py-6 -mt-4">
-        <h2 className="text-2xl sm:text-3xl font-semibold mt-6 sm:mt-12 text-gray-800 mb-8 text-center">
+      <div className="container mx-auto px-2 sm:px-4 py-6 -mt-2">
+        <h2 className="text-2xl sm:text-3xl mt-30 font-semibold  sm:mt-12 text-gray-800 mb-8 text-center">
           Upcoming Retreats
         </h2>
         <div className="relative">
           <button
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2 disabled:opacity-30"
+            className="absolute left-2 sm:left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2 disabled:opacity-30"
             onClick={() => setUpcomingScroll(Math.max(0, upcomingScroll - 1))}
             disabled={upcomingScroll === 0}
             aria-label="Scroll left"
           >
             ◀
           </button>
-          <div className="flex overflow-x-auto gap-6 lg:gap-8 scrollbar-hide px-10">
+          <div
+            className="flex flex-row flex-nowrap overflow-x-auto gap-4 sm:gap-6 lg:gap-8 scrollbar-hide px-1 sm:px-10 py-2"
+            style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth' }}
+          >
             {currentUpcomingRetreats.length === 0 ? (
               <div className="text-center py-12 w-full">
                 <p className="text-gray-600 text-lg">No retreats found matching your criteria.</p>
               </div>
             ) : (
               currentUpcomingRetreats.map((retreat) => (
-                <div key={retreat.id} className="min-w-[320px] max-w-xs flex-shrink-0">
+                <div key={retreat.id} className="min-w-[85vw] max-w-[90vw] sm:min-w-[320px] sm:max-w-xs flex-shrink-0">
                   <div className="w-full bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                     <div className="aspect-[4/3] overflow-hidden">
                       <img
@@ -168,21 +171,21 @@ const RetreatPage = () => {
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       />
                     </div>
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                    <div className="p-3 sm:p-4">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">
                         {retreat.title || 'The Quiet Space'}
                       </h3>
-                      <div className="space-y-1 mb-4">
-                        <p className="text-sm text-gray-600">
+                      <div className="space-y-1 mb-3 sm:mb-4">
+                        <p className="text-xs sm:text-sm text-gray-600">
                           <span className="font-medium">Date:</span> {retreat.date || 'N/A'}
                         </p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs sm:text-sm text-gray-600">
                           <span className="font-medium">Location:</span> {retreat.location || 'N/A'}
                         </p>
                       </div>
                       <Link 
                         href={`/retreat/${retreat.id}`} 
-                        className="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-md border border-gray-300 transition-colors duration-200 text-center"
+                        className="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-2 sm:py-2.5 sm:px-4 rounded-md border border-gray-300 transition-colors duration-200 text-center"
                       >
                         View details
                       </Link>
@@ -193,7 +196,7 @@ const RetreatPage = () => {
             )}
           </div>
           <button
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2 disabled:opacity-30"
+            className="absolute right-2 sm:right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2 disabled:opacity-30"
             onClick={() => setUpcomingScroll(Math.min(maxUpcomingScroll, upcomingScroll + 1))}
             disabled={upcomingScroll >= maxUpcomingScroll}
             aria-label="Scroll right"
@@ -205,27 +208,30 @@ const RetreatPage = () => {
 
 
       {/* Popular Retreats Section (Random, Horizontal Scroll) */}
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-2 sm:px-4 py-6">
         <h2 className="text-2xl sm:text-3xl font-semibold mt-12 text-gray-800 mb-8 text-center">
           Popular Retreats
         </h2>
         <div className="relative">
           <button
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2 disabled:opacity-30"
+            className="absolute left-2 sm:left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2 disabled:opacity-30"
             onClick={() => setPopularScroll(Math.max(0, popularScroll - 1))}
             disabled={popularScroll === 0}
             aria-label="Scroll left"
           >
             ◀
           </button>
-          <div className="flex overflow-x-auto gap-6 lg:gap-8 scrollbar-hide px-10">
+          <div
+            className="flex flex-row flex-nowrap overflow-x-auto gap-4 sm:gap-6 lg:gap-8 scrollbar-hide px-1 sm:px-10 py-2"
+            style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth' }}
+          >
             {visiblePopularRetreats.length === 0 ? (
               <div className="text-center py-12 w-full">
                 <p className="text-gray-600 text-lg">No popular retreats found.</p>
               </div>
             ) : (
               visiblePopularRetreats.map((retreat) => (
-                <div key={retreat.id} className="min-w-[320px] max-w-xs flex-shrink-0">
+                <div key={retreat.id} className="min-w-[85vw] max-w-[90vw] sm:min-w-[320px] sm:max-w-xs flex-shrink-0">
                   <div className="w-full bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                     <div className="aspect-[4/3] overflow-hidden">
                       <img
@@ -234,21 +240,21 @@ const RetreatPage = () => {
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       />
                     </div>
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                    <div className="p-3 sm:p-4">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">
                         {retreat.title || 'The Quiet Space'}
                       </h3>
-                      <div className="space-y-1 mb-4">
-                        <p className="text-sm text-gray-600">
+                      <div className="space-y-1 mb-3 sm:mb-4">
+                        <p className="text-xs sm:text-sm text-gray-600">
                           <span className="font-medium">Date:</span> {retreat.date || 'N/A'}
                         </p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs sm:text-sm text-gray-600">
                           <span className="font-medium">Location:</span> {retreat.location || 'N/A'}
                         </p>
                       </div>
                       <Link 
                         href={`/retreat/${retreat.id}`} 
-                        className="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-md border border-gray-300 transition-colors duration-200 text-center"
+                        className="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-2 sm:py-2.5 sm:px-4 rounded-md border border-gray-300 transition-colors duration-200 text-center"
                       >
                         View details
                       </Link>
@@ -259,7 +265,7 @@ const RetreatPage = () => {
             )}
           </div>
           <button
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2 disabled:opacity-30"
+            className="absolute right-2 sm:right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2 disabled:opacity-30"
             onClick={() => setPopularScroll(Math.min(maxPopularScroll, popularScroll + 1))}
             disabled={popularScroll >= maxPopularScroll}
             aria-label="Scroll right"
