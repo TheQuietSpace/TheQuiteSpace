@@ -1,8 +1,21 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["mwksuvwpcokftxvfbdax.supabase.co"], // allow Supabase storage images
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'mwksuvwpcokftxvfbdax.supabase.co',
+        port: '',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '**',
+      },
+    ],
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

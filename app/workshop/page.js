@@ -144,8 +144,8 @@ const AboutSections = () => {
       </section>
 
       {/* Key Highlights Section */}
-      <section className="py-12 px-4 sm:px-6 mt-30 text-center">
-        <h2 className="text-3xl font-bold mb-10">Key Highlights</h2>
+      <section className="py-12 px-4 sm:px-6 mt-30 text-center bg-white">
+        <h2 className="text-4xl font-semibold mb-10">Key Highlights</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
           {highlights.map((item, idx) => (
             <div key={idx} className="flex flex-col items-center">
@@ -158,7 +158,7 @@ const AboutSections = () => {
                   className="object-cover w-full h-full"
                 />
               </div>
-              <h3 className="text-lg font-semibold">{item.title}</h3>
+              <h3 className="text-2xl font-semibold">{item.title}</h3>
               <p className="text-sm text-gray-600 mt-1">{item.description}</p>
             </div>
           ))}
@@ -166,10 +166,13 @@ const AboutSections = () => {
       </section>
 
       {/* Upcoming Workshops Section */}
-      <section className="py-12 px-2 sm:px-6 bg-neutral-50">
+      <section className="py-12 px-2 sm:px-6">
         <div className="p-2 sm:p-6">
-          <div className="flex justify-center">
-            <h2 className="text-2xl font-bold mb-6 text-center">Upcoming Workshops</h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-4xl font-semibold text-center flex-1">Upcoming Workshops</h2>
+            <button className="border border-gray-400 text-gray-900 py-2 px-4 rounded-lg font-medium hover:bg-gray-100 transition-all duration-200 ml-4">
+              View All
+            </button>
           </div>
             <div
               className="flex flex-row flex-nowrap gap-6 md:gap-10 overflow-x-auto snap-x snap-mandatory py-4 scrollbar-hide px-1 md:px-8"
@@ -178,31 +181,33 @@ const AboutSections = () => {
               {workshops.map((workshop) => (
                 <div
                   key={workshop.id}
-                  className="bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col md:flex-row items-stretch min-w-[85vw] max-w-[90vw] md:min-w-[600px] md:max-w-[700px] h-auto md:h-96 flex-shrink-0 hover:scale-105 transition-transform duration-300 snap-start"
+                  className="bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col md:flex-row items-stretch w-[85vw] sm:w-[80vw] md:w-[650px] h-auto md:h-80 flex-shrink-0 hover:scale-105 transition-transform duration-300 snap-start"
                 >
                   {/* Image Section */}
-                  <div className="w-full md:w-2/5 flex items-center justify-center p-4 md:p-6">
+                  <div className="w-full md:w-2/5 flex items-center justify-center p-2 md:p-3">
                     {workshop.image_url ? (
                       <img
                         src={workshop.image_url}
                         alt={workshop.name}
-                        className="rounded-xl object-cover w-full h-40 md:h-72 md:w-72"
+                        className="rounded-xl object-cover w-full h-40 md:h-64 md:w-full"
                       />
                     ) : (
-                      <div className="w-full h-40 md:h-72 bg-gray-100 flex items-center justify-center rounded-xl text-gray-400">
-                        <ImageIcon className="w-12 h-12 border " />
+                      <div className="w-full h-40 md:h-64 bg-gray-100 flex items-center justify-center rounded-xl text-gray-400">
+                        <ImageIcon className="w-12 h-12" />
                       </div>
                     )}
                   </div>
                   {/* Details Section */}
-                  <div className="flex-1 flex flex-col justify-center px-4 py-4 md:py-0 md:px-10">
-                    <h3 className="text-lg md:text-2xl font-bold text-gray-900 mb-2 md:mb-4">{workshop.name}</h3>
-                    <div className="text-gray-700 text-sm md:text-base mb-1 md:mb-2">
-                      <span className="block"><span className="font-medium">Date:</span> {workshop.event_date ? new Date(workshop.event_date).toLocaleDateString() : "No date"}</span>
-                      <span className="block"><span className="font-medium">Time:</span> {workshop.event_date ? new Date(workshop.event_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "No time"}</span>
-                      <span className="block"><span className="font-medium">Location:</span> {workshop.location || "No location"}</span>
+                  <div className="flex-1 flex flex-col justify-between px-4 py-1 md:py-6 md:px-6">
+                    <div>
+                      <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1 md:mb-2 line-clamp-2">{workshop.name}</h3>
+                      <div className="text-gray-700 text-sm md:text-base mb-2">
+                        <span className="block"><span className="font-medium">Date:</span> {workshop.event_date ? new Date(workshop.event_date).toLocaleDateString() : "No date"}</span>
+                        <span className="block"><span className="font-medium">Time:</span> {workshop.event_date ? new Date(workshop.event_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "No time"}</span>
+                        <span className="block"><span className="font-medium">Location:</span> {workshop.location || "No location"}</span>
+                      </div>
+                      <p className="text-gray-600 text-sm md:text-base line-clamp-2 md:line-clamp-3">{workshop.description}</p>
                     </div>
-                    <p className="text-gray-600 text-sm md:text-base mt-2 mb-6 line-clamp-4">{workshop.description}</p>
                     <button 
                       onClick={() => openModal(workshop)}
                       className="w-full border border-gray-400 text-gray-900 py-2 rounded-lg font-medium hover:bg-gray-100 transition-all duration-200"
@@ -217,11 +222,13 @@ const AboutSections = () => {
       </section>
 
       {/* Popular Workshops Section (now at the end) */}
-      <section className="py-12 px-2 sm:px-8">
-        <div className="flex flex-col items-center mb-8">
-          <h2 className="text-3xl font-bold text-center mb-4">Popular Workshops</h2>
-         
-        </div>
+      <section className="py-12 md:py-22 px-2 sm:px-8 bg-white">
+        <div className="flex justify-between items-center mb-6">
+            <h2 className="text-4xl font-semibold text-center flex-1">Popular Workshops</h2>
+            <button className="border border-gray-400 text-gray-900 py-2 px-4 rounded-lg font-medium hover:bg-gray-100 transition-all duration-200 ml-4">
+              View All
+            </button>
+          </div>
         {loadingPopular ? (
           <div className="text-center py-10 text-gray-600">Loading...</div>
         ) : errorPopular ? (

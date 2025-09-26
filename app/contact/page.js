@@ -54,7 +54,7 @@ const ContactPage = () => {
           />
         </div>
       </section>
-      <section className="py-16 mt-50  bg-white">
+      <section className="py-16 md:mt-22 mt-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row items-start justify-between mb-16">
           <div className="lg:w-2/5 mb-10 lg:mb-0">
@@ -116,6 +116,12 @@ const ContactPage = () => {
             </div>
           </div>
         </div>
+      </div>
+    </section>
+    
+    {/* Full-width three items section */}
+    <section className="bg-[#FAF8F5] py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center">
             <div className="w-16 h-16 mx-auto mb-4">
@@ -156,27 +162,42 @@ const ContactPage = () => {
         </div>
       </div>
     </section>
+    
     <section className="relative py-12 bg-blue-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative z-10 text-white bg-blue-900 bg-opacity-75 p-6 rounded-lg max-w-md">
-          <h2 className="text-3xl font-bold mb-4">Contact us</h2>
-          <p className="mb-4">
-            Location: [City, State, Country] (or Available Globally - Online & Offline)
-          </p>
-          <div className="space-y-2">
-            <p>
-              <span className="mr-2">📞</span> PHONE: 03 5432 1234
+        <div className="flex justify-start">
+          <div className="relative z-10 text-black bg-white p-6 rounded-full w-80 h-80 flex flex-col justify-center items-center shadow-lg">
+            <h2 className="text-2xl font-bold mb-3 text-center">Contact us</h2>
+            <p className="mb-4 text-center text-xs">
+              Location: Available Globally
             </p>
-            <p>
-              <span className="mr-2">📅</span> FAX: 03 5432 1234
-            </p>
-            <p>
-              <span className="mr-2">📧</span> EMAIL: info@marco.com.au
-            </p>
+            <div className="space-y-2 mb-4">
+              <p className="flex items-center text-xs">
+                <svg className="w-4 h-4 mr-2" fill="#C1A050" viewBox="0 0 24 24">
+                  <path d="M6.62,10.79c1.44,2.83,3.76,5.15,6.59,6.59l2.2-2.2c0.27-0.27,0.67-0.36,1.02-0.24 c1.12,0.37,2.33,0.57,3.57,0.57c0.55,0,1,0.45,1,1V20c0,0.55-0.45,1-1,1c-9.39,0-17-7.61-17-17c0-0.55,0.45-1,1-1h3.5 c0.55,0,1,0.45,1,1c0,1.25,0.2,2.45,0.57,3.57c0.11,0.35,0.03,0.74-0.25,1.02L6.62,10.79z"/>
+                </svg>
+                <span className="font-medium">PHONE:</span> 
+                <span className="ml-1 text-[#C1A050]">03 5432 1234</span>
+              </p>
+              <p className="flex items-center text-xs">
+                <svg className="w-4 h-4 mr-2" fill="#C1A050" viewBox="0 0 24 24">
+                  <path d="M19,3H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V5C21,3.9,20.1,3,19,3z M19,19H5V8l7,5l7-5V19z M12,11L5,6h14L12,11z"/>
+                </svg>
+                <span className="font-medium">FAX:</span> 
+                <span className="ml-1 text-[#C1A050]">03 5432 1234</span>
+              </p>
+              <p className="flex items-center text-xs">
+                <svg className="w-4 h-4 mr-2" fill="#C1A050" viewBox="0 0 24 24">
+                  <path d="M20,4H4C2.9,4,2,4.9,2,6v12c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V6C22,4.9,21.1,4,20,4z M20,8l-8,5L4,8V6l8,5l8-5V8z"/>
+                </svg>
+                <span className="font-medium">EMAIL:</span> 
+                <span className="ml-1 text-[#C1A050] break-all">info@marco.com.au</span>
+              </p>
+            </div>
+            <button className="w-32 bg-[#C1A050] text-white py-2 px-3 rounded-lg hover:bg-[#A68C42] transition duration-200 font-medium text-sm">
+              Lets connect
+            </button>
           </div>
-          <button className="mt-6 w-full bg-yellow-600 text-white py-2 px-4 rounded hover:bg-yellow-700 transition duration-200">
-            Lets connect
-          </button>
         </div>
       </div>
       <div className="absolute inset-0 z-0">
