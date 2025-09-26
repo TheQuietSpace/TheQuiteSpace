@@ -186,10 +186,13 @@ const AboutSections = () => {
                   {/* Image Section */}
                   <div className="w-full md:w-2/5 flex items-center justify-center p-2 md:p-3">
                     {workshop.image_url ? (
-                      <img
+                      <Image
                         src={workshop.image_url}
                         alt={workshop.name}
+                        width={400}
+                        height={160}
                         className="rounded-xl object-cover w-full h-40 md:h-64 md:w-full"
+                        unoptimized={true}
                       />
                     ) : (
                       <div className="w-full h-40 md:h-64 bg-gray-100 flex items-center justify-center rounded-xl text-gray-400">
@@ -273,10 +276,13 @@ const AboutSections = () => {
                 >
                   <div className="w-full h-48 rounded-xl overflow-hidden mb-4 flex items-center justify-center">
                     {workshop.image_url ? (
-                      <img
+                      <Image
                         src={workshop.image_url}
                         alt={workshop.name}
+                        width={320}
+                        height={192}
                         className="object-cover w-full h-full"
+                        unoptimized={true}
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">

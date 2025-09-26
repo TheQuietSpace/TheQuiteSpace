@@ -1,82 +1,148 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabse';
 import Image from 'next/image';
 
 export default function RetreatDetails() {
   const params = useParams();
   const { id } = params;
+  const router = useRouter();
 
   const [retreat, setRetreat] = useState(null);
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageError, setImageError] = useState(null);
-  const [activeTab, setActiveTab] = useState('teachers'); // 'teachers', 'reviews', 'faqs'
-  const [expandedFaqs, setExpandedFaqs] = useState({}); // Track which FAQs are expanded
+  const [activeTab, setActiveTab] = useState('teachers');
+  const [expandedFaqs, setExpandedFaqs] = useState({});
+  const [showForm, setShowForm] = useState(false);
+  const [newRating, setNewRating] = useState(5);
+  const [newReview, setNewReview] = useState('');
+  const [user, setUser] = useState(null);
+  const [filterRating, setFilterRating] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
 
   // Fallback placeholder URLs
   const mainPlaceholder = 'https://via.placeholder.com/800x500?text=Main+Image+Not+Found';
   const teacherPlaceholder = 'https://via.placeholder.com/150x150?text=Teacher+Image+Not+Found';
 
-  // Fetch retreat data
+  // Fetch user, retreat data, and reviews
   useEffect(() => {
-    const fetchRetreat = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch(`/api/retreats/${id}`);
-        if (!res.ok) throw new Error('Failed to fetch retreat');
+        // Fetch user
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
 
-        const data = await res.json();
-        if (!data || data.error) throw new Error(data.error || 'Retreat not found');
+        // Fetch retreat
+        const { data: retreatData, error: retreatError } = await supabase
+          .from('retreats')
+          .select('*')
+          .eq('id', id)
+          .single();
+        if (retreatError) throw retreatError;
+        if (!retreatData) throw new Error('Retreat not found');
 
-        // Parse gallery images safely
+        // Parse gallery images
         let gallery = [];
-        if (Array.isArray(data.gallery_images)) {
-          gallery = data.gallery_images;
-        } else if (typeof data.gallery_images === 'string') {
+        if (Array.isArray(retreatData.gallery_images)) {
+          gallery = retreatData.gallery_images;
+        } else if (typeof retreatData.gallery_images === 'string') {
           try {
-            gallery = JSON.parse(data.gallery_images);
+            gallery = JSON.parse(retreatData.gallery_images);
           } catch {
-            gallery = data.gallery_images.split(',').map((u) => u.trim());
+            gallery = retreatData.gallery_images.split(',').map((u) => u.trim());
           }
         }
         gallery = gallery.filter((url) => typeof url === 'string' && url.startsWith('http'));
 
-        // Parse teachers safely
+        // Parse teachers
         let teachers = [];
-        if (Array.isArray(data.teachers)) {
-          teachers = data.teachers.map(teacher => ({
+        if (Array.isArray(retreatData.teachers)) {
+          teachers = retreatData.teachers.map(teacher => ({
             ...teacher,
             image_url: teacher.image_url?.startsWith('http') ? teacher.image_url : null,
           }));
         }
 
-        // Parse FAQs safely
+        // Parse FAQs
         let faqs = [];
-        if (Array.isArray(data.faqs)) {
-          faqs = data.faqs.map(cat => ({
+        if (Array.isArray(retreatData.faqs)) {
+          faqs = retreatData.faqs.map(cat => ({
             category: cat.category,
             faqs: Array.isArray(cat.faqs) ? cat.faqs : [],
           }));
         }
 
         setRetreat({
-          ...data,
-          image_url: data.image_url?.startsWith('http') ? data.image_url : null,
+          ...retreatData,
+          image_url: retreatData.image_url?.startsWith('http') ? retreatData.image_url : null,
           gallery_images: gallery,
           teachers,
           faqs,
         });
+
+        // Fetch reviews
+        await fetchReviews();
       } catch (error) {
-        console.error('Error fetching retreat:', error);
+        console.error('Error fetching data:', error);
         setImageError(error.message);
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) fetchRetreat();
+    const fetchReviews = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('reviews')
+          .select('id, user_name, rating, review, created_at')
+          .eq('retreat_id', id)
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        setReviews(data || []);
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+      }
+    };
+
+    if (id) fetchData();
   }, [id]);
+
+  const handleSubmitReview = async () => {
+    if (!user) {
+      alert('Please sign in to submit a review.');
+      router.push('/auth');
+      return;
+    }
+    if (!newReview) {
+      alert('Please provide a review.');
+      return;
+    }
+    try {
+      const { data, error } = await supabase
+        .from('reviews')
+        .insert({
+          retreat_id: id,
+          user_id: user.id,
+          user_name: user.user_metadata?.name || user.email.split('@')[0],
+          rating: newRating,
+          review: newReview,
+        })
+        .select('id, user_name, rating, review, created_at')
+        .single();
+      if (error) throw error;
+      setReviews([data, ...reviews]); // Add new review to the top
+      setShowForm(false);
+      setNewRating(5);
+      setNewReview('');
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      alert('Failed to submit review. Please try again.');
+    }
+  };
 
   if (loading) {
     return (
@@ -94,7 +160,7 @@ export default function RetreatDetails() {
       <div className="flex items-center justify-center min-h-screen text-gray-600">
         <div className="text-center">
           <h2 className="text-xl sm:text-2xl font-semibold mb-4">Retreat Not Found</h2>
-          <p className="text-sm sm:text-base">The retreat youre looking for doesn not exist.</p>
+          <p className="text-sm sm:text-base">The retreat you are looking for doesnt exist.</p>
         </div>
       </div>
     );
@@ -157,7 +223,7 @@ export default function RetreatDetails() {
 
   // Toggle FAQ expansion
   const toggleFaq = (categoryIndex, faqIndex) => {
-    setExpandedFaqs(prev => ({
+    setExpandedFaqs((prev) => ({
       ...prev,
       [`${categoryIndex}-${faqIndex}`]: !prev[`${categoryIndex}-${faqIndex}`],
     }));
@@ -169,7 +235,7 @@ export default function RetreatDetails() {
       <div className="bg-gray-50 py-2 sm:py-3 border-b">
         <div className="max-w-6xl mx-auto px-2 sm:px-4">
           <h1 className="text-sm sm:text-base lg:text-bold text-gray-600">
-            Retreat &gt; {retreat.title || 'The quiet space'}
+            Retreat &gt; {retreat.title || 'The Quiet Space'}
           </h1>
         </div>
       </div>
@@ -186,7 +252,7 @@ export default function RetreatDetails() {
           {/* Left - Carousel and thumbnails */}
           <div className="space-y-3 sm:space-y-4">
             {/* Main Image */}
-            <div className="relative w-full h-56 sm:h-72 md:h-96  lg:h-150 rounded-xl overflow-hidden shadow-lg lg:shadow-bold bg-gray-200">
+            <div className="relative w-full h-56 sm:h-72 md:h-96 lg:h-150 rounded-xl overflow-hidden shadow-lg lg:shadow-bold bg-gray-200">
               <Image
                 key={currentImageIndex}
                 src={allImages[currentImageIndex] || mainPlaceholder}
@@ -283,12 +349,12 @@ export default function RetreatDetails() {
 
             {/* What's included */}
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-3">Whats included</h2>
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-3">What is included</h2>
               {includedItems.length > 0 ? (
                 <div className="flex flex-wrap justify-between gap-3 sm:gap-3 lg:gap-0">
                   {includedItems.map((item, idx) => (
                     <div key={idx} className="flex flex-col items-center text-center w-12 sm:w-14 lg:w-14">
-                      <div className="bg-gray-50 border border-gray-200 rounded-full p-0 sm:p-3  w-7 h-7 sm:w-9 sm:h-9 lg:w-9 lg:h-9 flex items-center justify-center hover:bg-gray-100 transition-colors">
+                      <div className="bg-gray-50 border border-gray-200 rounded-full p-0 sm:p-3 w-7 h-7 sm:w-9 sm:h-9 lg:w-9 lg:h-9 flex items-center justify-center hover:bg-gray-100 transition-colors">
                         <span className="text-base sm:text-xl">{item.icon}</span>
                       </div>
                       <p className="text-xs sm:text-xs lg:text-xs text-gray-700 font-medium leading-tight max-w-16 sm:max-w-20 lg:max-w-20 text-center">
@@ -332,12 +398,12 @@ export default function RetreatDetails() {
         {/* Bottom Tabs Section */}
         <div className="mt-6 sm:mt-8 border-t border-gray-200 pt-4 sm:pt-6">
           {/* Tab Headers */}
-          <div className="flex flex-wrap lg:inline-block border-b border-gray-200 mb-4 sm:mb-6 gap-2 sm:gap-4">
+          <div className="flex flex-row flex-nowrap border-b border-gray-200 mb-4 sm:mb-6 gap-2 sm:gap-4 overflow-x-auto">
             <button
               onClick={() => setActiveTab('teachers')}
               className={`px-4 sm:px-6 lg:px-46 py-2 sm:py-3 text-sm sm:text-base lg:text-bold font-medium border-b-2 transition-colors ${
-                activeTab === 'teachers' 
-                  ? 'border-yellow-500 text-yellow-600' 
+                activeTab === 'teachers'
+                  ? 'border-yellow-500 text-yellow-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -346,8 +412,8 @@ export default function RetreatDetails() {
             <button
               onClick={() => setActiveTab('reviews')}
               className={`px-4 sm:px-6 lg:px-48 py-2 sm:py-3 text-sm sm:text-base lg:text-bold font-medium border-b-2 transition-colors ${
-                activeTab === 'reviews' 
-                  ? 'border-yellow-500 text-yellow-600' 
+                activeTab === 'reviews'
+                  ? 'border-yellow-500 text-yellow-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -356,8 +422,8 @@ export default function RetreatDetails() {
             <button
               onClick={() => setActiveTab('faqs')}
               className={`px-4 sm:px-6 lg:px-48 py-2 sm:py-3 text-sm sm:text-base lg:text-bold font-medium border-b-2 transition-colors ${
-                activeTab === 'faqs' 
-                  ? 'border-yellow-500 text-yellow-600' 
+                activeTab === 'faqs'
+                  ? 'border-yellow-500 text-yellow-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -407,8 +473,117 @@ export default function RetreatDetails() {
             )}
 
             {activeTab === 'reviews' && (
-              <div className="text-center py-6 sm:py-8">
-                <p className="text-gray-500 text-sm sm:text-base">No reviews available yet.</p>
+              <div className="space-y-6">
+                {/* Top bar with Add Review and Filters */}
+                <div className="flex flex-wrap items-center justify-between mb-2 gap-2">
+                  <div className="flex gap-8 items-center w-full sm:w-auto">
+                    <button
+                      onClick={() => setShowForm(!showForm)}
+                      className="bg-white border border-gray-200 rounded-xl px-6 py-2 font-semibold text-gray-900 hover:bg-gray-50 transition-all shadow-sm"
+                    >
+                      {showForm ? 'Cancel' : 'Add review'}
+                    </button>
+                    <button
+                      className="bg-white border border-gray-200 rounded-xl px-6 py-2 font-semibold text-gray-900 flex items-center gap-2 hover:bg-gray-50 transition-all shadow-sm"
+                      onClick={() => setShowFilters((prev) => !prev)}
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7h18M6 7V5a2 2 0 012-2h8a2 2 0 012 2v2m-6 4v6m0 0l-2-2m2 2l2-2" /></svg>
+                      Filters
+                    </button>
+                  </div>
+                </div>
+
+                {/* Filters dropdown/modal */}
+                {typeof setShowFilters !== 'undefined' && showFilters && (
+                  <div className="mb-4 p-4 bg-white border border-gray-200 rounded-xl shadow-sm flex flex-col gap-4">
+                    <label className="font-semibold text-gray-700">Filter by rating:</label>
+                    <select
+                      className="border border-gray-300 rounded-lg p-2 w-40"
+                      value={filterRating || ''}
+                      onChange={e => setFilterRating(Number(e.target.value))}
+                    >
+                      <option value="">All Ratings</option>
+                      {[5,4,3,2,1].map(r => (
+                        <option key={r} value={r}>{r} Stars</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {/* Add Review Form */}
+                {showForm && (
+                  <div className="bg-gray-50 p-4 sm:p-6 rounded-xl border border-gray-200 space-y-3 sm:space-y-4">
+                    {user ? (
+                      <p className="text-gray-600 text-sm sm:text-base">
+                        Reviewing as {user.user_metadata?.name || user.email.split('@')[0]}
+                      </p>
+                    ) : (
+                      <p className="text-gray-600 text-sm sm:text-base">
+                        Please <a href="/auth" className="text-yellow-600 hover:underline">sign in</a> to submit a review.
+                      </p>
+                    )}
+                    <select
+                      value={newRating}
+                      onChange={(e) => setNewRating(Number(e.target.value))}
+                      className="w-full border border-gray-300 rounded-lg p-2 sm:p-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                      disabled={!user}
+                    >
+                      <option value={1}>1 Star</option>
+                      <option value={2}>2 Stars</option>
+                      <option value={3}>3 Stars</option>
+                      <option value={4}>4 Stars</option>
+                      <option value={5}>5 Stars</option>
+                    </select>
+                    <textarea
+                      value={newReview}
+                      onChange={(e) => setNewReview(e.target.value)}
+                      placeholder="Your Review"
+                      className="w-full border border-gray-300 rounded-lg p-2 sm:p-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 h-24 sm:h-32"
+                      disabled={!user}
+                    />
+                    <button
+                      onClick={handleSubmitReview}
+                      disabled={!user}
+                      className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all disabled:opacity-50"
+                    >
+                      Submit Review
+                    </button>
+                  </div>
+                )}
+
+                {/* Reviews Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+                  {reviews.length > 0 ? (
+                    reviews
+                      .filter(rev => !filterRating || rev.rating === filterRating)
+                      .map((rev, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col justify-between min-h-[180px]"
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="flex text-yellow-500 text-base">
+                              {[...Array(Math.floor(rev.rating))].map((_, i) => (
+                                <svg key={i} className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.462a1 1 0 00-.364 1.118l1.287 3.967c.3.921-.755 1.688-1.54 1.118l-3.388-2.462a1 1 0 00-1.175 0l-3.388 2.462c-.784.57-1.838-.197-1.539-1.118l1.287-3.967a1 1 0 00-.364-1.118L2.174 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z" /></svg>
+                              ))}
+                              {rev.rating % 1 !== 0 && (
+                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><defs><linearGradient id="half"><stop offset="50%" stopColor="#FBBF24"/><stop offset="50%" stopColor="#E5E7EB"/></linearGradient></defs><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.462a1 1 0 00-.364 1.118l1.287 3.967c.3.921-.755 1.688-1.54 1.118l-3.388-2.462a1 1 0 00-1.175 0l-3.388 2.462c-.784.57-1.838-.197-1.539-1.118l1.287-3.967a1 1 0 00-.364-1.118L2.174 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z" fill="url(#half)"/></svg>
+                              )}
+                            </div>
+                            <span className="font-semibold text-gray-900 ml-2">{rev.user_name}</span>
+                            <span className="ml-1 text-green-600 text-lg" title="Verified">●</span>
+                            <span className="ml-auto text-gray-400 cursor-pointer" title="More options">&#x2026;</span>
+                          </div>
+                          <div className="text-gray-700 text-base mb-2">{rev.review}</div>
+                          <div className="text-xs text-gray-500 mt-auto">Posted on {new Date(rev.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                        </div>
+                      ))
+                  ) : (
+                    <div className="text-center py-6 sm:py-8 col-span-2">
+                      <p className="text-gray-500 text-sm sm:text-base">No reviews available yet.</p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
