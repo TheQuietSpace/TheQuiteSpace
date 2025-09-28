@@ -74,8 +74,7 @@ const menuItems = [
   { name: "Participants", icon: Users, key: "Participants" },
   { name: "Instructors", icon: UserCheck, key: "Instructors" },
   { name: "Content", icon: FileText, key: "Content" },
-  { name: "Inquiries", icon: MessageSquare, key: "Inquiries" },
-  { name: "Settings", icon: Settings, key: "Settings" }
+  { name: "Inquiries", icon: MessageSquare, key: "Inquiries" }
 ];
 
 const Sidebar = ({ activeComponent, setActiveComponent, isOpen, setIsOpen, user }) => {
