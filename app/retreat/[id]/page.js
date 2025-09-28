@@ -23,20 +23,30 @@ export default function RetreatDetails() {
   const [user, setUser] = useState(null);
   const [filterRating, setFilterRating] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
 
-  // Fallback placeholder URLs
   const mainPlaceholder = 'https://via.placeholder.com/800x500?text=Main+Image+Not+Found';
   const teacherPlaceholder = 'https://via.placeholder.com/150x150?text=Teacher+Image+Not+Found';
 
-  // Fetch user, retreat data, and reviews
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch user
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
 
-        // Fetch retreat
         const { data: retreatData, error: retreatError } = await supabase
           .from('retreats')
           .select('*')
@@ -45,7 +55,6 @@ export default function RetreatDetails() {
         if (retreatError) throw retreatError;
         if (!retreatData) throw new Error('Retreat not found');
 
-        // Parse gallery images
         let gallery = [];
         if (Array.isArray(retreatData.gallery_images)) {
           gallery = retreatData.gallery_images;
@@ -58,7 +67,6 @@ export default function RetreatDetails() {
         }
         gallery = gallery.filter((url) => typeof url === 'string' && url.startsWith('http'));
 
-        // Parse teachers
         let teachers = [];
         if (Array.isArray(retreatData.teachers)) {
           teachers = retreatData.teachers.map(teacher => ({
@@ -67,7 +75,6 @@ export default function RetreatDetails() {
           }));
         }
 
-        // Parse FAQs
         let faqs = [];
         if (Array.isArray(retreatData.faqs)) {
           faqs = retreatData.faqs.map(cat => ({
@@ -84,7 +91,6 @@ export default function RetreatDetails() {
           faqs,
         });
 
-        // Fetch reviews
         await fetchReviews();
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -134,13 +140,117 @@ export default function RetreatDetails() {
         .select('id, user_name, rating, review, created_at')
         .single();
       if (error) throw error;
-      setReviews([data, ...reviews]); // Add new review to the top
+      setReviews([data, ...reviews]);
       setShowForm(false);
       setNewRating(5);
       setNewReview('');
     } catch (error) {
       console.error('Error submitting review:', error);
       alert('Failed to submit review. Please try again.');
+    }
+  };
+
+  const handleBookAndPay = async () => {
+    if (!name || !email || !phone) {
+      alert('Please fill all fields');
+      return;
+    }
+
+    try {
+      const price = retreat.price || 1000;
+
+      const { data: booking, error: bookingError } = await supabase
+        .from('bookings')
+        .insert({
+          retreat_id: id,
+          user_name: name,
+          email,
+          phone,
+          payment_status: 'pending',
+          amount: price,
+        })
+        .select()
+        .single();
+
+      if (bookingError) throw bookingError;
+
+      const loaded = await loadRazorpay();
+      if (!loaded) {
+        alert('Failed to load payment gateway. Are you online?');
+        return;
+      }
+
+      const orderRes = await fetch('/api/create-razorpay-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: price * 100,
+          currency: 'INR',
+          receipt: booking.id.toString(),
+        }),
+      });
+
+      const order = await orderRes.json();
+      if (order.error) {
+        throw new Error(order.error);
+      }
+
+      const options = {
+        key: 'rzp_test_cxGOOUFzSyzr48', // Your Razorpay Test Key ID
+        amount: order.amount,
+        currency: order.currency,
+        name: 'Retreat Booking',
+        description: `Booking for ${retreat.title}`,
+        order_id: order.id,
+        handler: async (response) => {
+          try {
+            const verifyRes = await fetch('/api/verify-razorpay-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                bookingId: booking.id,
+              }),
+            });
+
+            const verifyData = await verifyRes.json();
+            if (verifyData.success) {
+              alert('Payment successful! Your booking is confirmed.');
+              setShowBookingForm(false);
+              setName('');
+              setEmail('');
+              setPhone('');
+            } else {
+              alert('Payment verification failed.');
+              await supabase.from('bookings').update({ payment_status: 'failed' }).eq('id', booking.id);
+            }
+          } catch (err) {
+            console.error('Verification error:', err);
+            alert('Error verifying payment.');
+            await supabase.from('bookings').update({ payment_status: 'failed' }).eq('id', booking.id);
+          }
+        },
+        prefill: {
+          name,
+          email,
+          contact: phone,
+        },
+        theme: {
+          color: '#F37254',
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', async () => {
+        alert('Payment failed');
+        await supabase.from('bookings').update({ payment_status: 'failed' }).eq('id', booking.id);
+      });
+      rzp.open();
+    } catch (error) {
+      console.error('Booking error:', error);
+      alert('Failed to initiate booking and payment.');
     }
   };
 
@@ -160,13 +270,12 @@ export default function RetreatDetails() {
       <div className="flex items-center justify-center min-h-screen text-gray-600">
         <div className="text-center">
           <h2 className="text-xl sm:text-2xl font-semibold mb-4">Retreat Not Found</h2>
-          <p className="text-sm sm:text-base">The retreat you are looking for doesnt exist.</p>
+          <p className="text-sm sm:text-base">The retreat you are looking for doesn not exist.</p>
         </div>
       </div>
     );
   }
 
-  // Combine main image + gallery images
   const allImages = [
     ...(retreat.image_url ? [retreat.image_url] : []),
     ...(retreat.gallery_images || []),
@@ -174,13 +283,11 @@ export default function RetreatDetails() {
 
   const mainImageUrl = allImages[0];
 
-  // Carousel navigation
   const handlePrevImage = () =>
     setCurrentImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
   const handleNextImage = () =>
     setCurrentImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
 
-  // Parse included items
   const includedItems = retreat.included
     ? retreat.included
         .split(',')
@@ -212,7 +319,6 @@ export default function RetreatDetails() {
         .slice(0, 5)
     : [];
 
-  // Parse schedule items
   const scheduleItems = retreat.schedule
     ? typeof retreat.schedule === 'string'
       ? retreat.schedule.split('\n').filter((i) => i.trim())
@@ -221,7 +327,6 @@ export default function RetreatDetails() {
       : []
     : [];
 
-  // Toggle FAQ expansion
   const toggleFaq = (categoryIndex, faqIndex) => {
     setExpandedFaqs((prev) => ({
       ...prev,
@@ -231,17 +336,15 @@ export default function RetreatDetails() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
       <div className="bg-gray-50 py-2 sm:py-3 border-b">
         <div className="max-w-6xl mx-auto px-2 sm:px-4">
-          <h1 className="text-sm sm:text-base lg:text-bold text-gray-600">
+          <h1 className="text-sm sm:text-base lg:text-lg text-gray-600">
             Retreat &gt; {retreat.title || 'The Quiet Space'}
           </h1>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-9xl mx-4 sm:mx-6 lg:mx-10 px-2 sm:px-4 py-4 sm:py-6">
+      <div className="max-w-7xl mx-4 sm:mx-6 lg:mx-10 px-2 sm:px-4 py-4 sm:py-6">
         {imageError && (
           <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 text-red-700 rounded-lg text-center font-medium text-sm sm:text-base">
             {imageError}
@@ -249,10 +352,8 @@ export default function RetreatDetails() {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-          {/* Left - Carousel and thumbnails */}
           <div className="space-y-3 sm:space-y-4">
-            {/* Main Image */}
-            <div className="relative w-full h-56 sm:h-72 md:h-96 lg:h-150 rounded-xl overflow-hidden shadow-lg lg:shadow-bold bg-gray-200">
+            <div className="relative w-full h-56 sm:h-72 md:h-96 lg:h-[500px] rounded-xl overflow-hidden shadow-lg bg-gray-200">
               <Image
                 key={currentImageIndex}
                 src={allImages[currentImageIndex] || mainPlaceholder}
@@ -265,13 +366,11 @@ export default function RetreatDetails() {
                 priority={currentImageIndex === 0}
                 unoptimized={true}
               />
-
-              {/* Navigation Arrows */}
               {allImages.length > 1 && (
                 <>
                   <button
                     onClick={handlePrevImage}
-                    className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 bg-white/80 backdrop-blur-sm lg:backdrop-blur-bold rounded-full p-1 sm:p-2 shadow-md lg:shadow-bold hover:bg-white transition-all z-10"
+                    className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 bg-white/80 backdrop-blur-sm rounded-full p-1 sm:p-2 shadow-md hover:bg-white transition-all z-10"
                   >
                     <svg
                       className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600"
@@ -289,7 +388,7 @@ export default function RetreatDetails() {
                   </button>
                   <button
                     onClick={handleNextImage}
-                    className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 bg-white/80 backdrop-blur-sm lg:backdrop-blur-bold rounded-full p-1 sm:p-2 shadow-md lg:shadow-bold hover:bg-white transition-all z-10"
+                    className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 bg-white/80 backdrop-blur-sm rounded-full p-1 sm:p-2 shadow-md hover:bg-white transition-all z-10"
                   >
                     <svg
                       className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600"
@@ -308,14 +407,13 @@ export default function RetreatDetails() {
                 </>
               )}
             </div>
-
-            {/* Thumbnail Images */}
             {allImages.length > 1 && (
-              <div className="flex space-x-2 sm:space-x-10 overflow-x-auto">
+              <div className="flex space-x-2 sm:space-x-4 overflow-x-auto">
                 {allImages.slice(1, 4).map((img, idx) => (
                   <div
                     key={idx}
-                    className="relative w-20 h-14 sm:w-50 sm:h-28 rounded-xl overflow-hidden bg-gray-200 cursor-pointer ring-2 ring-transparent hover:ring-yellow-400 transition-all flex-shrink-0"
+                    className="relative w-20 h-14 sm:w-24 sm:h-16 rounded-xl overflow-hidden bg-gray-200 cursor-pointer ring-2 ring-transparent hover:ring-yellow-400 transition-all flex-shrink-0"
+                    onClick={() => setCurrentImageIndex(idx + 1)}
                   >
                     <Image
                       src={img}
@@ -325,20 +423,16 @@ export default function RetreatDetails() {
                       style={{ objectFit: 'cover' }}
                       className="rounded-xl"
                       onError={(e) => (e.currentTarget.src = mainPlaceholder)}
-                      onClick={() => setCurrentImageIndex(idx + 1)}
                     />
                   </div>
                 ))}
               </div>
             )}
           </div>
-
-          {/* Right - Details */}
           <div className="space-y-4 sm:space-y-6">
-            {/* Description */}
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1 sm:mb-1">Description</h2>
-              <div className="text-gray-600 text-sm sm:text-base lg:text-xl leading-relaxed">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1 sm:mb-2">Description</h2>
+              <div className="text-gray-600 text-sm sm:text-base leading-relaxed">
                 {retreat.description
                   ? retreat.description.split('\n').map((p, idx) => (
                       <p key={idx} className="mb-2">{p.trim() || <br />}</p>
@@ -346,82 +440,124 @@ export default function RetreatDetails() {
                   : <p>No description available.</p>}
               </div>
             </div>
-
-            {/* What's included */}
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-3">What is included</h2>
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">What is Included</h2>
               {includedItems.length > 0 ? (
-                <div className="flex flex-wrap justify-between gap-3 sm:gap-3 lg:gap-0">
+                <div className="flex flex-wrap gap-4">
                   {includedItems.map((item, idx) => (
-                    <div key={idx} className="flex flex-col items-center text-center w-12 sm:w-14 lg:w-14">
-                      <div className="bg-gray-50 border border-gray-200 rounded-full p-0 sm:p-3 w-7 h-7 sm:w-9 sm:h-9 lg:w-9 lg:h-9 flex items-center justify-center hover:bg-gray-100 transition-colors">
-                        <span className="text-base sm:text-xl">{item.icon}</span>
+                    <div key={idx} className="flex flex-col items-center text-center w-16 sm:w-20">
+                      <div className="bg-gray-50 border border-gray-200 rounded-full p-2 sm:p-3 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center hover:bg-gray-100 transition-colors">
+                        <span className="text-lg sm:text-xl">{item.icon}</span>
                       </div>
-                      <p className="text-xs sm:text-xs lg:text-xs text-gray-700 font-medium leading-tight max-w-16 sm:max-w-20 lg:max-w-20 text-center">
-                        {item.label}
-                      </p>
+                      <p className="text-xs sm:text-sm text-gray-700 font-medium mt-1">{item.label}</p>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-500 text-sm sm:text-base lg:text-bold">What is included information will be available soon.</p>
+                <p className="text-gray-500 text-sm sm:text-base">What is included information will be available soon.</p>
               )}
             </div>
-
-            {/* Schedule */}
+            <div>
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">Price</h2>
+              <p className="text-gray-600 text-sm sm:text-base">
+                ₹{retreat.price ? retreat.price.toFixed(2) : '1000.00'} per person
+              </p>
+            </div>
             <div>
               <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">Schedule</h2>
               {scheduleItems.length > 0 ? (
                 <div className="space-y-1">
                   {scheduleItems.map((item, idx) => (
-                    <p key={idx} className="text-gray-600 text-sm sm:text-base lg:text-bold">{item.trim()}</p>
+                    <p key={idx} className="text-gray-600 text-sm sm:text-base">{item.trim()}</p>
                   ))}
                 </div>
               ) : (
                 <div className="space-y-1">
-                  <p className="text-gray-600 text-sm sm:text-base lg:text-bold">Day 1 — Arrival & Orientation</p>
-                  <p className="text-gray-600 text-sm sm:text-base lg:text-bold">Day 2 — Deepening Practice</p>
-                  <p className="text-gray-600 text-sm sm:text-base lg:text-bold">Day 3 — Immersion</p>
+                  <p className="text-gray-600 text-sm sm:text-base">Day 1 — Arrival & Orientation</p>
+                  <p className="text-gray-600 text-sm sm:text-base">Day 2 — Deepening Practice</p>
+                  <p className="text-gray-600 text-sm sm:text-base">Day 3 — Immersion</p>
                 </div>
               )}
             </div>
-
-            {/* Book Button */}
             <div className="pt-2">
-              <button className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base lg:text-base font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all">
-                Book your spot
+              <button
+                onClick={() => setShowBookingForm(true)}
+                className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+              >
+                Book Your Spot
               </button>
             </div>
+            {showBookingForm && (
+              <div className="bg-gray-50 p-4 sm:p-6 rounded-xl border border-gray-200 space-y-3 sm:space-y-4 mt-4">
+                <h3 className="text-lg font-semibold text-gray-900">Book Your Spot</h3>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Full Name"
+                  className="w-full border border-gray-300 rounded-lg p-2 sm:p-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  required
+                />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email Address"
+                  className="w-full border border-gray-300 rounded-lg p-2 sm:p-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  required
+                />
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Phone Number"
+                  className="w-full border border-gray-300 rounded-lg p-2 sm:p-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  required
+                />
+                <div className="text-sm sm:text-base text-gray-600">
+                  Total: ₹{retreat.price ? retreat.price.toFixed(2) : '1000.00'}
+                </div>
+                <button
+                  onClick={handleBookAndPay}
+                  className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+                >
+                  Pay and Book
+                </button>
+                <button
+                  onClick={() => setShowBookingForm(false)}
+                  className="w-full bg-gray-200 text-gray-700 py-2 sm:py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base font-semibold"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
           </div>
         </div>
-
-        {/* Bottom Tabs Section */}
         <div className="mt-6 sm:mt-8 border-t border-gray-200 pt-4 sm:pt-6">
-          {/* Tab Headers */}
           <div className="flex flex-row flex-nowrap border-b border-gray-200 mb-4 sm:mb-6 gap-2 sm:gap-4 overflow-x-auto">
             <button
               onClick={() => setActiveTab('teachers')}
-              className={`px-4 sm:px-6 lg:px-46 py-2 sm:py-3 text-sm sm:text-base lg:text-bold font-medium border-b-2 transition-colors ${
+              className={`px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium border-b-2 transition-colors ${
                 activeTab === 'teachers'
                   ? 'border-yellow-500 text-yellow-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
-              Teacher bios
+              Teacher Bios
             </button>
             <button
               onClick={() => setActiveTab('reviews')}
-              className={`px-4 sm:px-6 lg:px-48 py-2 sm:py-3 text-sm sm:text-base lg:text-bold font-medium border-b-2 transition-colors ${
+              className={`px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium border-b-2 transition-colors ${
                 activeTab === 'reviews'
                   ? 'border-yellow-500 text-yellow-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
-              Rating and reviews
+              Ratings and Reviews
             </button>
             <button
               onClick={() => setActiveTab('faqs')}
-              className={`px-4 sm:px-6 lg:px-48 py-2 sm:py-3 text-sm sm:text-base lg:text-bold font-medium border-b-2 transition-colors ${
+              className={`px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium border-b-2 transition-colors ${
                 activeTab === 'faqs'
                   ? 'border-yellow-500 text-yellow-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -430,8 +566,6 @@ export default function RetreatDetails() {
               FAQs
             </button>
           </div>
-
-          {/* Tab Content */}
           <div className="space-y-4 sm:space-y-6">
             {activeTab === 'teachers' && (
               <div className="space-y-4">
@@ -439,9 +573,9 @@ export default function RetreatDetails() {
                   retreat.teachers.map((teacher, index) => (
                     <div
                       key={index}
-                      className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-4 lg:space-x-10 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+                      className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
                     >
-                      <div className="w-full sm:w-20 lg:w-60 h-full sm:h-full rounded-xl overflow-hidden bg-gray-200 flex-shrink-0">
+                      <div className="w-full sm:w-20 h-20 sm:h-20 rounded-xl overflow-hidden bg-gray-200 flex-shrink-0">
                         <Image
                           src={teacher.image_url || teacherPlaceholder}
                           alt={teacher.name}
@@ -451,14 +585,14 @@ export default function RetreatDetails() {
                           onError={(e) => (e.currentTarget.src = teacherPlaceholder)}
                         />
                       </div>
-                      <div className="flex-1 p-4 sm:p-6 lg:p-6">
+                      <div className="flex-1 p-4 sm:p-0">
                         <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">{teacher.name}</h4>
-                        <p className="text-sm sm:text-base lg:text-bold text-yellow-600 font-medium mb-2">{teacher.title}</p>
+                        <p className="text-sm sm:text-base text-yellow-600 font-medium mb-2">{teacher.title}</p>
                         <div className="flex text-yellow-400 mb-2 text-sm sm:text-base">
                           {'★'.repeat(4)}{'☆'.repeat(1)}
                         </div>
-                        <p className="text-sm sm:text-base lg:text-bold text-gray-600 mb-2 leading-relaxed">{teacher.description}</p>
-                        <p className="text-sm sm:text-base lg:text-bold text-gray-800">
+                        <p className="text-sm sm:text-base text-gray-600 mb-2 leading-relaxed">{teacher.description}</p>
+                        <p className="text-sm sm:text-base text-gray-800">
                           <span className="font-medium">Focus areas:</span> {teacher.focus_areas}
                         </p>
                       </div>
@@ -471,46 +605,42 @@ export default function RetreatDetails() {
                 )}
               </div>
             )}
-
             {activeTab === 'reviews' && (
               <div className="space-y-6">
-                {/* Top bar with Add Review and Filters */}
                 <div className="flex flex-wrap items-center justify-between mb-2 gap-2">
-                  <div className="flex gap-8 items-center w-full sm:w-auto">
+                  <div className="flex gap-4 items-center w-full sm:w-auto">
                     <button
                       onClick={() => setShowForm(!showForm)}
-                      className="bg-white border border-gray-200 rounded-xl px-6 py-2 font-semibold text-gray-900 hover:bg-gray-50 transition-all shadow-sm"
+                      className="bg-white border border-gray-200 rounded-xl px-4 sm:px-6 py-2 font-semibold text-gray-900 hover:bg-gray-50 transition-all shadow-sm"
                     >
-                      {showForm ? 'Cancel' : 'Add review'}
+                      {showForm ? 'Cancel' : 'Add Review'}
                     </button>
                     <button
-                      className="bg-white border border-gray-200 rounded-xl px-6 py-2 font-semibold text-gray-900 flex items-center gap-2 hover:bg-gray-50 transition-all shadow-sm"
+                      className="bg-white border border-gray-200 rounded-xl px-4 sm:px-6 py-2 font-semibold text-gray-900 flex items-center gap-2 hover:bg-gray-50 transition-all shadow-sm"
                       onClick={() => setShowFilters((prev) => !prev)}
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7h18M6 7V5a2 2 0 012-2h8a2 2 0 012 2v2m-6 4v6m0 0l-2-2m2 2l2-2" /></svg>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7h18M6 7V5a2 2 0 012-2h8a2 2 0 012 2v2m-6 4v6m0 0l-2-2m2 2l2-2" />
+                      </svg>
                       Filters
                     </button>
                   </div>
                 </div>
-
-                {/* Filters dropdown/modal */}
-                {typeof setShowFilters !== 'undefined' && showFilters && (
+                {showFilters && (
                   <div className="mb-4 p-4 bg-white border border-gray-200 rounded-xl shadow-sm flex flex-col gap-4">
                     <label className="font-semibold text-gray-700">Filter by rating:</label>
                     <select
                       className="border border-gray-300 rounded-lg p-2 w-40"
                       value={filterRating || ''}
-                      onChange={e => setFilterRating(Number(e.target.value))}
+                      onChange={(e) => setFilterRating(Number(e.target.value))}
                     >
                       <option value="">All Ratings</option>
-                      {[5,4,3,2,1].map(r => (
+                      {[5, 4, 3, 2, 1].map((r) => (
                         <option key={r} value={r}>{r} Stars</option>
                       ))}
                     </select>
                   </div>
                 )}
-
-                {/* Add Review Form */}
                 {showForm && (
                   <div className="bg-gray-50 p-4 sm:p-6 rounded-xl border border-gray-200 space-y-3 sm:space-y-4">
                     {user ? (
@@ -550,12 +680,10 @@ export default function RetreatDetails() {
                     </button>
                   </div>
                 )}
-
-                {/* Reviews Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
                   {reviews.length > 0 ? (
                     reviews
-                      .filter(rev => !filterRating || rev.rating === filterRating)
+                      .filter((rev) => !filterRating || rev.rating === filterRating)
                       .map((rev, idx) => (
                         <div
                           key={idx}
@@ -564,18 +692,33 @@ export default function RetreatDetails() {
                           <div className="flex items-center gap-2 mb-2">
                             <div className="flex text-yellow-500 text-base">
                               {[...Array(Math.floor(rev.rating))].map((_, i) => (
-                                <svg key={i} className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.462a1 1 0 00-.364 1.118l1.287 3.967c.3.921-.755 1.688-1.54 1.118l-3.388-2.462a1 1 0 00-1.175 0l-3.388 2.462c-.784.57-1.838-.197-1.539-1.118l1.287-3.967a1 1 0 00-.364-1.118L2.174 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z" /></svg>
+                                <svg key={i} className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.462a1 1 0 00-.364 1.118l1.287 3.967c.3.921-.755 1.688-1.54 1.118l-3.388-2.462a1 1 0 00-1.175 0l-3.388 2.462c-.784.57-1.838-.197-1.539-1.118l1.287-3.967a1 1 0 00-.364-1.118L2.174 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z" />
+                                </svg>
                               ))}
                               {rev.rating % 1 !== 0 && (
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><defs><linearGradient id="half"><stop offset="50%" stopColor="#FBBF24"/><stop offset="50%" stopColor="#E5E7EB"/></linearGradient></defs><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.462a1 1 0 00-.364 1.118l1.287 3.967c.3.921-.755 1.688-1.54 1.118l-3.388-2.462a1 1 0 00-1.175 0l-3.388 2.462c-.784.57-1.838-.197-1.539-1.118l1.287-3.967a1 1 0 00-.364-1.118L2.174 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z" fill="url(#half)"/></svg>
+                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                  <defs>
+                                    <linearGradient id="half">
+                                      <stop offset="50%" stopColor="#FBBF24" />
+                                      <stop offset="50%" stopColor="#E5E7EB" />
+                                    </linearGradient>
+                                  </defs>
+                                  <path
+                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.462a1 1 0 00-.364 1.118l1.287 3.967c.3.921-.755 1.688-1.54 1.118l-3.388-2.462a1 1 0 00-1.175 0l-3.388 2.462c-.784.57-1.838-.197-1.539-1.118l1.287-3.967a1 1 0 00-.364-1.118L2.174 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z"
+                                    fill="url(#half)"
+                                  />
+                                </svg>
                               )}
                             </div>
                             <span className="font-semibold text-gray-900 ml-2">{rev.user_name}</span>
                             <span className="ml-1 text-green-600 text-lg" title="Verified">●</span>
-                            <span className="ml-auto text-gray-400 cursor-pointer" title="More options">&#x2026;</span>
+                            <span className="ml-auto text-gray-400 cursor-pointer" title="More options">…</span>
                           </div>
                           <div className="text-gray-700 text-base mb-2">{rev.review}</div>
-                          <div className="text-xs text-gray-500 mt-auto">Posted on {new Date(rev.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                          <div className="text-xs text-gray-500 mt-auto">
+                            Posted on {new Date(rev.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+                          </div>
                         </div>
                       ))
                   ) : (
@@ -586,7 +729,6 @@ export default function RetreatDetails() {
                 </div>
               </div>
             )}
-
             {activeTab === 'faqs' && (
               <div className="space-y-6 sm:space-y-8">
                 {retreat.faqs && retreat.faqs.length > 0 ? (
@@ -598,9 +740,9 @@ export default function RetreatDetails() {
                           <div key={faqIndex} className="border-b border-gray-100 last:border-b-0">
                             <button
                               onClick={() => toggleFaq(catIndex, faqIndex)}
-                              className="w-full text-left flex justify-between items-center py-3 sm:py-4 hover:bg-gray-50 px-2 -mx-2 rounded transition-colors"
+                              className="w-full text-left flex justify-between items-center py-3 sm:py-4 hover:bg-gray-50 px-2 rounded transition-colors"
                             >
-                              <span className="text-sm sm:text-base lg:text-bold text-gray-700 font-medium pr-4">{faq.question}</span>
+                              <span className="text-sm sm:text-base text-gray-700 font-medium pr-4">{faq.question}</span>
                               <span className="text-gray-400 flex-shrink-0">
                                 {expandedFaqs[`${catIndex}-${faqIndex}`] ? (
                                   <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -614,8 +756,8 @@ export default function RetreatDetails() {
                               </span>
                             </button>
                             {expandedFaqs[`${catIndex}-${faqIndex}`] && (
-                              <div className="pb-3 sm:pb-4 px-2 -mx-2">
-                                <p className="text-sm sm:text-base lg:text-bold text-gray-600 leading-relaxed">
+                              <div className="pb-3 sm:pb-4 px-2">
+                                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                                   {faq.answer || 'Answer not provided.'}
                                 </p>
                               </div>

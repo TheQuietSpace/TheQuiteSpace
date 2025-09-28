@@ -6,6 +6,9 @@ import RetreatsComponent from "@/app/components/RetreatsComponent";
 import WorkshopComponent from "@/app/components/WorkshopComponent";
 import BlogsManagement from "@/app/components/BlogsManagement";
 import AdminInquiries from "@/app/components/AdminInquiries";
+import Dashboardnew from "@/app/components/admindashboard";
+import ParticipantsList from "@/app/components/participants";
+import InstructorsList from "@/app/components/InstructorsList";
 import { 
   LayoutDashboard, 
   Calendar, 
@@ -201,15 +204,15 @@ export default function AdminDashboard() {
   const renderComponent = () => {
     switch (activeComponent) {
       case "Dashboard":
-        return <DashboardComponent user={user} />;
+        return <Dashboardnew />;
       case "Retreats":
         return <RetreatsComponent />;
       case "Workshop":
         return <WorkshopComponent />;
       case "Participants":
-        return <PlaceholderComponent title="Participants Management" />;
+        return <ParticipantsList/>;
       case "Instructors":
-        return <PlaceholderComponent title="Instructors Management" />;
+        return <InstructorsList/>;
       case "Content":
         return <BlogsManagement/>;
       case "Inquiries":

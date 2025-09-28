@@ -11,6 +11,7 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
   const [description, setDescription] = useState(initialData?.description || '');
   const [schedule, setSchedule] = useState(initialData?.schedule || '');
   const [included, setIncluded] = useState(initialData?.included || '');
+  const [price, setPrice] = useState(initialData?.price || ''); // <-- NEW
   const [image, setImage] = useState(null); // for new upload
   const [gallery, setGallery] = useState([]); // for new upload
   const [imagePreview, setImagePreview] = useState(initialData?.image_url || null);
@@ -41,6 +42,7 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
     if (!description.trim()) return 'Description is required.';
     if (!schedule.trim()) return 'Schedule is required.';
     if (!included.trim()) return 'Included is required.';
+    if (price === '' || isNaN(Number(price))) return 'Price is required and must be a number.'; // <-- NEW
     if (new Date(date) < new Date()) return 'Date cannot be in the past.';
     if (teachers.some(t => !t.name.trim() || !t.title.trim() || !t.description.trim() || !t.focus_areas.trim())) {
       return 'All teacher fields are required if added.';
@@ -113,7 +115,7 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
         // Update existing retreat
         const { error: updateError } = await supabase.from('retreats').update({
           title, date, location, description, schedule, image_url: imageUrl, included, gallery_images: galleryUrls,
-          teachers: teachersData, faqs: faqsData
+          teachers: teachersData, faqs: faqsData, price: price !== '' ? Number(price) : null // <-- NEW
         }).eq('id', initialData.id);
         if (updateError) throw new Error(updateError.message);
         setSuccess(true);
@@ -122,7 +124,7 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
         // Insert new retreat
         const { error: insertError } = await supabase.from('retreats').insert({
           title, date, location, description, schedule, image_url: imageUrl, included, gallery_images: galleryUrls,
-          teachers: teachersData, faqs: faqsData
+          teachers: teachersData, faqs: faqsData, price: price !== '' ? Number(price) : null // <-- NEW
         });
         if (insertError) throw new Error(insertError.message);
         setSuccess(true);
@@ -143,6 +145,7 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
     setDescription(initialData?.description || '');
     setSchedule(initialData?.schedule || '');
     setIncluded(initialData?.included || '');
+    setPrice(initialData?.price || ''); // <-- NEW
     setImage(null);
     setGallery([]);
     setImagePreview(initialData?.image_url || null);
@@ -200,6 +203,16 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
             <input type="text" placeholder="Retreat Title" value={title} onChange={e=>setTitle(e.target.value)} className="w-full px-4 py-2 border rounded-lg" required />
             <input type="date" ref={dateInputRef} value={date} onChange={e=>setDate(e.target.value)} className="w-full px-4 py-2 border rounded-lg" required />
             <input type="text" placeholder="Location" value={location} onChange={e=>setLocation(e.target.value)} className="w-full px-4 py-2 border rounded-lg" required />
+            <input
+              type="number"
+              placeholder="Price"
+              value={price}
+              onChange={e => setPrice(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg"
+              min="0"
+              step="0.01"
+              required
+            />
             <textarea placeholder="Description" value={description} onChange={e=>setDescription(e.target.value)} className="w-full px-4 py-2 border rounded-lg" rows={4} required/>
             <textarea placeholder="Schedule" value={schedule} onChange={e=>setSchedule(e.target.value)} className="w-full px-4 py-2 border rounded-lg" rows={4} required/>
             <textarea placeholder="What's Included" value={included} onChange={e=>setIncluded(e.target.value)} className="w-full px-4 py-2 border rounded-lg" rows={3} required/>
