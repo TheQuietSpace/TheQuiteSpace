@@ -165,7 +165,7 @@ const PrivacyPolicyPage = () => {
             <div className="space-y-8">
               <div>
                 <p className="text-gray-700 leading-relaxed">
-                  These Terms and Conditions constitute a legally binding agreement between you ("you") and The Quiet Space Limited ("We" or "Us") for your registration to participate in our wellness retreats, workshops, or any related services. By accessing our website <strong>www.thequietspace.org</strong> ("Site") or providing personal information through this Site, you agree to the collection, storage, use, and disclosure of your information as outlined in our Privacy Policy.
+                  These Terms and Conditions constitute a legally binding agreement between you (&quot;you&quot;) and The Quiet Space Limited (&quot;We&quot; or &quot;Us&quot;) for your registration to participate in our wellness retreats, workshops, or any related services. By accessing our website <strong>www.thequietspace.org</strong> (&quot;Site&quot;) or providing personal information through this Site, you agree to the collection, storage, use, and disclosure of your information as outlined in our Privacy Policy.
                 </p>
               </div>
 
@@ -173,7 +173,7 @@ const PrivacyPolicyPage = () => {
               <div>
                 <h3 className="text-2xl font-semibold text-gray-900 mb-4">1. Personal Information</h3>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  "Personal Information" includes any data that can identify you, such as your name, email address, telephone number, shipping/billing address, credit card information, or any other relevant details. We collect personal information voluntarily provided by individuals seeking our services and ensure it remains confidential and protected from unauthorised access.
+                  &quot;Personal Information&quot; includes any data that can identify you, such as your name, email address, telephone number, shipping/billing address, credit card information, or any other relevant details. We collect personal information voluntarily provided by individuals seeking our services and ensure it remains confidential and protected from unauthorised access.
                 </p>
                 <p className="text-gray-700">
                   Before registering, please ensure all provided information is accurate, up-to-date, and complete. By registering or using our website, you confirm that you have read, understood, and agreed to these Terms and Conditions.

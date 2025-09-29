@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 const Footer = () => {
   return (
@@ -97,27 +98,27 @@ const Footer = () => {
         {/* Bottom Links */}
         <div className="border-t border-white border-opacity-20 mt-8 pt-6">
           <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-sm">
-            <a href="/" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
+            <Link href="/" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
               Home
-            </a>
-            <a href="/about" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
+            </Link>
+            <Link href="/about" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
               About Us
-            </a>
-            <a href="/privacy-policy" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
+            </Link>
+            <Link href="/privacy-policy" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
               Privacy Policy
-            </a>
-            <a href="/legal" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
+            </Link>
+            <Link href="/legal" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
               Legal
-            </a>
-            <a href="/sitemap" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
+            </Link>
+            <Link href="/sitemap" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
               Sitemap
-            </a>
-            <a href="/faq" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
+            </Link>
+            <Link href="/faq" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
               FAQ
-            </a>
-            <a href="/apply-membership" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
+            </Link>
+            <Link href="/apply-membership" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
               Apply for Membership
-            </a>
+            </Link>
           </div>
         </div>
       </div>
