@@ -97,17 +97,26 @@ const Footer = () => {
         {/* Bottom Links */}
         <div className="border-t border-white border-opacity-20 mt-8 pt-6">
           <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-sm">
-            <a href="/privacy" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
-              Privacy Policy
+            <a href="/" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
+              Home
             </a>
-            <a href="/terms" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
-              Terms of Use
+            <a href="/about" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
+              About Us
+            </a>
+            <a href="/privacy-policy" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
+              Privacy Policy
             </a>
             <a href="/legal" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
               Legal
             </a>
             <a href="/sitemap" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
-              Site Map
+              Sitemap
+            </a>
+            <a href="/faq" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
+              FAQ
+            </a>
+            <a href="/apply-membership" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
+              Apply for Membership
             </a>
           </div>
         </div>
