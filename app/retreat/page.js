@@ -79,9 +79,9 @@ const RetreatPage = () => {
         {/* Filters overlaid on Hero - Hidden on mobile */}
         <div className="absolute top-140 left-0 right-0 z-10 px-4 hidden sm:block">
           <div className="container mx-auto">
-            <div className="bg-white p-4 rounded-2xl shadow-md flex flex-wrap items-center justify-center gap-4 sm:gap-6 lg:gap-10">
+            <div className="bg-white p-4 rounded-2xl shadow-md flex items-center justify-center gap-4 sm:gap-6 lg:gap-10 flex-nowrap overflow-x-auto scrollbar-hide">
               <select
-                className="border border-gray-300 p-2 rounded-xl text-gray-500 w-full sm:w-40 md:w-48 lg:w-52"
+                className="border border-gray-300 p-2 rounded-xl text-gray-500 flex-shrink-0 sm:w-40 md:w-48 lg:w-52"
                 value={locationFilter}
                 onChange={(e) => {
                   setLocationFilter(e.target.value);
@@ -94,7 +94,7 @@ const RetreatPage = () => {
                 ))}
               </select>
               <select
-                className="border border-gray-300 p-2 rounded-xl text-gray-500 w-full sm:w-40 md:w-48 lg:w-52"
+                className="border border-gray-300 p-2 rounded-xl text-gray-500 flex-shrink-0 sm:w-40 md:w-48 lg:w-52"
                 value={themeFilter}
                 onChange={(e) => {
                   setThemeFilter(e.target.value);
@@ -107,7 +107,7 @@ const RetreatPage = () => {
                 ))}
               </select>
               <select
-                className="border border-gray-300 p-2 rounded-xl text-gray-500 w-full sm:w-40 md:w-48 lg:w-52"
+                className="border border-gray-300 p-2 rounded-xl text-gray-500 flex-shrink-0 sm:w-40 md:w-48 lg:w-52"
                 value={dateFilter}
                 onChange={(e) => {
                   setDateFilter(e.target.value);
@@ -119,18 +119,33 @@ const RetreatPage = () => {
                   <option key={date} value={date}>{date}</option>
                 ))}
               </select>
-              <div className="relative w-full sm:w-64 md:w-72 lg:w-140">
+              <div className="relative flex-shrink-0 sm:w-64 md:w-72 lg:w-80">
                 <input
                   type="text"
                   placeholder="Search"
-                  className="border border-gray-300 p-2 rounded-xl pl-8 w-full"
+                  className="border border-gray-300 p-2 rounded-xl pl-3 pr-10 w-full min-w-0"
                   value={search}
                   onChange={(e) => {
                     setSearch(e.target.value);
                     setUpcomingScroll(0);
                   }}
                 />
-                <span className="absolute left-2 top-2 text-gray-400">🔍</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-gray-400"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="11" cy="11" r="7" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                </span>
               </div>
             </div>
           </div>
@@ -139,7 +154,7 @@ const RetreatPage = () => {
 
 
       {/* Content Section - Upcoming Retreats (Horizontal Scroll) */}
-      <div className="container mx-auto px-2 sm:px-4 py-6 -mt-2">
+      <div className="container bg-[#faf8f5] mx-auto px-2 sm:px-4 py-6 -mt-2">
         <h2 className="text-2xl sm:text-3xl mt-30 font-semibold  sm:mt-12 text-gray-800 mb-8 text-center">
           Upcoming Retreats
         </h2>
@@ -183,9 +198,10 @@ const RetreatPage = () => {
                           <span className="font-medium">Location:</span> {retreat.location || 'N/A'}
                         </p>
                       </div>
-                      <Link 
-                        href={`/retreat/${retreat.id}`} 
-                        className="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-2 sm:py-2.5 sm:px-4 rounded-md border border-gray-300 transition-colors duration-200 text-center"
+                      <Link
+                        href={`/retreat/${retreat.id}`}
+                        className="block w-full bg-white text-black border border-black font-medium py-2 px-2 sm:py-2.5 sm:px-4 rounded-md hover:bg-black hover:text-white active:bg-black active:text-white transition-colors duration-200 text-center"
+                        aria-label={`View details for ${retreat.title}`}
                       >
                         View details
                       </Link>
@@ -252,9 +268,10 @@ const RetreatPage = () => {
                           <span className="font-medium">Location:</span> {retreat.location || 'N/A'}
                         </p>
                       </div>
-                      <Link 
-                        href={`/retreat/${retreat.id}`} 
-                        className="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-2 sm:py-2.5 sm:px-4 rounded-md border border-gray-300 transition-colors duration-200 text-center"
+                      <Link
+                        href={`/retreat/${retreat.id}`}
+                        className="block w-full bg-white text-black border border-black font-medium py-2 px-2 sm:py-2.5 sm:px-4 rounded-md hover:bg-black hover:text-white active:bg-black active:text-white transition-colors duration-200 text-center"
+                        aria-label={`View details for ${retreat.title}`}
                       >
                         View details
                       </Link>

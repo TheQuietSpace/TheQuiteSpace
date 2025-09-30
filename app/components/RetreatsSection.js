@@ -60,7 +60,10 @@ export default function RetreatsSection() {
                     <p className="text-sm text-gray-600 mb-1">Date: {retreat.date}</p>
                     <p className="text-sm text-gray-600 mb-4">Location: {retreat.location}</p>
                     <Link href={`/retreat/${retreat.id}`}>
-                      <button className="w-full bg-blue-100 text-blue-700 py-2 px-4 rounded-md hover:bg-blue-200 transition duration-200">
+                      <button
+                        className="w-full bg-white text-black border border-black py-2 px-4 rounded-md hover:bg-black hover:text-white active:bg-black active:text-white focus:outline-none transition-colors duration-200"
+                        aria-label={`View details for ${retreat.title}`}
+                      >
                         View Details
                       </button>
                     </Link>

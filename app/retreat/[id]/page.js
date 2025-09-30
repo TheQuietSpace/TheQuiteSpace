@@ -336,13 +336,7 @@ export default function RetreatDetails() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="bg-gray-50 py-2 sm:py-3 border-b">
-        <div className="max-w-6xl mx-auto px-2 sm:px-4">
-          <h1 className="text-sm sm:text-base lg:text-lg text-gray-600">
-            Retreat &gt; {retreat.title || 'The Quiet Space'}
-          </h1>
-        </div>
-      </div>
+  {/* breadcrumb moved into image container (top-right) */}
 
       <div className="max-w-7xl mx-4 sm:mx-6 lg:mx-10 px-2 sm:px-4 py-4 sm:py-6">
         {imageError && (
@@ -353,6 +347,11 @@ export default function RetreatDetails() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           <div className="space-y-3 sm:space-y-4">
+            <div className="mb-2">
+              <div className="text-sm text-gray-600">
+                Retreat &gt; {retreat.title || 'The Quiet Space'}
+              </div>
+            </div>
             <div className="relative w-full h-56 sm:h-72 md:h-96 lg:h-[500px] rounded-xl overflow-hidden shadow-lg bg-gray-200">
               <Image
                 key={currentImageIndex}
@@ -429,10 +428,17 @@ export default function RetreatDetails() {
               </div>
             )}
           </div>
-          <div className="space-y-4 sm:space-y-6">
+          <div className="flex flex-col">
+            <div className="mb-2">
+              <div className="text-sm text-gray-600 invisible">
+                Retreat &gt; {retreat.title || 'The Quiet Space'}
+              </div>
+            </div>
+            <div className="bg-white overflow-y-auto h-[calc(14rem+0.75rem+3.5rem)] sm:h-[calc(18rem+1rem+4rem)] md:h-[calc(24rem+1rem+4rem)] lg:h-[calc(500px+1rem+4rem)]">
+              <div className="space-y-4 sm:space-y-6">
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1 sm:mb-2">Description</h2>
-              <div className="text-gray-600 text-sm sm:text-base leading-relaxed">
+              <h2 className="text-lg font-semibold text-gray-900 mb-1 sm:mb-2">Description</h2>
+              <div className="text-gray-600 text-sm leading-relaxed">
                 {retreat.description
                   ? retreat.description.split('\n').map((p, idx) => (
                       <p key={idx} className="mb-2">{p.trim() || <br />}</p>
@@ -441,7 +447,7 @@ export default function RetreatDetails() {
               </div>
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">What is Included</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-2 sm:mb-3">What is Included</h2>
               {includedItems.length > 0 ? (
                 <div className="flex flex-wrap gap-4">
                   {includedItems.map((item, idx) => (
@@ -449,7 +455,7 @@ export default function RetreatDetails() {
                       <div className="bg-gray-50 border border-gray-200 rounded-full p-2 sm:p-3 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center hover:bg-gray-100 transition-colors">
                         <span className="text-lg sm:text-xl">{item.icon}</span>
                       </div>
-                      <p className="text-xs sm:text-sm text-gray-700 font-medium mt-1">{item.label}</p>
+                      <p className="text-xs text-gray-700 font-medium mt-1">{item.label}</p>
                     </div>
                   ))}
                 </div>
@@ -458,13 +464,13 @@ export default function RetreatDetails() {
               )}
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">Price</h2>
-              <p className="text-gray-600 text-sm sm:text-base">
+              <h2 className="text-lg font-semibold text-gray-900 mb-2 sm:mb-3">Price</h2>
+              <p className="text-gray-600 text-sm">
                 ₹{retreat.price ? retreat.price.toFixed(2) : '1000.00'} per person
               </p>
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">Schedule</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-2 sm:mb-3">Schedule</h2>
               {scheduleItems.length > 0 ? (
                 <div className="space-y-1">
                   {scheduleItems.map((item, idx) => (
@@ -473,9 +479,9 @@ export default function RetreatDetails() {
                 </div>
               ) : (
                 <div className="space-y-1">
-                  <p className="text-gray-600 text-sm sm:text-base">Day 1 — Arrival & Orientation</p>
-                  <p className="text-gray-600 text-sm sm:text-base">Day 2 — Deepening Practice</p>
-                  <p className="text-gray-600 text-sm sm:text-base">Day 3 — Immersion</p>
+                  <p className="text-gray-600 text-sm">Day 1 — Arrival & Orientation</p>
+                  <p className="text-gray-600 text-sm">Day 2 — Deepening Practice</p>
+                  <p className="text-gray-600 text-sm">Day 3 — Immersion</p>
                 </div>
               )}
             </div>
@@ -532,6 +538,8 @@ export default function RetreatDetails() {
               </div>
             )}
           </div>
+            </div>
+          </div>
         </div>
         <div className="mt-6 sm:mt-8 border-t border-gray-200 pt-4 sm:pt-6">
           <div className="flex flex-row flex-nowrap border-b border-gray-200 mb-4 sm:mb-6 gap-2 sm:gap-4 overflow-x-auto">
@@ -566,33 +574,33 @@ export default function RetreatDetails() {
               FAQs
             </button>
           </div>
-          <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-4 sm:space-y-6 flex flex-col self-stretch h-full overflow-y-auto pr-2">
             {activeTab === 'teachers' && (
               <div className="space-y-4">
                 {retreat.teachers && retreat.teachers.length > 0 ? (
                   retreat.teachers.map((teacher, index) => (
                     <div
                       key={index}
-                      className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+                      className="flex bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
                     >
-                      <div className="w-full sm:w-20 h-20 sm:h-20 rounded-xl overflow-hidden bg-gray-200 flex-shrink-0">
+                      <div className="w-1/4 h-32 bg-gray-200 flex-shrink-0">
                         <Image
                           src={teacher.image_url || teacherPlaceholder}
                           alt={teacher.name}
-                          width={80}
-                          height={80}
+                          width={120}
+                          height={128}
                           className="w-full h-full object-cover"
                           onError={(e) => (e.currentTarget.src = teacherPlaceholder)}
                         />
                       </div>
-                      <div className="flex-1 p-4 sm:p-0">
-                        <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">{teacher.name}</h4>
-                        <p className="text-sm sm:text-base text-yellow-600 font-medium mb-2">{teacher.title}</p>
-                        <div className="flex text-yellow-400 mb-2 text-sm sm:text-base">
+                      <div className="flex-1 p-4">
+                        <h4 className="text-base font-semibold text-gray-900 mb-1">{teacher.name}</h4>
+                        <p className="text-sm text-yellow-600 font-medium mb-2">{teacher.title}</p>
+                        <div className="flex text-yellow-400 mb-2 text-sm">
                           {'★'.repeat(4)}{'☆'.repeat(1)}
                         </div>
-                        <p className="text-sm sm:text-base text-gray-600 mb-2 leading-relaxed">{teacher.description}</p>
-                        <p className="text-sm sm:text-base text-gray-800">
+                        <p className="text-sm text-gray-600 mb-2 leading-relaxed">{teacher.description}</p>
+                        <p className="text-sm text-gray-800">
                           <span className="font-medium">Focus areas:</span> {teacher.focus_areas}
                         </p>
                       </div>
