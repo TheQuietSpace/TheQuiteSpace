@@ -147,25 +147,28 @@ const AboutSections = () => {
   return (
     <div className="w-full">
       {/* Hero Section */}
-      <section className="h-[50vh] w-full overflow-hidden">
-        {/* Background Image */}
+      <section className="relative h-[50vh] min-h-[320px] w-full overflow-hidden">
         <div className="absolute inset-0">
           <div
-            className="w-full h-130  sm:w-42 sm:h-42 lg:w-full lg:h-150 bg-cover bg-center bg-no-repeat"
+            className="w-full h-full bg-cover bg-center bg-no-repeat"
             style={{
-              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/Frame 1.png')`,
+              backgroundImage: `linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35)), url('/Frame 1.png')`,
             }}
           />
         </div>
+        {/* Optional future hero content container */}
+        {/* <div className="relative z-10 flex h-full items-center justify-center px-4 text-white">
+          <h1 className="text-3xl sm:text-4xl font-semibold">Workshops</h1>
+        </div> */}
       </section>
 
       {/* Key Highlights Section */}
-      <section className="py-12 px-4 sm:px-6 mt-30 text-center bg-white">
-        <h2 className="text-4xl font-semibold mb-10">Key Highlights</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
+      <section className="relative z-10 py-12 px-4 sm:px-6 md:py-16 text-center bg-white">
+        <h2 className="text-3xl sm:text-4xl font-semibold mb-8 sm:mb-10">Key Highlights</h2>
+        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
           {highlights.map((item, idx) => (
             <div key={idx} className="flex flex-col items-center">
-              <div className="w-40 h-40 sm:w-74 sm:h-74 rounded-full mt-5 overflow-hidden shadow-lg mb-4">
+              <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full mt-4 sm:mt-5 overflow-hidden shadow-lg mb-4 shrink-0">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -174,8 +177,8 @@ const AboutSections = () => {
                   className="object-cover w-full h-full"
                 />
               </div>
-              <h3 className="text-2xl font-semibold">{item.title}</h3>
-              <p className="text-sm text-gray-600 mt-1">{item.description}</p>
+              <h3 className="text-xl sm:text-2xl font-semibold">{item.title}</h3>
+              <p className="text-sm text-gray-600 mt-1 max-w-[220px] sm:max-w-none">{item.description}</p>
             </div>
           ))}
         </div>
@@ -185,7 +188,7 @@ const AboutSections = () => {
       <section className="py-12 px-2 sm:px-6">
         <div className="p-2 sm:p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-4xl font-semibold text-center flex-1">Upcoming Workshops</h2>
+            <h2 className="text-3xl font-semibold text-center flex-1">Upcoming Workshops</h2>
             <button className="border border-gray-400 text-gray-900 py-2 px-4 rounded-lg font-medium hover:bg-gray-100 transition-all duration-200 ml-4">
               View All
             </button>
@@ -197,7 +200,7 @@ const AboutSections = () => {
               {workshops.map((workshop) => (
                 <div
                   key={workshop.id}
-                  className="bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col md:flex-row items-stretch w-[85vw] sm:w-[80vw] md:w-[650px] h-auto md:h-80 flex-shrink-0 hover:scale-105 transition-transform duration-300 snap-start"
+                  className="bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col md:flex-row items-stretch w-[85vw] sm:w-[80vw] md:w-[640px] flex-shrink-0 hover:scale-[1.02] transition-transform duration-300 snap-start"
                 >
                   {/* Image Section */}
                   <div className="w-full md:w-2/5 flex items-center justify-center p-2 md:p-3">
@@ -206,18 +209,18 @@ const AboutSections = () => {
                         src={workshop.image_url}
                         alt={workshop.name}
                         width={400}
-                        height={160}
-                        className="rounded-xl object-cover w-full h-40 md:h-64 md:w-full"
+                        height={250}
+                        className="rounded-xl object-cover w-full h-44 md:h-full md:min-h-[240px] max-h-[300px]"
                         unoptimized={true}
                       />
                     ) : (
-                      <div className="w-full h-40 md:h-64 bg-gray-100 flex items-center justify-center rounded-xl text-gray-400">
+                      <div className="w-full h-44 md:min-h-[240px] bg-gray-100 flex items-center justify-center rounded-xl text-gray-400">
                         <ImageIcon className="w-12 h-12" />
                       </div>
                     )}
                   </div>
                   {/* Details Section */}
-                  <div className="flex-1 flex flex-col justify-between px-4 py-1 md:py-6 md:px-6">
+                  <div className="flex-1 flex flex-col justify-between px-4 py-2 md:py-5 md:px-6">
                     <div>
                       <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1 md:mb-2 line-clamp-2">{workshop.name}</h3>
                       <div className="text-gray-700 text-sm md:text-base mb-2">
@@ -240,10 +243,10 @@ const AboutSections = () => {
         </div>
       </section>
 
-      {/* Popular Workshops Section (now at the end) */}
-      <section className="py-12 md:py-22 px-2 sm:px-8 bg-white">
+      {/* Popular Workshops Section */}
+      <section className="py-12 md:py-20 px-2 sm:px-8 bg-white">
         <div className="flex justify-between items-center mb-6">
-            <h2 className="text-4xl font-semibold text-center flex-1">Popular Workshops</h2>
+            <h2 className="text-3xl font-semibold text-center flex-1">Popular Workshops</h2>
             <button className="border border-gray-400 text-gray-900 py-2 px-4 rounded-lg font-medium hover:bg-gray-100 transition-all duration-200 ml-4">
               View All
             </button>
@@ -288,9 +291,9 @@ const AboutSections = () => {
               {popularWorkshops.map((workshop) => (
                 <div
                   key={workshop.id}
-                  className="min-w-[320px] max-w-xs flex-shrink-0 bg-white rounded-2xl shadow-lg border border-gray-200 p-4 flex flex-col"
+                  className="min-w-[270px] sm:min-w-[300px] max-w-xs flex-shrink-0 bg-white rounded-2xl shadow-lg border border-gray-200 p-4 flex flex-col"
                 >
-                  <div className="w-full h-48 rounded-xl overflow-hidden mb-4 flex items-center justify-center">
+                  <div className="w-full h-44 sm:h-48 rounded-xl overflow-hidden mb-4 flex items-center justify-center">
                     {workshop.image_url ? (
                       <Image
                         src={workshop.image_url}
