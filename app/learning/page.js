@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image'; // Import Next.js Image component
+import Image from 'next/image';
 import { supabase } from '@/lib/supabse';
 
 const AboutSections = () => {
@@ -95,20 +95,15 @@ const AboutSections = () => {
     };
   }, [isModalOpen]);
 
-  // Function to calculate time ago
+  // Function to calculate time ago (show in hours)
   const timeAgo = (dateString) => {
     const date = new Date(dateString);
-    const now = new Date('2025-09-24T12:27:00+05:30'); // 01:27 PM IST, September 24, 2025
+    const now = new Date();
     const diffInMs = now - date;
-    const diffInSeconds = Math.floor(diffInMs / 1000);
-    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
-    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-    if (diffInDays > 0) return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
-    if (diffInHours > 0) return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
-    if (diffInMinutes > 0) return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
-    return `${diffInSeconds} second${diffInSeconds > 1 ? 's' : ''} ago`;
+    if (diffInMs <= 0) return '0 hours ago';
+    const hours = Math.floor(diffInMs / (1000 * 60 * 60));
+    if (hours < 1) return 'Less than 1 hour ago';
+    return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
   };
 
   // Handle opening modal
@@ -140,139 +135,176 @@ const AboutSections = () => {
     </div>
   );
 
+  // Updated BlogCard component for horizontal layout with text left, image right
+  const BlogCard = ({ blog, onReadMore }) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    
+    return (
+      <div className="bg-white rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
+        <div className="flex flex-col sm:flex-row h-full">
+          {/* Left Content Section */}
+          <div className="flex-1 p-6 lg:p-8 flex flex-col justify-between order-2 sm:order-1">
+            {/* Title */}
+            <h2 className="text-xl font-bold text-gray-900 mb-4 leading-tight hover:text-amber-600 transition-colors duration-300 line-clamp-2">
+              {blog.title}
+            </h2>
+
+            {/* Time and Menu */}
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-gray-400 text-sm">{timeAgo(blog.created_at)}</span>
+              
+              <div className="relative">
+                <button 
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <div className="flex gap-1">
+                    <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
+                    <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
+                    <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
+                  </div>
+                </button>
+                
+                {isMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-10">
+                    <button className="w-full text-left px-3 py-2 hover:bg-gray-100 text-gray-700 text-sm">
+                      Share
+                    </button>
+                    <button className="w-full text-left px-3 py-2 hover:bg-gray-100 text-gray-700 text-sm">
+                      Save
+                    </button>
+                    <button className="w-full text-left px-3 py-2 hover:bg-gray-100 text-gray-700 text-sm">
+                      Report
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Excerpt */}
+            <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3 flex-grow">
+              {blog.content}
+            </p>
+
+            {/* Read More Button */}
+            <button 
+              onClick={() => onReadMore(blog)}
+              className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-2 group mt-auto"
+            >
+              Read More
+              <svg 
+                className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Right Image Section */}
+          <div className="sm:w-2/5 relative h-48 sm:h-auto overflow-hidden order-1 sm:order-2">
+            <Image
+              src={blog.image_url}
+              alt={blog.title}
+              fill
+              className="object-cover group-hover:scale-110 transition-transform duration-700 rounded-t-3xl sm:rounded-l-none sm:rounded-r-3xl"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="w-full  bg-white">
-      {/* Enhanced Hero Section */}
-      <section className=" h-[60vh] sm:h-[50vh] w-full overflow-hidden">
+    <div className="w-full bg-white">
+      {/* Enhanced Hero Section with visible content */}
+      <section className="relative h-[50vh] sm:h-[60vh] lg:h-[70vh] w-full overflow-hidden">
         <div className="absolute inset-0">
           <div
-            className="w-full h-150 bg-cover bg-center bg-no-repeat transform scale-105 transition-transform duration-1000 ease-out"
+            className="w-full h-full bg-cover bg-center bg-no-repeat transform scale-105 transition-transform duration-1000 ease-out"
             style={{
-              backgroundImage: `linear-gradient(135deg, rgba(181, 155, 76, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%), url('/Frame 1410119435.png')`,
+              backgroundImage: `url('/Frame 1410119435.png')`,
             }}
           />
+          <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/60" />
         </div>
-    
       </section>
 
-      {/* Enhanced Blogs Section */}
-      <section className="w-full py-16 sm:py-24 mt-25  bg-gradient-to-br from-gray-50 to-amber-50/30">
+      {/* Enhanced Blogs Section with 2x2 grid */}
+      <section id="latest-blogs" className="w-full bg-[#faf8f5] py-12 sm:py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-              Latest <span className="text-amber-600">Blogs</span>
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl font-semibold text-gray-900 mb-4 sm:mb-6">
+              Blogs
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-amber-600 mx-auto rounded-full"></div>
-            <p className="text-lg text-gray-600 mt-6 max-w-2xl mx-auto">
-              Dive into our collection of thoughtful reflections and practical insights
-            </p>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-            {paginatedBlogs.map((blog, index) => (
-              <div key={blog.id} className={`group transform hover:-translate-y-2 transition-all duration-500 ${index % 2 === 0 ? 'lg:mt-0' : 'lg:mt-8'}`}>
-                <div className="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
-                  <div className="flex flex-col sm:flex-row">
-                    {/* Enhanced Content Side */}
-                    <div className="flex-1 p-8 sm:p-10 flex flex-col justify-between order-2 sm:order-1">
-                      <div>
-                        <div className="flex items-center mb-4">
-                          <div className="w-2 h-2 bg-amber-500 rounded-full mr-3"></div>
-                          <span className="text-sm font-medium text-amber-600 uppercase tracking-wide">
-                            {timeAgo(blog.created_at)}
-                          </span>
-                        </div>
-                        <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-amber-600 transition-colors duration-300">
-                          {blog.title}
-                        </h3>
-                        <p className="text-gray-600 text-base leading-relaxed line-clamp-4 mb-6">
-                          {blog.content}
-                        </p>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <button
-                          className="group/btn inline-flex items-center space-x-3 text-amber-600 hover:text-amber-700 font-semibold transition-all duration-300"
-                          onClick={() => handleReadMore(blog)}
-                        >
-                          <span className="text-lg">Continue Reading</span>
-                          <div className="w-10 h-10 rounded-full bg-amber-100 group-hover/btn:bg-amber-200 flex items-center justify-center transition-all duration-300 group-hover/btn:scale-110">
-                            <svg className="w-5 h-5 transform group-hover/btn:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                          </div>
-                        </button>
-                      </div>
-                    </div>
-                    
-                    {/* Enhanced Image Side */}
-                    <div className="w-full sm:w-64 h-64 sm:h-auto relative order-1 sm:order-2 overflow-hidden">
-                      <Image
-                        src={blog.image_url}
-                        alt={blog.title}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent group-hover:from-black/30 transition-all duration-500"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          {/* Enhanced Pagination for Blogs */}
-          {totalPagesBlogs > 1 && (
-            <div className="flex justify-center mt-16">
-              <div className="flex items-center space-x-4 bg-white rounded-2xl p-2 shadow-lg border border-gray-100">
+          {/* 2x2 Grid Layout */}
+          <div className="relative md:px-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+              {paginatedBlogs.map((blog) => (
+                <BlogCard
+                  key={blog.id}
+                  blog={blog}
+                  onReadMore={handleReadMore}
+                />
+              ))}
+            </div>
+
+            {totalPagesBlogs > 1 && (
+              <>
+                {/* Left arrow - visible on md+ and sits inside the left padding (no overlap) */}
                 <button
                   onClick={() => setCurrentPageBlogs((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPageBlogs === 1}
-                  className="px-6 py-3 rounded-xl font-medium transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 text-gray-700"
+                  aria-label="Previous blogs"
+                  className={
+                    `hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-10 h-10 rounded-full
+                     transition-colors duration-150 ${currentPageBlogs === 1 ? 'opacity-40 pointer-events-none' : 'bg-gray-100 hover:bg-gray-200'}`
+                  }
                 >
-                  Previous
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
                 </button>
-                <div className="flex items-center space-x-2">
-                  {Array.from({ length: totalPagesBlogs }, (_, i) => i + 1).map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPageBlogs(page)}
-                      className={`w-12 h-12 rounded-xl font-semibold transition-all duration-300 ${
-                        currentPageBlogs === page
-                          ? 'bg-amber-600 text-white shadow-lg'
-                          : 'text-gray-500 hover:bg-gray-100'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                </div>
+
+                {/* Right arrow - visible on md+ and sits inside the right padding (no overlap) */}
                 <button
                   onClick={() => setCurrentPageBlogs((prev) => Math.min(prev + 1, totalPagesBlogs))}
                   disabled={currentPageBlogs === totalPagesBlogs}
-                  className="px-6 py-3 rounded-xl font-medium transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 text-gray-700"
+                  aria-label="Next blogs"
+                  className={
+                    `hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-10 h-10 rounded-full
+                     transition-colors duration-150 ${currentPageBlogs === totalPagesBlogs ? 'opacity-40 pointer-events-none' : 'bg-gray-100 hover:bg-gray-200'}`
+                  }
                 >
-                  Next
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </button>
-              </div>
-            </div>
-          )}
+              </>
+            )}
+          </div>
         </div>
       </section>
 
       {/* Enhanced Whispers from the Journey Section */}
-      <section className="w-full py-20 sm:py-28 bg-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 to-transparent"></div>
+      <section className="w-full py-16 sm:py-20 lg:py-28 bg-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-white to-transparent"></div>
         <div className="max-w-7xl w-full mx-auto relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-20 px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-center gap-12 sm:gap-16 lg:gap-20 px-4 sm:px-6 lg:px-8">
             {/* Enhanced Images Grid */}
-            <div className="grid grid-cols-2 gap-6 lg:gap-8 w-full max-w-lg lg:max-w-xl">
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-8 w-full max-w-md sm:max-w-lg lg:max-w-xl">
               {[
                 "/full-shot-women-meditating-nature.jpg", 
                 "/participants-practice-yoga-sunrise-tranquil-studio-surrounded-by-nature-panoramic-views.jpg", 
                 "/interior-design-yoga-space.jpg", 
                 "/serene-yoga-retreat-with-practitioners-gracefully-engaged-poses-amidst-tranquil-surroundings-finding-peace-balance-ai-generative-ai.jpg"
               ].map((src, idx) => (
-                <div key={idx} className={`group relative overflow-hidden rounded-3xl shadow-2xl bg-gray-100 aspect-square transform hover:scale-105 transition-all duration-700 ${idx % 2 === 0 ? '' : 'mt-8'}`}>
+                <div key={idx} className={`group relative overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl bg-gray-100 aspect-square transform hover:scale-105 transition-all duration-700 ${idx % 2 === 0 ? '' : 'mt-4 sm:mt-8'}`}>
                   <Image 
                     src={src} 
                     alt="Journey" 
@@ -287,19 +319,19 @@ const AboutSections = () => {
             
             {/* Enhanced Text Content */}
             <div className="flex-1 flex flex-col justify-center items-center lg:items-start text-center lg:text-left max-w-2xl">
-              <div className="mb-6">
-                <span className="inline-block px-4 py-2 bg-amber-100 text-amber-700 font-semibold rounded-full text-sm uppercase tracking-wide">
+              <div className="mb-4 sm:mb-6">
+                <span className="inline-block px-3 sm:px-4 py-2 bg-amber-100 text-amber-700 font-semibold rounded-full text-xs sm:text-sm uppercase tracking-wide">
                   Monthly Reflections
                 </span>
               </div>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-8 leading-tight">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 sm:mb-8 leading-tight">
                 Whispers from the <span className="text-amber-600">Journey</span>
               </h2>
-              <p className="text-gray-700 text-lg sm:text-xl mb-10 leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-xl text-gray-700 mb-8 sm:mb-10 leading-relaxed">
                 Each month, we pause to gather the quiet moments, the lessons from our journeys, and the whispers of stillness carried back from retreat. These reflections and travel diaries are an offering of wisdom and wonder.
               </p>
               <button
-                className="group inline-flex items-center bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold px-10 py-4 rounded-2xl text-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
+                className="group inline-flex items-center bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold px-6 sm:px-8 lg:px-10 py-3 sm:py-4 rounded-2xl text-sm sm:text-base lg:text-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
                 onClick={() => {
                   const el = document.getElementById('featured-articles');
                   if (el) {
@@ -308,7 +340,7 @@ const AboutSections = () => {
                 }}
               >
                 <span>Explore Stories</span>
-                <svg className="w-6 h-6 ml-3 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 ml-2 sm:ml-3 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </button>
@@ -545,7 +577,7 @@ const AboutSections = () => {
                   onClick={closeModal}
                 >
                   <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
@@ -591,7 +623,7 @@ const AboutSections = () => {
                   >
                     <span>Close Article</span>
                     <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
                 </div>

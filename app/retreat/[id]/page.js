@@ -335,7 +335,7 @@ export default function RetreatDetails() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white md:mt-22 mt-12">
   {/* breadcrumb moved into image container (top-right) */}
 
       <div className="max-w-7xl mx-4 sm:mx-6 lg:mx-10 px-2 sm:px-4 py-4 sm:py-6">

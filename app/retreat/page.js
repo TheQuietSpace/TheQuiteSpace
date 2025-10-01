@@ -155,7 +155,7 @@ const RetreatPage = () => {
 
       {/* Content Section - Upcoming Retreats (Horizontal Scroll) */}
       <div className="container bg-[#faf8f5] mx-auto px-2 sm:px-4 py-6 -mt-2">
-        <h2 className="text-2xl sm:text-3xl mt-30 font-semibold  sm:mt-12 text-gray-800 mb-8 text-center">
+        <h2 className="text-2xl sm:text-3xl md:mt-30 mt:22 font-semibold text-gray-800 mb-8 text-center">
           Upcoming Retreats
         </h2>
         <div className="relative">

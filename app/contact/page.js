@@ -43,20 +43,26 @@ const ContactPage = () => {
 
   return (
     <div className='w-full'>
-     <section className="h-[50vh] w-full overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <div
-            className="w-full h-130  sm:w-42 sm:h-42 lg:w-full lg:h-150 bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/gathering-community-members-around-large-circular-table-redwood-forest-dusk-surrounded-by-tall-trees-string-lights-creating-warm-atmosphere-conversation (1).jpg')`,
-            }}
-          />
-        </div>
+      {/* Hero Section (updated for responsiveness + proper flow height) */}
+      <section
+        aria-label="Partner with The Quiet Space"
+        className="relative w-full flex items-center justify-center text-center
+                   min-h-[320px] sm:min-h-[380px] md:min-h-[420px] lg:min-h-[480px]
+                   px-4"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35)), url('/gathering-community-members-around-large-circular-table-redwood-forest-dusk-surrounded-by-tall-trees-string-lights-creating-warm-atmosphere-conversation (1).jpg')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+
       </section>
-      <section className="py-16 md:mt-22 mt-12 bg-white">
+
+      {/* Main Content Section (removed unreliable mt-22 classes) */}
+      <section className="py-16 mt-0 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row items-start justify-between mb-16">
+        <div className="flex flex-col lg:flex-row items-start justify-between mb-12">
           <div className="lg:w-2/5 mb-10 lg:mb-0">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Partner With Us</h2>
             <h3 className="text-2xl font-semibold text-gray-800 mb-4">Share your retreats with the world</h3>
@@ -64,7 +70,7 @@ const ContactPage = () => {
               Partner with The Quiet Space to showcase your retreats, reach global audiences, and grow your community.
             </p>
           </div>
-          <div className="lg:w-2/5">
+          <div className="lg:w-2/5 w-full">
             <div className="bg-white p-8 rounded-2xl shadow-lg">
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
@@ -120,7 +126,7 @@ const ContactPage = () => {
     </section>
     
     {/* Full-width three items section */}
-    <section className="bg-[#FAF8F5] py-12">
+    <section className="bg-[#FAF8F5] py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center">
@@ -215,4 +221,3 @@ const ContactPage = () => {
 }
 
 export default ContactPage
- 
