@@ -53,15 +53,10 @@ const HeroSection = () => {
               Modern wellness retreats and training experiences for global travelers.
             </p>
 
-            <button className="relative inline-flex items-center px-4 xs:px-6 sm:px-8 md:px-10 py-2 xs:py-2.5 sm:py-3 md:py-4 bg-[#C7A961] hover:bg-[#b8985a] text-white font-medium rounded-full transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 text-xs xs:text-sm sm:text-base">
-
-              <button >
-                <Link href="/retreat">
-                  <button className="mr-4 xs:mr-5 sm:mr-6 md:mr-7 text-white">
-                    Explore retreats
-                  </button>
-                </Link>
-              </button>
+            <Link href="/retreat" className="relative inline-flex items-center px-4 xs:px-6 sm:px-8 md:px-10 py-2 xs:py-2.5 sm:py-3 md:py-4 bg-[#C7A961] hover:bg-[#b8985a] text-white font-medium rounded-full transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 text-xs xs:text-sm sm:text-base">
+              <span className="mr-4 xs:mr-5 sm:mr-6 md:mr-7 text-white">
+                Explore retreats
+              </span>
               <div className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-white rounded-full w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center">
                 <svg
                   className="w-4 h-4 xs:w-4 xs:h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 text-[#C7A961]"
@@ -72,7 +67,7 @@ const HeroSection = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14m-7-7l7 7-7 7" />
                 </svg>
               </div>
-            </button>
+            </Link>
           </div>
         </div>
         {/* Mobile: Background image, Desktop: Right side image */}

@@ -41,7 +41,7 @@ const Navbar = () => {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     setUser(null);
-    router.push("/auth");
+    router.push("/signup");
     closeMobileMenu();
   };
 
@@ -49,7 +49,7 @@ const Navbar = () => {
     <nav
       role="navigation"
       aria-label="Main navigation"
-      className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-3xl shadow-sm w-full max-w-360 md:mx-auto mx-2 sticky top-2 z-50"
+      className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-3xl shadow-sm w-full max-w-360 md:mx-auto mx-2 fixed top-2 z-50 left-1/2 transform -translate-x-1/2"
     >
       <div className="m-0 p-0 w-full">
         <div className="px-2 sm:px-6 w-full">
@@ -77,42 +77,42 @@ const Navbar = () => {
             <div className="hidden md:flex items-center justify-end flex-grow space-x-6 pr-4">
               <Link
                 href="/about"
-                className="text-gray-900 font-sans text-sm sm:text-base font-semibold hover:text-amber-700 transition-colors duration-200 px-2 py-1"
+                className="text-gray-900 font-sans text-sm sm:text-base font-semibold hover:text-[#C1A050] transition-colors duration-200 px-2 py-1"
                 onClick={closeMobileMenu}
               >
                 About Us
               </Link>
               <Link
                 href="/retreat"
-                className="text-gray-900 font-sans text-sm sm:text-base font-semibold hover:text-amber-700 transition-colors duration-200 px-2 py-1"
+                className="text-gray-900 font-sans text-sm sm:text-base font-semibold hover:text-[#C1A050] transition-colors duration-200 px-2 py-1"
                 onClick={closeMobileMenu}
               >
                 Retreats
               </Link>
               <Link
                 href="/workshop"
-                className="text-gray-900 font-sans text-sm sm:text-base font-semibold hover:text-amber-700 transition-colors duration-200 px-2 py-1"
+                className="text-gray-900 font-sans text-sm sm:text-base font-semibold hover:text-[#C1A050] transition-colors duration-200 px-2 py-1"
                 onClick={closeMobileMenu}
               >
                 Workshop
               </Link>
               <Link
                 href="/learning"
-                className="text-gray-900 font-sans text-sm sm:text-base font-semibold hover:text-amber-700 transition-colors duration-200 px-2 py-1"
+                className="text-gray-900 font-sans text-sm sm:text-base font-semibold hover:text-[#C1A050] transition-colors duration-200 px-2 py-1"
                 onClick={closeMobileMenu}
               >
                 Membership
               </Link>
               <Link
                 href="/yoga-teacher-training"
-                className="text-gray-900 font-sans text-sm sm:text-base font-semibold hover:text-amber-700 transition-colors duration-200 px-2 py-1"
+                className="text-gray-900 font-sans text-sm sm:text-base font-semibold hover:text-[#C1A050] transition-colors duration-200 px-2 py-1"
                 onClick={closeMobileMenu}
               >
                 Yoga Teacher Training
               </Link>
               <Link
                 href="/contact" 
-                className="text-gray-900 font-sans text-sm sm:text-base font-semibold hover:text-amber-700 transition-colors duration-200 px-2 py-1"
+                className="text-gray-900 font-sans text-sm sm:text-base font-semibold hover:text-[#C1A050] transition-colors duration-200 px-2 py-1"
                 onClick={closeMobileMenu}
               >
                 Contact Us
@@ -126,12 +126,9 @@ const Navbar = () => {
                     height={32}
                     className="rounded-full"
                   />
-                  <span className="text-gray-900 font-sans text-sm sm:text-base font-semibold">
-                    {user.user_metadata.full_name || "User"}
-                  </span>
                   <button
                     onClick={handleSignOut}
-                    className="text-gray-700 hover:text-amber-700 p-1 rounded-md"
+                    className="text-gray-700 hover:text-[#C1A050] p-1 rounded-md"
                     aria-label="Sign out"
                   >
                     <svg
@@ -151,11 +148,11 @@ const Navbar = () => {
                 </div>
               ) : (
                 <Link
-                  href="/auth"
-                  className="flex items-center text-gray-900 font-sans text-sm sm:text-base font-semibold hover:text-amber-700 transition-colors duration-200 px-2 py-1"
+                  href="/signup"
+                  className="flex items-center text-gray-900 font-sans text-sm sm:text-base font-semibold hover:text-[#C1A050] transition-colors duration-200 px-2 py-1"
                   onClick={closeMobileMenu}
                 >
-                  <svg
+                  {/* <svg
                     className="w-5 h-5 mr-1"
                     fill="none"
                     stroke="currentColor"
@@ -167,8 +164,9 @@ const Navbar = () => {
                       strokeWidth="2"
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
-                  </svg>
+                  </svg> */}
                   Sign In
+
                 </Link>
               )}
             </div>
@@ -177,7 +175,7 @@ const Navbar = () => {
             <div className="md:hidden flex items-center  pr-2">
               <button
                 onClick={toggleMobileMenu}
-                className="p-2 text-gray-700 hover:text-amber-700 focus:outline-none focus:text-amber-700 focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 rounded-md"
+                className="p-2 text-gray-700 hover:text-[#C1A050] focus:outline-none focus:text-[#C1A050] focus:ring-2 focus:ring-[#C1A050] focus:ring-offset-2 rounded-md"
                 aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={isMobileMenuOpen}
               >
@@ -229,62 +227,61 @@ const Navbar = () => {
             <div className="px-2 pt-2 mt-6 pb-4 space-y-1 bg-white/95 border-t border-gray-100 rounded-b-3xl w-full">
               <Link
                 href="/about"
-                className="block px-3 py-3 text-gray-700 hover:text-amber-700 hover:bg-amber-50 font-medium text-base rounded-lg transition-colors duration-200"
+                className="block px-3 py-3 text-gray-700 hover:text-[#C1A050] hover:bg-[#C1A050]/10 font-medium text-base rounded-lg transition-colors duration-200"
                 onClick={closeMobileMenu}
               >
                 About
               </Link>
               <Link
                 href="/retreat"
-                className="block px-3 py-3 text-gray-700 hover:text-amber-700 hover:bg-amber-50 font-medium text-base rounded-lg transition-colors duration-200"
+                className="block px-3 py-3 text-gray-700 hover:text-[#C1A050] hover:bg-[#C1A050]/10 font-medium text-base rounded-lg transition-colors duration-200"
                 onClick={closeMobileMenu}
               >
                 Retreat
               </Link>
               <Link
                 href="/workshop"
-                className="block px-3 py-3 text-gray-700 hover:text-amber-700 hover:bg-amber-50 font-medium text-base rounded-lg transition-colors duration-200"
+                className="block px-3 py-3 text-gray-700 hover:text-[#C1A050] hover:bg-[#C1A050]/10 font-medium text-base rounded-lg transition-colors duration-200"
                 onClick={closeMobileMenu}
               >
                 Workshop
               </Link>
               <Link
                 href="/learning"
-                className="block px-3 py-3 text-gray-700 hover:text-amber-700 hover:bg-amber-50 font-medium text-base rounded-lg transition-colors duration-200"
+                className="block px-3 py-3 text-gray-700 hover:text-[#C1A050] hover:bg-[#C1A050]/10 font-medium text-base rounded-lg transition-colors duration-200"
                 onClick={closeMobileMenu}
               >
                 Learning
               </Link>
               <Link
                 href="/contact"
-                className="block px-3 py-3 text-gray-700 hover:text-amber-700 hover:bg-amber-50 font-medium text-base rounded-lg transition-colors duration-200"
+                className="block px-3 py-3 text-gray-700 hover:text-[#C1A050] hover:bg-[#C1A050]/10 font-medium text-base rounded-lg transition-colors duration-200"
                 onClick={closeMobileMenu}
               >
                 Contact
               </Link>
               {user ? (
                 <>
-                  <div className="flex items-center px-3 py-3 text-gray-700 font-medium text-base">
+                  <div className="flex items-center justify-center px-3 py-3">
                     <Image
                       src={user.user_metadata.avatar_url}
                       alt={user.user_metadata.full_name || "User"}
                       width={32}
                       height={32}
-                      className="rounded-full mr-2"
+                      className="rounded-full"
                     />
-                    <span>{user.user_metadata.full_name || "User"}</span>
                   </div>
                   <button
                     onClick={handleSignOut}
-                    className="block w-full text-left px-3 py-3 text-gray-700 hover:text-amber-700 hover:bg-amber-50 font-medium text-base rounded-lg transition-colors duration-200"
+                    className="block w-full text-left px-3 py-3 text-gray-700 hover:text-[#C1A050] hover:bg-[#C1A050]/10 font-medium text-base rounded-lg transition-colors duration-200"
                   >
                     Sign Out
                   </button>
                 </>
               ) : (
                 <Link
-                  href="/auth"
-                  className="block px-3 py-3 text-gray-700 hover:text-amber-700 hover:bg-amber-50 font-medium text-base rounded-lg transition-colors duration-200"
+                  href="/signup"
+                  className="block px-3 py-3 text-gray-700 hover:text-[#C1A050] hover:bg-[#C1A050]/10 font-medium text-base rounded-lg transition-colors duration-200"
                   onClick={closeMobileMenu}
                 >
                   Sign In
