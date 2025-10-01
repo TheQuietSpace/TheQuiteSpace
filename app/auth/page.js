@@ -2,32 +2,31 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { supabase } from '@/lib/supabse';
 
 export default function AuthPage() {
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [user, setUser] = useState(null);
+  const [isSignup, setIsSignup] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    password: ''
+    password: '',
   });
   const router = useRouter();
 
-  // Check for user session and handle OAuth callback
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
       if (user) {
-        router.push('/'); // Redirect to home if logged in
+        router.push('/');
       }
     };
     fetchUser();
 
-    // Listen for auth state changes
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN') {
         setUser(session?.user || null);
@@ -43,32 +42,57 @@ export default function AuthPage() {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = async () => {
+    setErrorMessage('');
+    if (!formData.email || !formData.password) {
+      setErrorMessage('Email and password are required');
+      return;
+    }
+    if (formData.password.length < 6) {
+      setErrorMessage('Password must be at least 6 characters');
+      return;
+    }
+    if (isSignup && (!formData.name || !formData.phone)) {
+      setErrorMessage('Name and phone are required for signup');
+      return;
+    }
     setLoading(true);
-    const { data, error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-      options: {
-        data: {
-          name: formData.name,
-          phone: formData.phone
-        }
+    if (isSignup) {
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: { name: formData.name, phone: formData.phone },
+        },
+      });
+      if (error) {
+        setErrorMessage(error.message);
+        console.error('Signup error:', error.message);
+      } else {
+        setErrorMessage('Account created! Please check your email to verify.');
+        console.log('User created:', data);
       }
-    });
-    
-    if (error) {
-      console.error('Signup error:', error.message);
     } else {
-      console.log('User created:', data);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+      if (error) {
+        setErrorMessage(error.message);
+        console.error('Login error:', error.message);
+      } else {
+        console.log('User logged in:', data);
+      }
     }
     setLoading(false);
   };
 
   const handleGoogleSignIn = async () => {
+    setErrorMessage('');
     setLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -77,36 +101,43 @@ export default function AuthPage() {
       },
     });
     if (error) {
+      setErrorMessage(error.message);
       console.error('Auth error:', error.message);
       setLoading(false);
     }
   };
 
+  const toggleAuthMode = () => {
+    setIsSignup(!isSignup);
+    setFormData({ name: '', email: '', phone: '', password: '' });
+    setErrorMessage('');
+  };
+
   return (
     <div className="min-h-screen flex">
-      {/* Left side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-white pt-24 md:pt-28">
         <div className="w-full max-w-md text-center">
-          <h1 className="text-xl font-bold mb-8">Create Your Account</h1>
-          
+          <h1 className="text-xl font-bold mb-8">
+            {isSignup ? 'Create Your Account' : 'Sign In to Your Account'}
+          </h1>
           <div className="space-y-6 text-left">
-            {/* Name Field */}
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium mb-2">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter your name"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C1A050] focus:border-transparent"
-              />
-            </div>
-
-            {/* Email Field */}
+            {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+            {isSignup && (
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium mb-2">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Enter your name"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C1A050] focus:border-transparent"
+                />
+              </div>
+            )}
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2">
                 Email
@@ -121,24 +152,22 @@ export default function AuthPage() {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C1A050] focus:border-transparent"
               />
             </div>
-
-            {/* Phone Number Field */}
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium mb-2">
-                Phone number
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="Enter your phone number"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C1A050] focus:border-transparent"
-              />
-            </div>
-
-            {/* Password Field */}
+            {isSignup && (
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium mb-2">
+                  Phone number
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="Enter your phone number"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C1A050] focus:border-transparent"
+                />
+              </div>
+            )}
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-2">
                 Password
@@ -153,25 +182,22 @@ export default function AuthPage() {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C1A050] focus:border-transparent"
               />
             </div>
-
-            {/* Submit Button */}
             <button
               onClick={handleSubmit}
               disabled={loading}
               className="w-full bg-[#C1A050] hover:bg-[#C1A050] text-white font-medium py-3 rounded-lg transition-colors disabled:opacity-50"
             >
-              {loading ? 'Creating account...' : 'Create account'}
+              {loading ? (isSignup ? 'Creating account...' : 'Signing in...') : (isSignup ? 'Create account' : 'Sign in')}
             </button>
-
-            {/* Sign In Link */}
             <p className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <Link href="/login" className="text-[#C1A050] hover:text-[#C1A050] font-medium">
-                Sign in
-              </Link>
+              {isSignup ? 'Already have an account?' : "Don't have an account?"}{' '}
+              <button
+                onClick={toggleAuthMode}
+                className="text-[#C1A050] hover:text-[#C1A050] font-medium"
+              >
+                {isSignup ? 'Sign in' : 'Create account'}
+              </button>
             </p>
-
-            {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-300"></div>
@@ -180,8 +206,6 @@ export default function AuthPage() {
                 <span className="px-2 bg-white text-gray-500">OR</span>
               </div>
             </div>
-
-            {/* Google Sign In Button */}
             <button
               onClick={handleGoogleSignIn}
               disabled={loading}
@@ -190,7 +214,7 @@ export default function AuthPage() {
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  d="M22.56 12.25c0-.78-.07-1.53-.20-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                 />
                 <path
                   fill="#34A853"
@@ -210,8 +234,6 @@ export default function AuthPage() {
           </div>
         </div>
       </div>
-
-      {/* Right side - Image */}
       <div className="hidden lg:block lg:w-1/2 relative">
         <img
           src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80"

@@ -1,6 +1,11 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const RetreatPage = () => {
   const [retreats, setRetreats] = useState([]);
@@ -13,6 +18,30 @@ const RetreatPage = () => {
   const [popularScroll, setPopularScroll] = useState(0);
   const [filterOptions, setFilterOptions] = useState({ locations: [], themes: [], dates: [] });
   const retreatsPerView = 3;
+  const [testimonials, setTestimonials] = useState([]);
+
+
+  // Fetch retreat testimonials
+  useEffect(() => {
+    async function fetchTestimonials() {
+      try {
+        const { data, error } = await supabase
+          .from('testimonials')
+          .select('*')
+          .eq('category', 'Retreat')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        setTestimonials(data);
+      } catch (error) {
+        console.error('Error fetching testimonials:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTestimonials();
+  }, []);
 
   useEffect(() => {
     const fetchRetreats = async () => {
@@ -291,6 +320,39 @@ const RetreatPage = () => {
           </button>
         </div>
       </div>
+      <section className="py-12 bg-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl font-bold text-center mb-8">Retreat Testimonials</h2>
+        {loading ? (
+          <p className="text-center">Loading testimonials...</p>
+        ) : (
+          <div className="flex overflow-x-auto space-x-6 pb-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+            {testimonials.map((testimonial) => (
+              <div
+                key={testimonial.id}
+                className="min-w-[300px] max-w-[300px] bg-white p-6 rounded-lg shadow-md"
+              >
+                <div className="flex items-center mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <svg
+                      key={i}
+                      className="w-5 h-5 text-yellow-400"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.15c.969 0 1.371 1.24.588 1.81l-3.357 2.44a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.357-2.44a1 1 0 00-1.175 0l-3.357 2.44c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.524 9.397c-.783-.57-.38-1.81.588-1.81h4.15a1 1 0 00.95-.69l1.286-3.97z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-gray-600 mb-4">{testimonial.testimonial}</p>
+                <p className="font-semibold">{testimonial.name}</p>
+                <p className="text-gray-500">{testimonial.location}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
     </div>
   );
 };

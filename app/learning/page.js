@@ -15,56 +15,7 @@ const AboutSections = () => {
   const itemsPerPage = 4;
 
   // Dummy testimonials data
-  const testimonials = [
-    {
-      id: 1,
-      name: "Lorri Warf",
-      role: "UX Designer",
-      image: "/Frame 4316.png",
-      testimonial: "Professional Partner - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor non sit sed magna pharetra in amet porta enim.",
-      rating: 5
-    },
-    {
-      id: 2,
-      name: "David Elson",
-      role: "Developer",
-      image: "/Frame 4316.png",
-      testimonial: "Incredible Experience - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor non sit sed magna pharetra in amet porta enim.",
-      rating: 5
-    },
-    {
-      id: 3,
-      name: "Ricky Smith",
-      role: "Developer",
-      image: "/Frame 4316.png",
-      testimonial: "Dependable & Responsive - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor non sit sed magna pharetra in amet porta enim.",
-      rating: 5
-    },
-     {
-      id: 4,
-      name: "Lorri Warf",
-      role: "UX Designer",
-      image: "/Frame 4316.png",
-      testimonial: "Professional Partner - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor non sit sed magna pharetra in amet porta enim.",
-      rating: 5
-    },
-     {
-      id: 5,
-      name: "Lorri Warf",
-      role: "UX Designer",
-      image: "/Frame 4316.png",
-      testimonial: "Professional Partner - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor non sit sed magna pharetra in amet porta enim.",
-      rating: 5
-    },
-     {
-      id: 6,
-      name: "Lorri Warf",
-      role: "UX Designer",
-      image: "/Frame 4316.png",
-      testimonial: "Professional Partner - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor non sit sed magna pharetra in amet porta enim.",
-      rating: 5
-    },
-  ];
+ 
 
   // Fetch blogs and articles
   useEffect(() => {
@@ -458,86 +409,7 @@ const AboutSections = () => {
         </div>
       </section>
 
-      {/* Enhanced Our Client Speaks Section - Moved to Last */}
-    <section className="w-full py-20 sm:py-28 bg-gradient-to-br from-amber-50 to-orange-50 relative overflow-hidden">
-    <div className="absolute inset-0">
-      <div className="absolute inset-0 bg-gradient-to-r from-amber-100/30 to-transparent"></div>
-    </div>
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-      <div className="text-center mb-16">
-        <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-          Our Clients <span className="text-amber-600">Speak</span>
-        </h2>
-        <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-amber-600 mx-auto rounded-full"></div>
-        <p className="text-lg text-gray-600 mt-6 max-w-2xl mx-auto">
-          Hear from those who have experienced transformation through our journeys
-        </p>
-      </div>
-      
-      <div className="relative">
-        <div className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory space-x-8 pb-8" id="testimonialContainer">
-          {testimonials.map((testimonial, index) => (
-            <div key={testimonial.id} className="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 snap-center transform hover:-translate-y-3 transition-all duration-500">
-              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 relative overflow-hidden group">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-amber-600"></div>
-                
-                <div className="absolute top-6 right-6 opacity-10 group-hover:opacity-20 transition-opacity duration-300">
-                  <svg className="w-12 h-12 text-amber-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
-                  </svg>
-                </div>
-                
-                <div className="flex items-center mb-6">
-                  <div className="w-16 h-16 rounded-full overflow-hidden mr-4 ring-4 ring-amber-100">
-                    <Image
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                      width={64}
-                      height={64}
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">{testimonial.name}</h3>
-                    <p className="text-amber-600 font-medium">{testimonial.role}</p>
-                  </div>
-                </div>
-                
-                <div className="flex mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                  ))}
-                </div>
-                
-                <p className="text-gray-700 leading-relaxed text-base">
-                  {testimonial.testimonial}
-                </p>
-                
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        <div className="flex justify-center mt-6 space-x-2">
-          {testimonials.map((_, index) => (
-            <button
-              key={index}
-              className="w-3 h-3 rounded-full bg-gray-300 hover:bg-amber-400 focus:bg-amber-600 transition-colors duration-300"
-              onClick={() => {
-                const container = document.getElementById('testimonialContainer');
-                const scrollWidth = container.scrollWidth / testimonials.length;
-                container.scrollTo({ left: index * scrollWidth, behavior: 'smooth' });
-              }}
-              aria-label={`Go to slide ${index + 1}`}
-            ></button>
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
+    
 
       {/* Enhanced Modal */}
       {isModalOpen && selectedItem && (

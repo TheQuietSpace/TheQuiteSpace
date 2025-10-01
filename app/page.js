@@ -3,7 +3,7 @@ import React from 'react'
 import Image from 'next/image'
 import { useState } from 'react'
 import RetreatsSection from './components/RetreatsSection';
-import TestimonialsSection from './components/TestimonialsSection';
+
 import Link from 'next/link';
 
 const HeroSection = () => {
@@ -254,7 +254,7 @@ const HeroSection = () => {
         </div>
       </section>
       
-      <TestimonialsSection />
+      
     </div>
   )
 }

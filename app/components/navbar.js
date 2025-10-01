@@ -148,7 +148,7 @@ const Navbar = () => {
                 </div>
               ) : (
                 <Link
-                  href="/signup"
+                  href="/auth"
                   className="flex items-center text-gray-900 font-sans text-sm xl:text-base font-semibold hover:text-[#C1A050] transition-colors duration-200 px-1 xl:px-2 py-1 whitespace-nowrap"
                   onClick={closeMobileMenu}
                 >
