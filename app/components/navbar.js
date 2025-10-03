@@ -41,7 +41,7 @@ const Navbar = () => {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     setUser(null);
-    router.push("/signup");
+    router.push("/auth");
     closeMobileMenu();
   };
 
