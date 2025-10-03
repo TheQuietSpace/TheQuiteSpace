@@ -27,6 +27,20 @@ export default function RetreatDetails() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [bookingType, setBookingType] = useState("retreat");
+  const [accommodation, setAccommodation] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [bookingFormData, setBookingFormData] = useState({
+    wellnessProgram: '',
+    destination: '',
+    fullName: '',
+    numberOfPerson: '',
+    phoneNumber: '',
+    email: '',
+    date: '',
+    country: ''
+  });
 
   const mainPlaceholder = 'https://via.placeholder.com/800x500?text=Main+Image+Not+Found';
   const teacherPlaceholder = 'https://via.placeholder.com/150x150?text=Teacher+Image+Not+Found';
@@ -252,6 +266,24 @@ export default function RetreatDetails() {
       console.error('Booking error:', error);
       alert('Failed to initiate booking and payment.');
     }
+  };
+
+  const handleBookingFormSubmit = (e) => {
+    e.preventDefault();
+    if (!agreedToTerms) {
+      alert('Please agree to the terms and conditions');
+      return;
+    }
+    // Handle form submission
+    console.log('Booking form submitted', { bookingType, accommodation, ...bookingFormData });
+    setShowBookingModal(false);
+  };
+
+  const handleInputChange = (field, value) => {
+    setBookingFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   if (loading) {
@@ -487,56 +519,12 @@ export default function RetreatDetails() {
             </div>
             <div className="pt-2">
               <button
-                onClick={() => setShowBookingForm(true)}
-                className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+                onClick={() => setShowBookingModal(true)}
+                className="w-full bg-[#c1a050] hover:from-yellow-500 hover:to-yellow-600 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
               >
-                Book Your Spot
+                Register Now
               </button>
             </div>
-            {showBookingForm && (
-              <div className="bg-gray-50 p-4 sm:p-6 rounded-xl border border-gray-200 space-y-3 sm:space-y-4 mt-4">
-                <h3 className="text-lg font-semibold text-gray-900">Book Your Spot</h3>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Full Name"
-                  className="w-full border border-gray-300 rounded-lg p-2 sm:p-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                  required
-                />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email Address"
-                  className="w-full border border-gray-300 rounded-lg p-2 sm:p-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                  required
-                />
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="Phone Number"
-                  className="w-full border border-gray-300 rounded-lg p-2 sm:p-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                  required
-                />
-                <div className="text-sm sm:text-base text-gray-600">
-                  Total: ₹{retreat.price ? retreat.price.toFixed(2) : '1000.00'}
-                </div>
-                <button
-                  onClick={handleBookAndPay}
-                  className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
-                >
-                  Pay and Book
-                </button>
-                <button
-                  onClick={() => setShowBookingForm(false)}
-                  className="w-full bg-gray-200 text-gray-700 py-2 sm:py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base font-semibold"
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
           </div>
             </div>
           </div>
@@ -785,6 +773,260 @@ export default function RetreatDetails() {
           </div>
         </div>
       </div>
+
+      {/* Booking Modal */}
+      {showBookingModal && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 p-4">
+          <div className="w-full max-w-4xl mx-auto bg-white p-8 rounded-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-8">
+              <h1 className="text-2xl font-semibold">Book your spot</h1>
+              <button 
+                type="button" 
+                onClick={() => setShowBookingModal(false)}
+                className="text-gray-500 hover:text-gray-700" 
+                aria-label="Close"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <form onSubmit={handleBookingFormSubmit} className="space-y-6">
+              {/* Booking Type Radio Buttons */}
+              <div className="flex justify-end gap-6">
+                <div className="flex gap-6">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      id="retreat"
+                      name="bookingType"
+                      value="retreat"
+                      checked={bookingType === "retreat"}
+                      onChange={(e) => setBookingType(e.target.value)}
+                      className="w-4 h-4 text-[#c1a050] border-gray-300 focus:ring-[#c1a050]"
+                    />
+                    <label htmlFor="retreat" className="font-normal cursor-pointer">
+                      Retreat
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      id="workshop"
+                      name="bookingType"
+                      value="workshop"
+                      checked={bookingType === "workshop"}
+                      onChange={(e) => setBookingType(e.target.value)}
+                      className="w-4 h-4 text-[#c1a050] border-gray-300 focus:ring-[#c1a050]"
+                    />
+                    <label htmlFor="workshop" className="font-normal cursor-pointer">
+                      Workshop
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Wellness Program */}
+              <div className="space-y-2">
+                <label htmlFor="wellness-program" className="text-base font-bold block">
+                  Wellness program
+                </label>
+                <select
+                  id="wellness-program"
+                  value={bookingFormData.wellnessProgram}
+                  onChange={(e) => handleInputChange('wellnessProgram', e.target.value)}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c1a050] focus:border-transparent"
+                >
+                  <option value="">Select</option>
+                  <option value="yoga">Yoga Retreat</option>
+                  <option value="meditation">Meditation Program</option>
+                  <option value="detox">Detox Program</option>
+                </select>
+              </div>
+
+              {/* Destination */}
+              <div className="space-y-2">
+                <label htmlFor="destination" className="text-base font-bold block">
+                  Destination
+                </label>
+                <select
+                  id="destination"
+                  value={bookingFormData.destination}
+                  onChange={(e) => handleInputChange('destination', e.target.value)}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c1a050] focus:border-transparent"
+                >
+                  <option value="">Select</option>
+                  <option value="bali">Bali, Indonesia</option>
+                  <option value="thailand">Chiang Mai, Thailand</option>
+                  <option value="india">Rishikesh, India</option>
+                </select>
+              </div>
+
+              {/* Accommodation Options */}
+              <div className="space-y-3">
+                <label className="text-base font-bold block">Accommodation options</label>
+                <div className="flex flex-wrap gap-6">
+                  {['single', 'double', 'triple', 'non-residential', 'online'].map((option) => (
+                    <div key={option} className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        id={option}
+                        name="accommodation"
+                        value={option}
+                        checked={accommodation === option}
+                        onChange={(e) => setAccommodation(e.target.value)}
+                        className="w-4 h-4 text-[#c1a050] border-gray-300 focus:ring-[#c1a050]"
+                      />
+                      <label htmlFor={option} className="font-normal cursor-pointer capitalize">
+                        {option.replace('-', ' ')}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Full Name and Number of Person */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label htmlFor="full-name" className="text-base font-bold block">
+                    Full name
+                  </label>
+                  <input
+                    id="full-name"
+                    type="text"
+                    value={bookingFormData.fullName}
+                    onChange={(e) => handleInputChange('fullName', e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c1a050] focus:border-transparent"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="number-of-person" className="text-base font-bold block">
+                    Number of person
+                  </label>
+                  <select
+                    id="number-of-person"
+                    value={bookingFormData.numberOfPerson}
+                    onChange={(e) => handleInputChange('numberOfPerson', e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c1a050] focus:border-transparent"
+                  >
+                    <option value="">Select</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5+</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Phone Number and Email */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label htmlFor="phone-number" className="text-base font-bold block">
+                    Phone number
+                  </label>
+                  <input
+                    id="phone-number"
+                    type="tel"
+                    value={bookingFormData.phoneNumber}
+                    onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c1a050] focus:border-transparent"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="email" className="text-base font-bold block">
+                    E mail
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={bookingFormData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c1a050] focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              {/* Date and Country */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label htmlFor="date" className="text-base font-bold block">
+                    Date
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="date"
+                      type="date"
+                      value={bookingFormData.date}
+                      onChange={(e) => handleInputChange('date', e.target.value)}
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#c1a050] focus:border-transparent"
+                    />
+                    <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="country" className="text-base font-bold block">
+                    Country
+                  </label>
+                  <select
+                    id="country"
+                    value={bookingFormData.country}
+                    onChange={(e) => handleInputChange('country', e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c1a050] focus:border-transparent"
+                  >
+                    <option value="">Select</option>
+                    <option value="us">United States</option>
+                    <option value="uk">United Kingdom</option>
+                    <option value="ca">Canada</option>
+                    <option value="au">Australia</option>
+                    <option value="in">India</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Price */}
+              <div className="space-y-2 md:w-1/2 md:pr-3">
+                <label htmlFor="price" className="text-base font-bold block">
+                  Price
+                </label>
+                <div className="bg-gray-200 h-10 rounded-md flex items-center px-3 text-gray-700">
+                  ₹{retreat.price ? retreat.price.toFixed(2) : '1000.00'} per person
+                </div>
+              </div>
+
+              {/* Terms and Conditions */}
+              <div className="space-y-2">
+                <div className="flex items-start space-x-2">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    checked={agreedToTerms}
+                    onChange={(e) => setAgreedToTerms(e.target.checked)}
+                    className="w-4 h-4 text-[#c1a050] border-gray-300 rounded focus:ring-[#c1a050] mt-1"
+                  />
+                  <label htmlFor="terms" className="font-normal cursor-pointer leading-tight">
+                    I agree to the terms and conditions
+                  </label>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Please note that the prices listed are exclusive of applicable taxes (VAT)
+                </p>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full bg-[#c1a050] hover:bg-[#A68850] text-white h-12 text-base font-medium rounded-md transition-colors"
+              >
+                Proceed to payment
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

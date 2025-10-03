@@ -21,15 +21,25 @@ const AboutSections = () => {
         <div className="absolute inset-0 z-10 mt-30 flex items-center justify-center px-4">
           <div className="max-w-3xl mx-auto text-center">
             <div className="prose prose-base sm:prose-lg text-white/90 leading-relaxed">
+              <h2 className="text-3xl font-semibold text-white mb-6 sm:mb-8 leading-tight">
+                The Quiet Space
+              </h2>
               <p className="mb-3 sm:mb-4 text-2xl font-semibold">
                 A space where you’re not just welcome, you belong.
               </p>
-              <p className="mb-3 sm:mb-4 text-2xl font-semibold">
-                Come as you are. This is your space.<br/> Belong here. Breathe here.
-                Be here.
-              </p>
-              <p className="mb-4 sm:mb-5 text-2xl font-semibold">
-                Here, you are seen. Here, you are held.
+            </div>
+          </div>
+        </div>
+
+        {/* Announcement Strip */}
+        <div className="absolute bottom-0 left-0 right-0 z-20 w-full bg-[#c1a050] py-3 sm:py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <p className="text-white text-lg font-semibold">
+                {/* Add your announcement text here */}
+                Come as you are. This is your space.
+                <br />
+                Belong here. Breathe here. Be here.
               </p>
             </div>
           </div>
@@ -45,7 +55,7 @@ const AboutSections = () => {
               {/* Expanded intro moved from image content */}
               <div className="text-gray-700 leading-relaxed space-y-4">
                 <h2 className="text-3xl font-semibold text-black mb-6 sm:mb-8 leading-tight">
-                  The Quiet Space
+                     Here, you are seen. <br/><span className="italic">Here, you are held.</span>
                 </h2>
                 <p>
                   Welcome to The Quiet Space — a place created for your heart,
@@ -230,7 +240,7 @@ const AboutSections = () => {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
                         // Fallback to a solid color background if image fails
-                        e.target.style.display = 'none';
+                        e.target.style.display = "none";
                         e.target.parentElement.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center text-gray-600 font-medium">${value.title}</div>`;
                       }}
                     />
@@ -239,9 +249,7 @@ const AboutSections = () => {
                 <h3 className="text-lg font-medium text-gray-900 mb-1 sm:mb-2">
                   {value.title}
                 </h3>
-                <p className="text-gray-600 text-sm">
-                  {value.description}
-                </p>
+                <p className="text-gray-600 text-sm">{value.description}</p>
               </div>
             ))}
           </div>
