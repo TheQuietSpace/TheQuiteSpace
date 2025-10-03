@@ -425,6 +425,31 @@ const AboutSections = () => {
           )}
         </div>
       </section>
+
+      {/* Continuation: How It Works & CTA */}
+      <section className="py-12">
+        <div className="max-w-5xl mx-auto px-4">
+          <h2 className="text-3xl font-semibold mb-6">How It Works</h2>
+          <ul className="list-disc ml-6 space-y-4 marker:text-[#c1a050] text-lg text-gray-700">
+            <li><strong>Sign up online</strong> through our secure form</li>
+            <li><strong>Choose your 4 classes/week</strong> from our schedule (in-studio, online, or hybrid)</li>
+            <li><strong>Show up, practice, transform</strong></li>
+            <li><strong>Take your practice home</strong> with simple techniques and resources we share</li>
+          </ul>
+
+          <h3 className="mt-10 text-2xl font-semibold">Ready to Begin?</h3>
+          <p className="text-lg text-gray-700 mt-4">Invest in your health, your peace, and your spirit.</p>
+          <p className="text-lg text-gray-700 mt-2 mb-6">Click below to sign up and step onto the mat with us.</p>
+          <div className="flex justify-center">
+            <a
+              href="#featured-articles"
+              className="inline-flex items-center bg-[#c1a050] text-white px-6 py-3 rounded-lg hover:bg-[#a88d42] font-medium"
+            >
+              Sign Up Now
+            </a>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

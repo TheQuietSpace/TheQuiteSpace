@@ -1,5 +1,7 @@
-import React from 'react';
-import Image from 'next/image'; // Import Next.js Image component
+"use client";
+
+import React from "react";
+import Image from "next/image"; // Import Next.js Image component
 
 const AboutSections = () => {
   return (
@@ -15,8 +17,23 @@ const AboutSections = () => {
             }}
           />
         </div>
-        {/* Content overlay to push content below navbar */}
-        <div className="absolute top-20 sm:top-16 md:top-20 lg:top-24 left-0 right-0 h-full pointer-events-none"></div>
+        {/* Centered: The Quiet Space overlay */}
+        <div className="absolute inset-0 z-10 mt-30 flex items-center justify-center px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="prose prose-base sm:prose-lg text-white/90 leading-relaxed">
+              <p className="mb-3 sm:mb-4 text-2xl font-semibold">
+                A space where you’re not just welcome, you belong.
+              </p>
+              <p className="mb-3 sm:mb-4 text-2xl font-semibold">
+                Come as you are. This is your space.<br/> Belong here. Breathe here.
+                Be here.
+              </p>
+              <p className="mb-4 sm:mb-5 text-2xl font-semibold">
+                Here, you are seen. Here, you are held.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* About Section */}
@@ -25,39 +42,37 @@ const AboutSections = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
             {/* Text Content */}
             <div className="order-2 lg:order-1">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 mb-6 sm:mb-8 leading-tight">
-                About The Quiet Space
-              </h2>
-              <div className="prose prose-base sm:prose-lg text-gray-600 leading-relaxed">
-                <p className="mb-3 sm:mb-4 text-sm sm:text-base">
-                  A space where you’re not just welcome, you belong.
-                </p>
-                <p className="mb-3 sm:mb-4 text-sm sm:text-base">
-                  Come as you are. This is your space.
-                  Belong here. Breathe here. Be here.
-                </p>
-                <p className="mb-4 sm:mb-5 text-sm sm:text-base">
-                  Here, you are seen. Here, you are held.
+              {/* Expanded intro moved from image content */}
+              <div className="text-gray-700 leading-relaxed space-y-4">
+                <h2 className="text-3xl font-semibold text-black mb-6 sm:mb-8 leading-tight">
+                  The Quiet Space
+                </h2>
+                <p>
+                  Welcome to The Quiet Space — a place created for your heart,
+                  your spirit, and your becoming. This is where the world
+                  softens, the noise fades, and you finally feel at home.
                 </p>
 
-                <p className="mb-3 sm:mb-4 text-sm sm:text-base">
-                  Welcome to The Quiet Space — a place created for your heart, your spirit, and your becoming.
-                  This is where the world softens, the noise fades, and you finally feel at home.
-                </p>
-                <p className="mb-4 sm:mb-5 text-sm sm:text-base">
-                  It is more than a retreat or a yoga studio. It is a space where you can return to yourself.
-                  A space to breathe deeply, move mindfully, and rest completely. Whether you seek healing,
+                <p>
+                  It is more than a retreat or a yoga studio. It is a space
+                  where you can return to yourself. A space to breathe deeply,
+                  move mindfully, and rest completely. Whether you seek healing,
                   clarity, or simple stillness, you’ll find it here.
                 </p>
 
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mt-2">Why Choose The Quiet Space?</h3>
-                <p className="mb-4 sm:mb-5 text-sm sm:text-base">
-                  Because in today’s busy world, true peace is rare. Here, you are reminded that you don’t have to strive or prove.
-                  You already belong. Transformation begins with stillness, and this place is here to hold you in that journey.
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mt-2">
+                  Why Choose The Quiet Space?
+                </h3>
+                <p>
+                  Because in today’s busy world, true peace is rare. Here, you
+                  are reminded that you don’t have to strive or prove. You
+                  already belong. Transformation begins with stillness, and this
+                  place is here to hold you in that journey.
                 </p>
 
-                <p className="font-semibold text-sm sm:text-base">
-                  Step into your quiet space. Here, you are welcome. Here, you belong.
+                <p className="font-semibold">
+                  Step into your quiet space. Here, you are welcome. Here, you
+                  belong.
                 </p>
               </div>
             </div>
@@ -102,28 +117,28 @@ const AboutSections = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12">
             {[
               {
-                name: 'Devesh',
-                role: 'Founder and lead teacher',
-                src: '/new1.png', // Replace with actual image path for Devesh
-                alt: 'Devesh - Founder and lead teacher',
+                name: "Devesh",
+                role: "Founder and lead teacher",
+                src: "/new1.png", // Replace with actual image path for Devesh
+                alt: "Devesh - Founder and lead teacher",
               },
               {
-                name: 'Jane Doe',
-                role: 'Senior Yoga Instructor',
-                src: '/new1.png', // Replace with actual image path for Jane
-                alt: 'Jane Doe - Senior Yoga Instructor',
+                name: "Jane Doe",
+                role: "Senior Yoga Instructor",
+                src: "/new1.png", // Replace with actual image path for Jane
+                alt: "Jane Doe - Senior Yoga Instructor",
               },
               {
-                name: 'John Smith',
-                role: 'Meditation Guide',
-                src: '/new1.png', // Replace with actual image path for John
-                alt: 'John Smith - Meditation Guide',
+                name: "John Smith",
+                role: "Meditation Guide",
+                src: "/new1.png", // Replace with actual image path for John
+                alt: "John Smith - Meditation Guide",
               },
               {
-                name: 'Alice Johnson',
-                role: 'Wellness Facilitator',
-                src: '/new1.png', // Replace with actual image path for Alice
-                alt: 'Alice Johnson - Wellness Facilitator',
+                name: "Alice Johnson",
+                role: "Wellness Facilitator",
+                src: "/new1.png", // Replace with actual image path for Alice
+                alt: "Alice Johnson - Wellness Facilitator",
               },
             ].map((facilitator, index) => (
               <div key={index} className="text-center group">
@@ -161,49 +176,70 @@ const AboutSections = () => {
           </div>
 
           {/* Values Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 md:gap-12">
             {[
               {
-                title: 'Integrity',
-                description: 'Staying true to our essence',
-                src: '/Frame 4316.png', // Add unique image for Integrity
-                alt: 'Integrity - Group meditation',
+                title: "Integrity",
+                description:
+                  "We honor truth in every action, staying aligned with who we really are — pure, transparent, and whole.",
+                src: "/Frame 4316.png", // Try .png extension first
+                alt: "Integrity",
               },
               {
-                title: 'Intimacy',
-                description: 'Authentic human bonds',
-                src: '/Frame 4317.png', // Add unique image for Intimacy
-                alt: 'Intimacy - Balanced stones',
+                title: "Intimacy",
+                description:
+                  "The courage to form authentic human bonds — connections that are real, raw, and soul-nourishing.",
+                src: "/Frame 4317.png",
+                alt: "Intimacy",
               },
               {
-                title: 'Presence',
-                description: 'Living with moment',
-                alt: 'Presence - Silhouette meditation',
-                src: '/Frame 4318.png', // Add unique image for Presence
+                title: "Essence",
+                description:
+                  "A return to our deepest nature, reminding us to live not from the surface but from the core of our being.",
+                src: "/Frame 4318.png",
+                alt: "Essence",
               },
               {
-                title: 'Simplicity',
-                description: 'Beauty in minimalism',
-                src: '/Frame 4319.png', // Add unique image for Simplicity
-                alt: 'Simplicity - Peaceful nature',
+                title: "Simplicity",
+                description:
+                  "We believe true healing is found not in excess, but in simplicity. Every breath, every silence, every moment is sacred.",
+                src: "/Frame 4319.png", // Use consistent naming
+                alt: "Simplicity",
+              },
+              {
+                title: "Presence",
+                description:
+                  "Here, you don't need to prove anything. You are invited to simply be. In stillness, the heart speaks louder than the mind.",
+                src: "/Frame 4320.png", // Use consistent naming
+                alt: "Presence",
+              },
+              {
+                title: "Light for the World",
+                description:
+                  "The peace cultivated within flows outward, rippling into families, communities, and the world.",
+                src: "/Frame 4321.png", // Use consistent naming
+                alt: "Light for the World",
               },
             ].map((value, index) => (
               <div key={index} className="text-center group">
                 <div className="relative mb-4 sm:mb-6 mx-auto">
-                  <div className="w-full h-48 sm:h-56 md:h-64 lg:h-72 rounded-xl sm:rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                    <Image
-                      src={value.src} // Use unique src from the object
+                  <div className="w-full h-48 sm:h-56 md:h-64 lg:h-72 rounded-xl sm:rounded-2xl overflow-hidden duration-300 bg-gray-200">
+                    <img
+                      src={value.src}
                       alt={value.alt}
-                      width={400} // Adjust based on your image size
-                      height={288} // Match lg:h-72
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        // Fallback to a solid color background if image fails
+                        e.target.style.display = 'none';
+                        e.target.parentElement.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center text-gray-600 font-medium">${value.title}</div>`;
+                      }}
                     />
                   </div>
                 </div>
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-medium text-gray-900 mb-1 sm:mb-2">
+                <h3 className="text-lg font-medium text-gray-900 mb-1 sm:mb-2">
                   {value.title}
                 </h3>
-                <p className="text-gray-600 text-sm sm:text-base lg:text-lg">
+                <p className="text-gray-600 text-sm">
                   {value.description}
                 </p>
               </div>
@@ -226,34 +262,39 @@ const AboutSections = () => {
           <div className="space-y-6">
             {[
               {
-                title: 'Silence as Nourishment',
-                description: 'In a world that never stops speaking, we choose silence not as emptiness, but as fullness. Here, silence becomes a teacher, a healer, and a friend.',
-                src: '/2.svg',
-                alt: 'Silence icon',
+                title: "Silence as Nourishment",
+                description:
+                  "In a world that never stops speaking, we choose silence not as emptiness, but as fullness. Here, silence becomes a teacher, a healer, and a friend.",
+                src: "/2.svg",
+                alt: "Silence icon",
               },
               {
-                title: 'Presence Before Perfection',
-                description: 'We honor the beauty of being present over the illusion of being perfect. Every breath, every pause, every moment in this space is complete as it is.',
-                src: '/3.svg',
-                alt: 'Presence icon',
+                title: "Presence Before Perfection",
+                description:
+                  "We honor the beauty of being present over the illusion of being perfect. Every breath, every pause, every moment in this space is complete as it is.",
+                src: "/3.svg",
+                alt: "Presence icon",
               },
               {
-                title: 'Wholeness in Simplicity',
-                description: 'We return to what is essential. Through yoga, meditation, and mindful living, we discover that life’s quietest moments carry the deepest truths.',
-                src: '/4.svg',
-                alt: 'Wholeness icon',
+                title: "Wholeness in Simplicity",
+                description:
+                  "We return to what is essential. Through yoga, meditation, and mindful living, we discover that life’s quietest moments carry the deepest truths.",
+                src: "/4.svg",
+                alt: "Wholeness icon",
               },
               {
-                title: 'Connection Through Stillness',
-                description: 'True connection is born not in noise but in presence. The Quiet Space is where souls meet beyond words where we remember that we already belong.',
-                src: '/5.svg',
-                alt: 'Connection icon',
+                title: "Connection Through Stillness",
+                description:
+                  "True connection is born not in noise but in presence. The Quiet Space is where souls meet beyond words where we remember that we already belong.",
+                src: "/5.svg",
+                alt: "Connection icon",
               },
               {
-                title: 'Living with Gentle Power',
-                description: 'From the stillness of the quiet, a strength arises soft yet unshakable, tender yet transformative. This is the power we carry back into the world.',
-                src: '/6.svg',
-                alt: 'Gentle power icon',
+                title: "Living with Gentle Power",
+                description:
+                  "From the stillness of the quiet, a strength arises soft yet unshakable, tender yet transformative. This is the power we carry back into the world.",
+                src: "/6.svg",
+                alt: "Gentle power icon",
               },
             ].map((item, idx) => (
               <div key={idx} className="flex items-start gap-4 sm:gap-6">
@@ -269,8 +310,12 @@ const AboutSections = () => {
                   </div>
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">{item.title}</h3>
-                  <p className="mt-1 text-sm sm:text-base text-gray-600 leading-relaxed">{item.description}</p>
+                  <h3 className="text-base sm:text-lg mt-3 font-semibold text-gray-900">
+                    {item.title}
+                  </h3>
+                  <p className="mt-1 text-sm sm:text-base mt-3 text-gray-600 leading-relaxed">
+                    {item.description}
+                  </p>
                 </div>
               </div>
             ))}
