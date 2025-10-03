@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabse';
+import { MessageSquare, Eye, Clock } from "lucide-react";
 
 const AboutSections = () => {
   const [blogs, setBlogs] = useState([]);
@@ -91,7 +92,7 @@ const AboutSections = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     
     return (
-      <div className="bg-white rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
+      <div className="bg-white rounded-3xl duration-300 overflow-hidden">
         <div className="flex flex-col sm:flex-row h-full">
           {/* Left Content Section */}
           <div className="flex-1 p-6 lg:p-8 flex flex-col justify-between order-2 sm:order-1">
@@ -140,7 +141,7 @@ const AboutSections = () => {
             {/* Read More Button */}
             <button 
               onClick={() => onReadMore(blog)}
-              className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-2 group mt-auto"
+              className="text-[#c1a050] font-medium text-sm flex items-center gap-2 group mt-auto"
             >
               Read More
               <svg 
@@ -194,51 +195,56 @@ const AboutSections = () => {
           </div>
           
           {/* 2x2 Grid Layout */}
-          <div className="relative md:px-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-              {paginatedBlogs.map((blog) => (
-                <BlogCard
-                  key={blog.id}
-                  blog={blog}
-                  onReadMore={handleReadMore}
-                />
-              ))}
-            </div>
-
-            {totalPagesBlogs > 1 && (
-              <>
-                {/* Left arrow - visible on md+ and sits inside the left padding (no overlap) */}
-                <button
-                  onClick={() => setCurrentPageBlogs((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentPageBlogs === 1}
-                  aria-label="Previous blogs"
-                  className={
-                    `hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-10 h-10 rounded-full
-                     transition-colors duration-150 ${currentPageBlogs === 1 ? 'opacity-40 pointer-events-none' : 'bg-gray-100 hover:bg-gray-200'}`
-                  }
-                >
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-
-                {/* Right arrow - visible on md+ and sits inside the right padding (no overlap) */}
-                <button
-                  onClick={() => setCurrentPageBlogs((prev) => Math.min(prev + 1, totalPagesBlogs))}
-                  disabled={currentPageBlogs === totalPagesBlogs}
-                  aria-label="Next blogs"
-                  className={
-                    `hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-10 h-10 rounded-full
-                     transition-colors duration-150 ${currentPageBlogs === totalPagesBlogs ? 'opacity-40 pointer-events-none' : 'bg-gray-100 hover:bg-gray-200'}`
-                  }
-                >
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </>
-            )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            {paginatedBlogs.map((blog) => (
+              <BlogCard
+                key={blog.id}
+                blog={blog}
+                onReadMore={handleReadMore}
+              />
+            ))}
           </div>
+
+          {/* Centered Pagination for Blogs */}
+          {totalPagesBlogs > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-12">
+              <button
+                onClick={() => setCurrentPageBlogs((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPageBlogs === 1}
+                aria-label="Previous blogs"
+                className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors duration-150 ${
+                  currentPageBlogs === 1 ? 'bg-gray-100 opacity-40 pointer-events-none' : 'bg-[#c1a050] hover:bg-[#b98f45]'
+                }`}
+              >
+                <svg
+                  className={`${currentPageBlogs === 1 ? 'w-5 h-5 text-gray-600' : 'w-5 h-5 text-white'}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+               </button>
+
+               <button
+                 onClick={() => setCurrentPageBlogs((prev) => Math.min(prev + 1, totalPagesBlogs))}
+                 disabled={currentPageBlogs === totalPagesBlogs}
+                 aria-label="Next blogs"
+                 className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors duration-150 ${
+                   currentPageBlogs === totalPagesBlogs ? 'bg-gray-100 opacity-40 pointer-events-none' : 'bg-[#c1a050] hover:bg-[#b98f45]'
+                 }`}
+               >
+                <svg
+                  className={`${currentPageBlogs === totalPagesBlogs ? 'w-5 h-5 text-gray-600' : 'w-5 h-5 text-white'}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+               </button>
+             </div>
+           )}
         </div>
       </section>
 
@@ -246,166 +252,142 @@ const AboutSections = () => {
       <section className="w-full py-16 sm:py-20 lg:py-28 bg-white relative overflow-hidden">
         <div className="absolute inset-0 bg-white to-transparent"></div>
         <div className="max-w-7xl w-full mx-auto relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-12 sm:gap-16 lg:gap-20 px-4 sm:px-6 lg:px-8">
-            {/* Enhanced Images Grid */}
-            <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-8 w-full max-w-md sm:max-w-lg lg:max-w-xl">
-              {[
-                "/full-shot-women-meditating-nature.jpg", 
-                "/participants-practice-yoga-sunrise-tranquil-studio-surrounded-by-nature-panoramic-views.jpg", 
-                "/interior-design-yoga-space.jpg", 
-                "/serene-yoga-retreat-with-practitioners-gracefully-engaged-poses-amidst-tranquil-surroundings-finding-peace-balance-ai-generative-ai.jpg"
-              ].map((src, idx) => (
-                <div key={idx} className={`group relative overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl bg-gray-100 aspect-square transform hover:scale-105 transition-all duration-700 ${idx % 2 === 0 ? '' : 'mt-4 sm:mt-8'}`}>
-                  <Image 
-                    src={src} 
-                    alt="Journey" 
-                    width={300} 
-                    height={300} 
-                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-1000" 
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent group-hover:from-black/40 transition-all duration-500"></div>
-                </div>
-              ))}
+          <div className="flex flex-col lg:flex-row items-stretch gap-8 sm:gap-12 lg:gap-16 px-4 sm:px-6 lg:px-8">
+            {/* Slightly larger image — wider column on lg and matches text height */}
+            <div className="w-full lg:w-2/5 flex-shrink-0">
+              <Image
+                src="/Group 4285.png"
+                alt="Group 4285"
+                width={800}
+                height={520}
+                className="object-cover w-full h-[220px] sm:h-[280px] lg:h-full transition-transform duration-500"
+              />
             </div>
             
             {/* Enhanced Text Content */}
-            <div className="flex-1 flex flex-col justify-center items-center lg:items-start text-center lg:text-left max-w-2xl">
-              <div className="mb-4 sm:mb-6">
-                <span className="inline-block px-3 sm:px-4 py-2 bg-amber-100 text-amber-700 font-semibold rounded-full text-xs sm:text-sm uppercase tracking-wide">
-                  Monthly Reflections
-                </span>
-              </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 sm:mb-8 leading-tight">
-                Whispers from the <span className="text-amber-600">Journey</span>
-              </h2>
-              <p className="text-base sm:text-lg lg:text-xl text-gray-700 mb-8 sm:mb-10 leading-relaxed">
-                Each month, we pause to gather the quiet moments, the lessons from our journeys, and the whispers of stillness carried back from retreat. These reflections and travel diaries are an offering of wisdom and wonder.
-              </p>
-              <button
-                className="group inline-flex items-center bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold px-6 sm:px-8 lg:px-10 py-3 sm:py-4 rounded-2xl text-sm sm:text-base lg:text-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
-                onClick={() => {
-                  const el = document.getElementById('featured-articles');
-                  if (el) {
-                    el.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }}
-              >
-                <span>Explore Stories</span>
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 ml-2 sm:ml-3 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+            <div className="flex-1 flex flex-col justify-center items-center lg:items-start text-center lg:text-left max-w-2xl px-2">
+               <h2 className="text-5xl font-semibold text-gray-900 mb-6 sm:mb-8 leading-tight">
+                 Whispers from the Journey
+               </h2>
+               <p className="text-base text-gray-700 mb-8 sm:mb-10 leading-relaxed">
+                 Each month, we pause to gather the quiet moments, the lessons from our journeys, and the whispers of stillness carried back from retreat. <br /> These reflections and travel diaries are an offering of wisdom and wonder.
+               </p>
+               <button
+                 className="group inline-flex items-center bg-[#c1a050] hover:from-amber-600 hover:to-amber-700 text-white font-bold px-6 sm:px-8 lg:px-10 py-3 sm:py-4 rounded-2xl text-sm sm:text-base lg:text-lg transition-all duration-300 transform hover:-translate-y-1"
+                 onClick={() => {
+                   const el = document.getElementById('featured-articles');
+                   if (el) {
+                     el.scrollIntoView({ behavior: 'smooth' });
+                   }
+                 }}
+               >
+                 <span>Explore</span>
+               </button>
+             </div>
+           </div>
+         </div>
+       </section>
 
       {/* Enhanced Articles Section */}
-  <section id="featured-articles" className="w-full py-16 sm:py-24 bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-400/20 to-transparent"></div>
-        </div>
+      <section id="featured-articles" className="w-full py-16 sm:py-24 bg-[#faf8f5] relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-              Featured <span className="text-amber-400">Articles</span>
+            <h2 className="text-3xl text-black font-semibold mb-6">
+              Articles
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-amber-600 mx-auto rounded-full"></div>
-            <p className="text-lg text-gray-300 mt-6 max-w-2xl mx-auto">
-              In-depth explorations of mindfulness, wellness, and transformation
-            </p>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 lg:gap-12">
             {paginatedArticles.map((article, index) => (
-              <div key={article.id} className={`group transform hover:-translate-y-2 transition-all duration-500 ${index % 2 === 0 ? 'lg:mt-0' : 'lg:mt-8'}`}>
-                <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl overflow-hidden shadow-2xl hover:shadow-amber-500/10 transition-all duration-500 border border-gray-700/50 hover:border-amber-500/30">
-                  <div className="flex flex-col sm:flex-row">
-                    {/* Enhanced Image Side */}
-                    <div className="w-full sm:w-48 h-64 sm:h-64 relative flex-shrink-0 overflow-hidden">
-                      <Image
-                        src={article.image_url}
-                        alt={article.title}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent group-hover:from-black/60 transition-all duration-500"></div>
+              <div key={article.id} className="flex flex-col md:flex-row gap-6 bg-white rounded-3xl overflow-hidden">
+                {/* Image Section */}
+                <div className="relative w-full md:w-2/5 h-64 md:h-auto min-h-[300px]">
+                  <Image 
+                    src={article.image_url} 
+                    alt={article.title} 
+                    fill 
+                    className="object-cover" 
+                  />
+                </div>
+
+                {/* Content Section */}
+                <div className="flex flex-col justify-center p-6 md:p-8 md:w-3/5">
+                  <h2 className="text-xl font-bold text-[#c1a050] mb-5 leading-tight line-clamp-2">
+                    {article.title}
+                  </h2>
+
+                  <p className="text-gray-600 text-sm leading-relaxed mb-5 line-clamp-3">
+                    {article.content}
+                  </p>
+
+                  {/* Metadata */}
+                  <div className="flex items-center gap-4 mb-5 text-[#c1a050]">
+                    <div className="flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4" strokeWidth={2} />
+                      <span className="text-sm text-gray-600 font-medium">{Math.floor(Math.random() * 50) + 1}</span>
                     </div>
-                    
-                    {/* Enhanced Content Side */}
-                    <div className="flex-1 p-8 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center mb-4">
-                          <div className="w-2 h-2 bg-amber-400 rounded-full mr-3"></div>
-                          <span className="text-sm font-medium text-amber-400 uppercase tracking-wide">
-                            {timeAgo(article.created_at)}
-                          </span>
-                        </div>
-                        <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 leading-tight group-hover:text-amber-400 transition-colors duration-300">
-                          {article.title}
-                        </h3>
-                        <p className="text-gray-300 text-sm leading-relaxed line-clamp-3 mb-6">
-                          {article.content}
-                        </p>
-                      </div>
-                      
-                      {/* Enhanced Read More Button */}
-                      <div className="flex justify-end">
-                        <button
-                          className="group/btn inline-flex items-center space-x-2 text-amber-400 hover:text-amber-300 font-semibold transition-all duration-300"
-                          onClick={() => handleReadMore(article)}
-                        >
-                          <span>Read Article</span>
-                          <div className="w-8 h-8 rounded-full bg-amber-400/10 group-hover/btn:bg-amber-400/20 flex items-center justify-center transition-all duration-300 group-hover/btn:scale-110">
-                            <svg className="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                          </div>
-                        </button>
-                      </div>
+                    <div className="flex items-center gap-2">
+                      <Eye className="w-4 h-4" strokeWidth={2} />
+                      <span className="text-sm text-gray-600 font-medium">{Math.floor(Math.random() * 1000) + 100}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4" strokeWidth={2} />
+                      <span className="text-sm text-gray-600 font-medium">{timeAgo(article.created_at)}</span>
                     </div>
                   </div>
+
+                  {/* Read More Link */}
+                  <button
+                    onClick={() => handleReadMore(article)}
+                    className="text-[#c1a050] font-medium text-sm flex items-center gap-2 group w-fit underline decoration-2 decoration-[#c1a050] underline-offset-4"
+                  >
+                    Read More...
+                  </button>
                 </div>
               </div>
             ))}
           </div>
           
-          {/* Enhanced Pagination for Articles */}
+          {/* Centered Pagination for Articles (brand color prev/next buttons) */}
           {totalPagesArticles > 1 && (
-            <div className="flex justify-center mt-16">
-              <div className="flex items-center space-x-4 bg-gray-800/50 backdrop-blur-sm rounded-2xl p-2 border border-gray-700/50">
-                <button
-                  onClick={() => setCurrentPageArticles((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentPageArticles === 1}
-                  className="px-6 py-3 rounded-xl font-medium transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-700/50 text-gray-300"
+            <div className="flex justify-center items-center gap-4 mt-12">
+              <button
+                onClick={() => setCurrentPageArticles((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPageArticles === 1}
+                aria-label="Previous articles"
+                className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors duration-150 ${
+                  currentPageArticles === 1 ? 'bg-gray-100 opacity-40 pointer-events-none' : 'bg-[#c1a050] hover:bg-[#b98f45]'
+                }`}
+              >
+                <svg
+                  className={`${currentPageArticles === 1 ? 'w-5 h-5 text-gray-600' : 'w-5 h-5 text-white'}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  Previous
-                </button>
-                <div className="flex items-center space-x-2">
-                  {Array.from({ length: totalPagesArticles }, (_, i) => i + 1).map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPageArticles(page)}
-                      className={`w-12 h-12 rounded-xl font-semibold transition-all duration-300 ${
-                        currentPageArticles === page
-                          ? 'bg-amber-500 text-white shadow-lg'
-                          : 'text-gray-400 hover:bg-gray-700/50'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                </div>
-                <button
-                  onClick={() => setCurrentPageArticles((prev) => Math.min(prev + 1, totalPagesArticles))}
-                  disabled={currentPageArticles === totalPagesArticles}
-                  className="px-6 py-3 rounded-xl font-medium transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-700/50 text-gray-300"
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+               </button>
+
+               <button
+                 onClick={() => setCurrentPageArticles((prev) => Math.min(prev + 1, totalPagesArticles))}
+                 disabled={currentPageArticles === totalPagesArticles}
+                 aria-label="Next articles"
+                 className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors duration-150 ${
+                   currentPageArticles === totalPagesArticles ? 'bg-gray-100 opacity-40 pointer-events-none' : 'bg-[#c1a050] hover:bg-[#b98f45]'
+                 }`}
+               >
+                <svg
+                  className={`${currentPageArticles === totalPagesArticles ? 'w-5 h-5 text-gray-600' : 'w-5 h-5 text-white'}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  Next
-                </button>
-              </div>
-            </div>
-          )}
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+               </button>
+             </div>
+           )}
         </div>
       </section>
 
@@ -481,7 +463,7 @@ const AboutSections = () => {
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-gradient-to-r from-amber-400 to-amber-600 rounded-full flex items-center justify-center">
                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                       </svg>
                     </div>
                     <div>

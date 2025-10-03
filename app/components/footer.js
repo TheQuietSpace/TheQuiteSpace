@@ -127,55 +127,65 @@ const Footer = () => {
 
         {/* Bottom Links */}
         <div className="border-t border-white border-opacity-20 mt-8 pt-6">
-          <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-sm">
-            <Link
-              href="/"
-              className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
-            >
-              About Us
-            </Link>
-            <Link
-              href="/privacy-policy"
-              className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href="/legal"
-              className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
-            >
-              Legal
-            </Link>
-            <Link
-              href="/sitemap"
-              className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
-            >
-              Sitemap
-            </Link>
-            <Link
-              href="/learning"
-              className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
-            >
-              Blogs
-            </Link>
-            <Link
-              href="/faq"
-              className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
-            >
-              FAQ
-            </Link>
-            <Link
-              href="/apply-membership"
-              className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
-            >
-              Apply for Membership
-            </Link>
+          <div className="flex justify-center lg:justify-start text-sm">
+            {/* Inline links with pipe separators, allow wrapping on small screens */}
+            <nav className="flex flex-wrap items-center gap-2">
+              <Link
+                href="/"
+                className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
+              >
+                Home
+              </Link>
+              <span className="opacity-60">|</span>
+              <Link
+                href="/privacy-policy"
+                className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
+              >
+                Privacy Policy
+              </Link>
+              <span className="opacity-60">|</span>
+              <Link
+                href="/terms-of-use"
+                className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
+              >
+                Terms of use
+              </Link>
+              <span className="opacity-60">|</span>
+              <Link
+                href="/legal"
+                className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
+              >
+                Legal
+              </Link>
+              <span className="opacity-60">|</span>
+              <Link
+                href="/sitemap"
+                className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
+              >
+                Sitemap
+              </Link>
+              <span className="opacity-60">|</span>
+              <Link
+                href="/learning"
+                className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
+              >
+                Blogs
+              </Link>
+              <span className="opacity-60">|</span>
+              <Link
+                href="/faq"
+                className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
+              >
+                FAQs
+              </Link>
+              <span className="opacity-60">|</span>
+              <Link
+                href="/apply-membership"
+                className="hover:underline opacity-80 hover:opacity-100 transition-opacity whitespace-nowrap"
+              >
+                Apply For Membership
+              </Link>
+            </nav>
           </div>
         </div>
       </div>

@@ -97,7 +97,7 @@ const Navbar = () => {
                 Workshop
               </Link>
               <Link
-                href="/learning"
+                href="/membership"
                 className="text-gray-900 font-sans text-sm xl:text-base font-semibold hover:text-[#C1A050] transition-colors duration-200 px-1 xl:px-2 py-1 whitespace-nowrap"
                 onClick={closeMobileMenu}
               >
@@ -273,7 +273,7 @@ const Navbar = () => {
                 </>
               ) : (
                 <Link
-                  href="/signup"
+                  href="/auth"
                   className="block px-3 py-2.5 sm:py-3 text-gray-700 hover:text-[#C1A050] hover:bg-[#C1A050]/10 font-medium text-sm sm:text-base rounded-lg transition-colors duration-200 text-center"
                   onClick={closeMobileMenu}
                 >
