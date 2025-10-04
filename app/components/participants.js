@@ -1,4 +1,4 @@
-//this section is a React component for managing and displaying a list of participants in a retreat booking system. It fetches participant data from a Supabase database, displays it in a table, and allows for the removal of participants.
+
 
 'use client';
 
