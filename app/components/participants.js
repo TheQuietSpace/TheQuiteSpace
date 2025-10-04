@@ -1,3 +1,5 @@
+
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -20,7 +22,7 @@ export default function ParticipantsList() {
         setLoading(true);
         const { data, error } = await supabase
           .from('bookings')
-          .select('id, user_name, email, phone, payment_status, amount, created_at');
+          .select('id, user_name, email, phone, payment_status, amount, created_at, wellness_program, accommodation, date, country, destination, number_of_persons, retreat:retreat_id(title)');
         
         if (error) throw error;
         setBookings(data);
@@ -64,9 +66,16 @@ export default function ParticipantsList() {
           <table className="min-w-full bg-white border">
             <thead>
               <tr className="bg-gray-100">
+                <th className="px-4 py-2 border">Retreat</th>
                 <th className="px-4 py-2 border">Name</th>
                 <th className="px-4 py-2 border">Email</th>
                 <th className="px-4 py-2 border">Phone</th>
+                <th className="px-4 py-2 border">Wellness Program</th>
+                <th className="px-4 py-2 border">Accommodation</th>
+                <th className="px-4 py-2 border">Date</th>
+                <th className="px-4 py-2 border">Country</th>
+                <th className="px-4 py-2 border">Destination</th>
+                <th className="px-4 py-2 border">Number of Persons</th>
                 <th className="px-4 py-2 border">Payment Status</th>
                 <th className="px-4 py-2 border">Amount</th>
                 <th className="px-4 py-2 border">Created At</th>
@@ -76,9 +85,16 @@ export default function ParticipantsList() {
             <tbody>
               {bookings.map((booking) => (
                 <tr key={booking.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-2 border">{booking.retreat?.title || ''}</td>
                   <td className="px-4 py-2 border">{booking.user_name}</td>
                   <td className="px-4 py-2 border">{booking.email}</td>
                   <td className="px-4 py-2 border">{booking.phone}</td>
+                  <td className="px-4 py-2 border">{booking.wellness_program || ''}</td>
+                  <td className="px-4 py-2 border">{booking.accommodation || ''}</td>
+                  <td className="px-4 py-2 border">{booking.date ? new Date(booking.date).toLocaleDateString() : ''}</td>
+                  <td className="px-4 py-2 border">{booking.country || ''}</td>
+                  <td className="px-4 py-2 border">{booking.destination || ''}</td>
+                  <td className="px-4 py-2 border">{booking.number_of_persons || ''}</td>
                   <td className="px-4 py-2 border">{booking.payment_status}</td>
                   <td className="px-4 py-2 border">₹{booking.amount.toFixed(2)}</td>
                   <td className="px-4 py-2 border">
@@ -102,6 +118,7 @@ export default function ParticipantsList() {
           </table>
         </div>
       )}
+      
     </div>
   );
 }
