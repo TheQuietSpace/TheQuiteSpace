@@ -31,52 +31,53 @@ const HeroSection = () => {
   return (
     <div className="max-w-none w-full -mt-21 pt-0">
       {/* Hero Section */}
-      <div className="bg-[#faf8f5] grid grid-cols-1 lg:grid-cols-2 h-[100vh] sm:h-[100vh] w-full pt-0 mt-0 relative overflow-hidden">
-        {/* Mobile: Text overlay on image, Desktop: Left side content */}
-        <div className="absolute inset-0 lg:relative lg:inset-auto flex items-center px-4 sm:px-6 md:px-8 lg:pl-12 xl:pl-16 pt-16 sm:pt-20 md:pt-4 pb-6 sm:pb-8 lg:pb-0 order-1 lg:order-1 z-10 h-full lg:h-auto">
-          <div className="space-y-3 sm:space-y-4 md:space-y-6 lg:space-y-8 max-w-[100%] sm:max-w-md md:max-w-lg lg:max-w-none w-full text-center lg:text-left">
-            <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white lg:text-gray-900 leading-tight drop-shadow-lg lg:drop-shadow-none font-serif">
-              A sanctuary for{' '}
-              <span className="block">stillness, soul and</span>
-              <span className="block">self discovery</span>
-            </h1>
+<div className="bg-[#faf8f5] grid grid-cols-1 lg:grid-cols-2 h-screen w-full relative overflow-hidden">
+  {/* Mobile: Text overlay on image, Desktop: Left side content */}
+  <div className="absolute inset-0 lg:relative lg:inset-auto flex items-center px-4 sm:px-6 md:px-8 lg:pl-12 xl:pl-16 pt-16 sm:pt-20 md:pt-4 pb-6 sm:pb-8 lg:pb-0 order-1 lg:order-1 z-10">
+    <div className="space-y-3 sm:space-y-4 md:space-y-6 lg:space-y-8 max-w-[100%] sm:max-w-md md:max-w-lg lg:max-w-none w-full text-center lg:text-left">
+      <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white lg:text-gray-900 leading-tight drop-shadow-lg lg:drop-shadow-none font-serif">
+        A sanctuary for{' '}
+        <span className="block">stillness, soul and</span>
+        <span className="block">self discovery</span>
+      </h1>
 
-            <p className="text-sm xs:text-base sm:text-lg md:text-lg lg:text-xl text-gray-100 lg:text-gray-600 leading-relaxed drop-shadow-md lg:drop-shadow-none px-2 lg:px-0">
-              Modern wellness retreats and training experiences for global travelers.
-            </p>
+      <p className="text-sm xs:text-base sm:text-lg md:text-lg lg:text-xl text-gray-100 lg:text-gray-600 leading-relaxed drop-shadow-md lg:drop-shadow-none px-2 lg:px-0">
+        Modern wellness retreats and training experiences for global travelers.
+      </p>
 
-            <div className="pt-2 sm:pt-4">
-              <Link href="/retreat" className="relative inline-flex items-center px-6 xs:px-8 sm:px-10 md:px-12 py-3 xs:py-3.5 sm:py-4 md:py-4 bg-[#C7A961] hover:bg-[#b8985a] text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm xs:text-base sm:text-lg">
-                <span className="mr-6 xs:mr-8 sm:mr-10 md:mr-12 text-white">
-                  Explore retreats
-                </span>
-                <div className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-white rounded-full w-10 h-10 xs:w-11 xs:h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center">
-                  <svg
-                    className="w-5 h-5 xs:w-5 xs:h-5 sm:w-6 sm:h-6 md:w-6 md:h-6 text-[#C7A961]"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14m-7-7l7 7-7 7" />
-                  </svg>
-                </div>
-              </Link>
-            </div>
+      <div className="pt-2 sm:pt-4">
+        <Link href="/retreat" className="relative inline-flex items-center px-6 xs:px-8 sm:px-10 md:px-12 py-3 xs:py-3.5 sm:py-4 md:py-4 bg-[#C7A961] hover:bg-[#b8985a] text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm xs:text-base sm:text-lg">
+          <span className="mr-6 xs:mr-8 sm:mr-10 md:mr-12 text-white">
+            Explore retreats
+          </span>
+          <div className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-white rounded-full w-10 h-10 xs:w-11 xs:h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center">
+            <svg
+              className="w-5 h-5 xs:w-5 xs:h-5 sm:w-6 sm:h-6 md:w-6 md:h-6 text-[#C7A961]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14m-7-7l7 7-7 7" />
+            </svg>
           </div>
-        </div>
-        
-        {/* Mobile: Background image, Desktop: Right side image */}
-        <div className="h-[100vh] sm:h-[100vh] w-full order-2 lg:order-2 overflow-hidden rounded-none lg:rounded-bl-3xl relative">
-          <Image
-            src="/hero.svg"
-            alt="Woman practicing yoga on a wooden terrace with mountain views"
-            fill
-            className="object-cover object-[center_20%] sm:object-[center_30%] lg:object-contain scale-110 sm:scale-105 lg:scale-100"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/25 to-transparent lg:bg-none"></div>
-        </div>
+        </Link>
       </div>
+    </div>
+  </div>
+  
+  {/* Mobile: Background image, Desktop: Right side image */}
+  <div className="h-full w-full order-2 lg:order-2 overflow-hidden rounded-none lg:rounded-bl-3xl relative">
+    <Image
+      src="/hero.svg"
+      alt="Woman practicing yoga on a wooden terrace with mountain views"
+      fill
+      className="object-cover object-[center_20%] sm:object-[center_30%] lg:object-cover lg:scale-100"
+      priority
+      sizes="(max-width: 1024px) 100vw, 50vw"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/25 to-transparent lg:bg-none"></div>
+  </div>
+</div>
 
       {/* Services Section */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white w-full">

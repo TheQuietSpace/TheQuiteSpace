@@ -287,6 +287,17 @@ export default function RetreatDetails() {
     }
   };
 
+  useEffect(() => {
+    // set white background for this page only
+    document.body.dataset.page = 'white';
+    document.body.style.background = '#ffffff'; // Immediate application
+    return () => {
+      // cleanup when leaving the page
+      delete document.body.dataset.page;
+      document.body.style.background = ''; // Reset to default
+    };
+  }, []);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen text-gray-600">
@@ -319,36 +330,13 @@ export default function RetreatDetails() {
   const handleNextImage = () =>
     setCurrentImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
 
-  const includedItems = retreat.included
-    ? retreat.included
-        .split(',')
-        .map((item) => item.trim())
-        .filter((item) => item)
-        .map((item) => {
-          const icons = {
-            yoga: '🧘',
-            meal: '🥗',
-            meals: '🥗',
-            location: '🗺️',
-            workshop: '📚',
-            walk: '🌳',
-            nature: '🌳',
-            meditation: '🧘‍♀️',
-            retreat: '🏞️',
-            session: '🧘',
-            default: '✨',
-          };
-          let key = 'default';
-          for (const k of Object.keys(icons)) {
-            if (k !== 'default' && item.toLowerCase().includes(k)) {
-              key = k;
-              break;
-            }
-          }
-          return { icon: icons[key], label: item };
-        })
-        .slice(0, 5)
-    : [];
+  const includedItems = [
+    { iconFile: 'images 2.png', label: '7 days of Yoga' },
+    { iconFile: 'download 4.png', label: 'Organic meals' },
+    { iconFile: 'triangle-sacred-icon-in-line-art-vector 1.png', label: 'Sacred location' },
+    { iconFile: 'download 2.png', label: 'Free Workshop' },
+    { iconFile: 'download 3.png', label: 'Nature walk' }
+  ];
 
   const scheduleItems = retreat.schedule
     ? typeof retreat.schedule === 'string'
@@ -366,7 +354,8 @@ export default function RetreatDetails() {
   };
 
   return (
-    <div className="min-h-screen bg-white md:mt-24 mt-20">
+    <div className="bg-white min-h-screen">
+          <div className="min-h-screen bg-white md:mt-24 mt-20">
       <div className="max-w-screen-xl mx-auto px-0 py-0">
         {imageError && (
           <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 text-red-700 rounded-lg text-center font-medium text-sm sm:text-base">
@@ -374,14 +363,14 @@ export default function RetreatDetails() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-          <div className="space-y-3 sm:space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:h-[700px]">
+          <div className="space-y-3 sm:space-y-4 flex flex-col h-full">
             <div className="mb-2">
               <div className="text-sm text-gray-600">
                 Retreat &gt; {retreat.title || 'The Quiet Space'}
               </div>
             </div>
-            <div className="relative w-full h-56 sm:h-72 md:h-96 lg:h-[600px] rounded-xl overflow-hidden shadow-lg bg-gray-200">
+            <div className="relative w-full flex-1 rounded-xl overflow-hidden shadow-lg bg-gray-200">
               <Image
                 key={currentImageIndex}
                 src={allImages[currentImageIndex] || mainPlaceholder}
@@ -436,18 +425,18 @@ export default function RetreatDetails() {
               )}
             </div>
             {allImages.length > 1 && (
-              <div className="flex space-x-2 sm:space-x-4 overflow-x-auto">
+              <div className="flex space-x-2 sm:space-x-4">
                 {allImages.slice(1, 4).map((img, idx) => (
                   <div
                     key={idx}
-                    className="relative w-20 h-14 sm:w-24 sm:h-16 rounded-xl overflow-hidden bg-gray-200 cursor-pointer ring-2 ring-transparent hover:ring-yellow-400 transition-all flex-shrink-0"
+                    className="relative flex-1 h-20 sm:h-24 rounded-xl overflow-hidden bg-gray-200 cursor-pointer ring-2 ring-transparent hover:ring-yellow-400 transition-all"
                     onClick={() => setCurrentImageIndex(idx + 1)}
                   >
                     <Image
                       src={img}
                       alt={`Thumbnail ${idx + 1}`}
                       fill
-                      sizes="96px"
+                      sizes="(max-width: 640px) 33vw, (max-width: 1024px) 33vw, 200px"
                       style={{ objectFit: 'cover' }}
                       className="rounded-xl"
                       onError={(e) => (e.currentTarget.src = mainPlaceholder)}
@@ -457,13 +446,13 @@ export default function RetreatDetails() {
               </div>
             )}
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col h-full lg:h-[700px]">
             <div className="mb-2">
               <div className="text-sm text-gray-600 invisible">
                 Retreat &gt; {retreat.title || 'The Quiet Space'}
               </div>
             </div>
-            <div className="bg-white overflow-y-auto lg:h-[600px]">
+            <div className="bg-white overflow-hidden flex-1">
               <div className="space-y-4 sm:space-y-6 p-4">
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900 mb-1 sm:mb-2">Description</h2>
@@ -477,40 +466,45 @@ export default function RetreatDetails() {
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900 mb-2 sm:mb-3">What is Included</h2>
-                  {includedItems.length > 0 ? (
-                    <div className="flex flex-wrap gap-4">
-                      {includedItems.map((item, idx) => (
-                        <div key={idx} className="flex flex-col items-center text-center w-16 sm:w-20">
-                          <div className="bg-gray-50 border border-gray-200 rounded-full p-2 sm:p-3 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center hover:bg-gray-100 transition-colors">
-                            <span className="text-lg sm:text-xl">{item.icon}</span>
-                          </div>
-                          <p className="text-xs text-gray-700 font-medium mt-1">{item.label}</p>
+                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-4 justify-items-center">
+                    {includedItems.map((item, idx) => (
+                      <div key={idx} className="flex flex-col items-center text-center">
+                        <div 
+                          className="bg-[#d9d9d9] rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors w-16 h-16 sm:w-20 sm:h-20"
+                        >
+                          <Image
+                            src={`/${item.iconFile}`}
+                            alt={item.label}
+                            width={idx === 0 || idx === 3 ? 64 : 48}
+                            height={idx === 0 || idx === 3 ? 64 : 48}
+                            className="object-contain"
+                            onError={(e) => {
+                              console.log(`Failed to load icon: ${item.iconFile}`);
+                              // Show a fallback emoji instead of hiding
+                              e.currentTarget.style.display = 'none';
+                              e.currentTarget.parentElement.innerHTML = `<span class="text-xl">✨</span>`;
+                            }}
+                            unoptimized={true}
+                          />
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-gray-500 text-sm sm:text-base">What is included information will be available soon.</p>
-                  )}
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900 mb-2 sm:mb-3">Price</h2>
-                  <p className="text-gray-600 text-sm">
-                    ₹{retreat.price ? retreat.price.toFixed(2) : '1000.00'} per person
-                  </p>
+                        <p className="text-xs text-gray-700 font-medium mt-2 leading-tight max-w-[80px] text-center">{item.label}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900 mb-2 sm:mb-3">Schedule</h2>
                   {scheduleItems.length > 0 ? (
                     <div className="space-y-1">
                       {scheduleItems.map((item, idx) => (
-                        <p key={idx} className="text-gray-600 text-sm sm:text-base">{item.trim()}</p>
+                        <p key={idx} className="text-gray-600 text-sm">{item.trim()}</p>
                       ))}
                     </div>
                   ) : (
                     <div className="space-y-1">
-                      <p className="text-gray-600 text-sm">Day 1 — Arrival & Orientation</p>
-                      <p className="text-gray-600 text-sm">Day 2 — Deepening Practice</p>
-                      <p className="text-gray-600 text-sm">Day 3 — Immersion</p>
+                      <p className="text-gray-600 text-xs">Day 1 — Arrival & Orientation</p>
+                      <p className="text-gray-600 text-xs">Day 2 — Deepening Practice</p>
+                      <p className="text-gray-600 text-xs">Day 3 — Immersion</p>
                     </div>
                   )}
                 </div>
@@ -526,6 +520,204 @@ export default function RetreatDetails() {
             </div>
           </div>
         </div>
+        {/* why join section */}
+        <section className="max-w-screen-xl mx-auto mt-8 px-4 sm:px-6">
+          <div className="relative bg-white rounded-xl overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center py-8 px-4 sm:px-8">
+              <div>
+                <h3 className="text-2xl font-semibold text-gray-900 mb-4">Why Join?</h3>
+                <ul className="list-disc list-inside space-y-3 text-gray-700">
+                  <li>Disconnect from noise, reconnect with your inner self</li>
+                  <li>Deepen your yoga and meditation practice</li>
+                  <li>Build authentic, soul-nourishing connections</li>
+                  <li>Experience healing in serene, natural surroundings</li>
+                </ul>
+              </div>
+              <div className="flex items-center justify-center md:justify-end">
+                <div className="w-40 h-40 sm:w-48 sm:h-48">
+                  <Image
+                    src="/lotus.png"
+                    alt="Lotus vector"
+                    width={192}
+                    height={192}
+                    className="object-contain"
+                    unoptimized={true}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="rounded-lg max-w-screen bg-[#faf8f5] mt-8">
+          <div className="max-w-screen mx-auto px-4 sm:px-6">
+            <div className="relative rounded-xl overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center py-8 px-4 sm:px-8">
+                <div>
+                  <h3 className="text-2xl font-semibold text-gray-900 mb-4">Who Is This Retreat For?</h3>
+                  <ul className="list-disc list-inside space-y-3 text-gray-700">
+                    <li>Individuals feeling overwhelmed by stress, anxiety, or emotional challenges</li>
+                    <li>Anyone seeking clarity of purpose and deeper connection </li>
+                    <li>Those wishing to heal past traumas</li>
+                  </ul>
+                </div>
+                <div className="flex items-center justify-center md:justify-end">
+                  <div className="w-40 h-40 sm:w-48 sm:h-48">
+                    <Image
+                      src="/Group 4285.png"
+                      alt="Lotus vector"
+                      width={192}
+                      height={192}
+                      className="object-contain"
+                      unoptimized={true}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+              <section className="py-12 sm:py-16 md:py-20 lg:py-24">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  {/* Section Title */}
+                  <div className="text-center mb-12 sm:mb-16">
+                    <h2 className="text-3xl font-semibold text-gray-900 mb-4">
+                      What You&apos;ll Take Home
+                    </h2>
+                  </div>
+        
+                  {/* Team Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12">
+                    {[
+                      {
+                        name: "Devesh",
+                        role: "A calmer, clearer, and centered mind",
+                        src: "/new1.png", // Replace with actual image path for Devesh
+                        alt: "Devesh - Founder and lead teacher",
+                      },
+                      {
+                        name: "Jane Doe",
+                        role: "A stronger, healthier body",
+                        src: "/new1.png", // Replace with actual image path for Jane
+                        alt: "Jane Doe - Senior Yoga Instructor",
+                      },
+                      {
+                        name: "John Smith",
+                        role: "Deeper self-awareness and inner connection",
+                        src: "/new1.png", // Replace with actual image path for John
+                        alt: "John Smith - Meditation Guide",
+                      },
+                      {
+                        name: "Alice Johnson",
+                        role: "Lasting friendships and soulful memories",
+                        src: "/new1.png", // Replace with actual image path for Alice
+                        alt: "Alice Johnson - Wellness Facilitator",
+                      },
+                    ].map((facilitator, index) => (
+                      <div key={index} className="text-center group">
+                        <div className="relative mb-4 sm:mb-6 mx-auto">
+                          <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 mx-auto rounded-full overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                            <Image
+                              src={facilitator.src}
+                              alt={facilitator.alt}
+                              width={256} // Match lg:w-64
+                              height={256} // Match lg:h-64
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                        </div>
+                        <p className="text-gray-600 text-sm sm:text-base lg:text-lg">
+                          {facilitator.role}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+               <section className="w-full py-10 bg-white">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4 sm:px-8">
+            {/* What's Included */}
+            <div className="bg-[#faf8f5] p-8 shadow-none flex flex-col items-center">
+              <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">What&apos;s Included</h2>
+              <ul className="w-full space-y-6">
+                <li className="flex items-center gap-4 border-b border-gray-200 pb-4">
+                  <span className="inline-block w-8 h-8">
+                    <img src="/ion_bed-outline.png" alt="Bed Icon" className="w-8 h-8" />
+                  </span>
+                  <span className="text-lg text-gray-800">Comfortable stay in serene surroundings</span>
+                </li>
+                <li className="flex items-center gap-4 border-b border-gray-200 pb-4">
+                  <span className="inline-block w-8 h-8">
+                    <img src="/healthicons_hot-meal-outline-24px.png" alt="Food Icon" className="w-8 h-8" />
+                  </span>
+                  <span className="text-lg text-gray-800">Nourishing vegetarian/vegan meals</span>
+                </li>
+                <li className="flex items-center gap-4 border-b border-gray-200 pb-4">
+                  <span className="inline-block w-8 h-8">
+                    <img src="/hugeicons_yoga-02.png" alt="Yoga Icon" className="w-8 h-8" />
+                  </span>
+                  <span className="text-lg text-gray-800">Daily yoga, meditation & mindfulness</span>
+                </li>
+                <li className="flex items-center gap-4">
+                  <span className="inline-block w-8 h-8">
+                    <img src="/famicons_book-outline.png" alt="Book Icon" className="w-8 h-8" />
+                  </span>
+                  <span className="text-lg text-gray-800">Guided workshops & reflective practices</span>
+                </li>
+              </ul>
+            </div>
+            {/* What's Not Included */}
+            <div className="bg-[#faf8f5] p-8 shadow-none flex flex-col items-center">
+              <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">What&apos;s Not Included</h2>
+              <ul className="w-full space-y-6">
+                <li className="flex items-center gap-4 border-b border-gray-200 pb-4">
+                  <span className="inline-block w-8 h-8">
+                    <img src="/mynaui_aeroplane.png" alt="Airplane Icon" className="w-8 h-8" />
+                  </span>
+                  <span className="text-lg text-gray-800">Airfare / travel to retreat location</span>
+                </li>
+                <li className="flex items-center gap-4 border-b border-gray-200 pb-4">
+                  <span className="inline-block w-8 h-8">
+                    <img src="/solar_walking-bold.png" alt="Excursion Icon" className="w-8 h-8" />
+                  </span>
+                  <span className="text-lg text-gray-800">Optional excursions</span>
+                </li>
+                <li className="flex items-center gap-4 border-b border-gray-200 pb-4">
+                  <span className="inline-block w-8 h-8">
+                    <img src="/streamline_travel-places-hot-spring-relax-location-outdoor-recreation-spa.png" alt="Spa Icon" className="w-8 h-8" />
+                  </span>
+                  <span className="text-lg text-gray-800">Personal spa treatments or therapies</span>
+                </li>
+                <li className="flex items-center gap-4">
+                  <span className="inline-block w-8 h-8">
+                    <img src="/mynaui_shopping-bag.png" alt="Shopping Icon" className="w-8 h-8" />
+                  </span>
+                  <span className="text-lg text-gray-800">Personal expenses & shopping</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        {/* text info section */}
+        <section className="max-w-screen-xl mx-auto mt-4 px-4 sm:px-6">
+          <div className="bg-white p-6 sm:p-8">
+            <h3 className="text-3xl text-center font-semibold text-gray-900 mb-8">
+              Why Choose the quiet space ?
+            </h3>
+            <ul className="list-disc list-inside space-y-3 text-gray-700 text-sm sm:text-base">
+              <li>Expert international facilitators with decades of experience in healing and yoga.</li>
+              <li>
+                A <strong>tailor-made program</strong> designed around your individual needs.
+              </li>
+              <li>
+                A unique combination of <strong>mindfulness, therapeutic practices, and island healing energy</strong>.
+              </li>
+              <li>Small-group setting for intimacy, attention, and personal growth.</li>
+            </ul>
+            <p className="mt-4 text-gray-700 text-sm sm:text-base">
+              This isn&apos;t just a retreat—it&apos;s an <strong>awakening of your inner light.</strong>
+            </p>
+          </div>
+        </section>
         <div className="mt-6 sm:mt-8 border-t border-gray-200 pt-4 sm:pt-6">
           <div className="flex flex-row flex-nowrap border-b border-gray-200 mb-4 sm:mb-6 gap-2 sm:gap-4 overflow-x-auto">
             <button
@@ -770,9 +962,54 @@ export default function RetreatDetails() {
           </div>
         </div>
       </div>
+      {/* cancellation policy section */}
+            {/* cancellation policy section */}
+      <section className="max-w-screen-xl rounded-lg mb-6 bg-[#faf8f5] mx-auto mt-8 px-4 sm:px-6">
+        <div className="p-6 sm:p-8">
+          <h3 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-4 text-center">Cancellation Policy</h3>
+
+          <p className="text-gray-700 text-sm sm:text-base mb-4">
+            At <strong>The Quiet Space</strong>, every retreat is prepared with great care and love. Because our retreat spaces are extremely limited, each booking is significant. For this reason, we follow a <strong>non-refundable policy</strong> on all reservations.
+          </p>
+
+          <p className="text-gray-700 text-sm sm:text-base mb-6">
+            We kindly ask you to confirm your plans before securing your place, as once registered, your booking is considered final. This allows us to maintain the quality and exclusivity of the retreat experience for all participants.
+          </p>
+
+          <h4 className="text-lg font-semibold text-gray-900 mb-3">Important Notes</h4>
+          <ol className="list-decimal list-inside text-gray-700 space-y-3 mb-6 text-sm sm:text-base">
+            <li>
+              <strong>All bookings are non-refundable</strong>, regardless of the reason for cancellation.
+              <div className="mt-2 ml-4 space-y-1 text-gray-700">
+                <div>a. <strong>Transfer your booking</strong> to another person (a friend, family member, or colleague).</div>
+                <div>b. <strong>Request a date change</strong> (subject to availability and retreat schedule).</div>
+              </div>
+            </li>
+            <li>
+              In rare cases of <strong>force majeure</strong> (natural disasters, government restrictions, or unforeseen events beyond our control), The Quiet Space reserves the right to reschedule or provide an alternative option.
+            </li>
+          </ol>
+
+          <h4 className="text-lg font-semibold text-gray-900 mb-3">Force Majeure</h4>
+          <ol className="list-decimal list-inside text-gray-700 space-y-2 text-sm sm:text-base">
+            <li>
+              The Quiet Space reserves the right to modify or cancel bookings in the event of unforeseen circumstances or force majeure situations that are beyond our control.
+            </li>
+            <li>
+              In such cases, guests will be notified promptly, and alternative options or a refund will be provided at our discretion.
+            </li>
+          </ol>
+        </div>
+      </section>
+<button
+  onClick={() => setShowBookingForm(true)}
+  className="w-full max-w-screen-xl mb-12 md:mb-22 mx-auto block bg-[#c8a961] hover:bg-[#b88c4e] text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+>
+  Register Now
+</button>
       {showBookingForm && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900/30 backdrop-blur-md">
-          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-2xl space-y-4 sm:space-y-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-2xl space-y-4 sm:space-y-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center">
               <h3 className="text-xl font-semibold text-gray-900">Book Your Spot</h3>
               <button
@@ -927,7 +1164,7 @@ export default function RetreatDetails() {
             </p>
             <button
               onClick={handleBookAndPay}
-              className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-white py-2.5 rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+              className="w-full bg-[#c1a050] hover:from-yellow-500 hover:to-yellow-600 text-white py-2.5 rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
             >
               Proceed to Payment
             </button>
@@ -940,6 +1177,7 @@ export default function RetreatDetails() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }
