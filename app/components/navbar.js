@@ -216,14 +216,14 @@ const Navbar = () => {
                 className="block px-3 py-2.5 sm:py-3 text-gray-700 hover:text-[#C1A050] hover:bg-[#C1A050]/10 font-medium text-sm sm:text-base rounded-lg transition-colors duration-200 text-center"
                 onClick={closeMobileMenu}
               >
-                About
+                About Us
               </Link>
               <Link
                 href="/retreat"
                 className="block px-3 py-2.5 sm:py-3 text-gray-700 hover:text-[#C1A050] hover:bg-[#C1A050]/10 font-medium text-sm sm:text-base rounded-lg transition-colors duration-200 text-center"
                 onClick={closeMobileMenu}
               >
-                Retreat
+                Retreats
               </Link>
               <Link
                 href="/workshop"
