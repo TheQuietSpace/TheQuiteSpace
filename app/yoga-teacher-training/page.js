@@ -1,887 +1,360 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image'; // Import Next.js Image component
+import { supabase } from '@/lib/supabse';
+import {
+  Calendar as CalendarIcon,
+  Image as ImageIcon
+} from "lucide-react";
 
-export default function RetreatDetails() {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState("teachers");
-  const [expandedFaqs, setExpandedFaqs] = useState({});
-  const [showForm, setShowForm] = useState(false);
-  const [newRating, setNewRating] = useState(5);
-  const [newReview, setNewReview] = useState("");
-  const [filterRating, setFilterRating] = useState(null);
-  const [showFilters, setShowFilters] = useState(false);
-  const [showBookingForm, setShowBookingForm] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [wellnessProgram, setWellnessProgram] = useState("");
-  const [accommodation, setAccommodation] = useState("");
-  const [date, setDate] = useState("");
-  const [country, setCountry] = useState("");
-  const [destination, setDestination] = useState("");
-  const [numPersons, setNumPersons] = useState("");
-  const [agreed, setAgreed] = useState(false);
+const highlights = [
+  {
+    title: "Experiential Learning",
+    description: "Hands-on practices, activities",
+    image: "/Frame 4292.png", // replace with your image
+  },
+  {
+    title: "Expert Facilitators",
+    description: "Certified teachers & guides",
+    image: "/Frame 429.png", // replace with your image
+  },
+  {
+    title: "Community",
+    description: "Connect with like-minded seekers",
+    image: "/Frame 4293.png", // replace with your image
+  },
+  {
+    title: "Integration",
+    description: "Tools to continue your journey",
+    image: "/Frame 4294.png", // replace with your image
+  },
+];
 
-  const mainPlaceholder =
-    "https://via.placeholder.com/800x500?text=Main+Image+Not+Found";
-  const teacherPlaceholder =
-    "https://via.placeholder.com/150x150?text=Teacher+Image+Not+Found";
-
-  // Static retreat data
-  const retreat = {
-    id: 1,
-    title: "Yin Yoga Teacher Training Course",
-    description:
-      "Discover the transformative practice of Yin Yoga on the serene island of Mauritius with The Quiet Space. Surrounded by pristine beaches and lush tropical beauty, this 50-hour Yin Yoga Teacher Training Course (TTC) is designed to guide you into the subtle art of stillness, awareness, and deep tissue release.\n\nUnlike dynamic styles of yoga, Yin works gently yet profoundly on the fascia, joints, and connective tissues, creating balance and harmony within body and mind. Whether you are a dedicated practitioner or a yoga teacher seeking to expand your skills, this training offers the perfect blend.",
-    price: 15000,
-    image_url: "/hero.svg",
-    gallery_images: ["/hero.svg", "/hero.svg", "/hero.svg"],
-    location: ["The Quiet Space, Mauritius"],
-    schedule:
-      "Training details\nLocation: The Quiet Space, Mauritius\nDuration: 6 Days Intensive (with optional extended practice)\nCertification: 50Hr YACEP (Yoga Alliance Continuing Education)",
-    teachers: [
-      {
-        name: "Sarah Johnson",
-        title: "Lead Yin Yoga Instructor",
-        description:
-          "With over 15 years of experience in Yin Yoga and deep tissue work, Sarah brings profound knowledge of fascia, joints, and connective tissue healing.",
-        focus_areas: "Yin Yoga, Deep Tissue Release, Fascia Work, Meditation",
-        image_url: null,
-      },
-    ],
-    faqs: [
-      {
-        category: "Training Questions",
-        faqs: [
-          {
-            question: "What is included in the 50-hour training?",
-            answer:
-              "Complete Yin Yoga methodology, anatomy of fascia and connective tissues, meditation practices, and teaching techniques.",
-          },
-          {
-            question: "Is this suitable for beginners?",
-            answer:
-              "This training is designed for both dedicated practitioners and existing yoga teachers looking to expand their skills.",
-          },
-          {
-            question: "What certification will I receive?",
-            answer:
-              "You will receive a 50Hr YACEP (Yoga Alliance Continuing Education) certification upon completion.",
-          },
-        ],
-      },
-    ],
-  };
-
-  // Static reviews data
-  const reviews = [
-    {
-      id: 1,
-      user_name: "John Doe",
-      rating: 5,
-      review: "Amazing experience! Truly transformative.",
-      created_at: "2024-01-15T10:00:00Z",
-    },
-    {
-      id: 2,
-      user_name: "Jane Smith",
-      rating: 4,
-      review: "Great retreat with wonderful instructors.",
-      created_at: "2024-01-10T14:30:00Z",
-    },
-  ];
-
-  const wellnessPrograms = [
-    "Yoga Retreat",
-    "Meditation Program",
-    "Detox Program",
-  ];
-  const accommodationOptions = [
-    "Single",
-    "Double",
-    "Triple",
-    "Non Residential",
-    "Online",
-  ];
-  const countries = [
-    "India",
-    "United States",
-    "United Kingdom",
-    "Australia",
-    "Canada",
-    "Germany",
-    "France",
-    "Other",
-  ];
-  const numberOfPersons = Array.from({ length: 10 }, (_, i) => i + 1);
-
-  const destinations = Array.isArray(retreat.location)
-    ? retreat.location
-    : [retreat.location];
-
-  const handleBookAndPay = () => {
-    if (
-      !name ||
-      !email ||
-      !phone ||
-      !wellnessProgram ||
-      !accommodation ||
-      !date ||
-      !country ||
-      !destination ||
-      !numPersons ||
-      !agreed
-    ) {
-      alert("Please fill all fields and agree to the terms.");
-      return;
-    }
-
-    // Static frontend - just show success message
-    alert("Booking form submitted! (This is a static demo)");
-    setShowBookingForm(false);
-    setName("");
-    setEmail("");
-    setPhone("");
-  };
-
-  const handleSubmitReview = () => {
-    if (!newReview) {
-      alert("Please provide a review.");
-      return;
-    }
-
-    // Static frontend - just show success message
-    alert("Review submitted! (This is a static demo)");
-    setShowForm(false);
-    setNewRating(5);
-    setNewReview("");
-  };
+const AboutSections = () => {
+  const [workshops, setWorkshops] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [popularWorkshops, setPopularWorkshops] = useState([]);
+  const [loadingPopular, setLoadingPopular] = useState(true);
+  const [errorPopular, setErrorPopular] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedWorkshop, setSelectedWorkshop] = useState(null);
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+  const [formError, setFormError] = useState(null);
+  const [formLoading, setFormLoading] = useState(false);
+  const [testimonials, setTestimonials] = useState([]);
+  const [loadingTestimonials, setLoadingTestimonials] = useState(true);
 
   useEffect(() => {
-    document.body.style.background = "#ffffff";
-    return () => {
-      document.body.style.background = "";
-    };
+    fetchWorkshops();
+    fetchPopularWorkshops();
   }, []);
 
-  const allImages = [
-    ...(retreat.image_url ? [retreat.image_url] : []),
-    ...(retreat.gallery_images || []),
-  ].filter((url) => typeof url === "string" && url.length > 0);
+  useEffect(() => {
+    async function fetchTestimonials() {
+      setLoadingTestimonials(true);
+      const { data, error } = await supabase
+        .from('testimonials')
+        .select('*')
+        .eq('category', 'Workshop')
+        .order('created_at', { ascending: false });
+      if (!error) setTestimonials(data);
+      setLoadingTestimonials(false);
+    }
+    fetchTestimonials();
+  }, []);
 
-  const handlePrevImage = () =>
-    setCurrentImageIndex((prev) =>
-      prev === 0 ? allImages.length - 1 : prev - 1
-    );
-  const handleNextImage = () =>
-    setCurrentImageIndex((prev) =>
-      prev === allImages.length - 1 ? 0 : prev + 1
-    );
-
-  const includedItems = [
-    { iconFile: "images 2.png", label: "7 days of Yoga" },
-    { iconFile: "download 4.png", label: "Organic meals" },
-    {
-      iconFile: "triangle-sacred-icon-in-line-art-vector 1.png",
-      label: "Sacred location",
-    },
-    { iconFile: "download 2.png", label: "Free Workshop" },
-    { iconFile: "download 3.png", label: "Nature walk" },
-  ];
-
-  const scheduleItems = retreat.schedule
-    ? typeof retreat.schedule === "string"
-      ? retreat.schedule.split("\n").filter((i) => i.trim())
-      : Array.isArray(retreat.schedule)
-      ? retreat.schedule.filter((i) => i.trim())
-      : []
-    : [];
-
-  const toggleFaq = (categoryIndex, faqIndex) => {
-    setExpandedFaqs((prev) => ({
-      ...prev,
-      [`${categoryIndex}-${faqIndex}`]: !prev[`${categoryIndex}-${faqIndex}`],
-    }));
+  const fetchWorkshops = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("workshops")
+      .select("*")
+      .order("event_date", { ascending: true }); // upcoming first
+    if (error) {
+      setError(error.message);
+    } else {
+      setWorkshops(data);
+    }
+    setLoading(false);
   };
 
+  // Fetch popular workshops (example: filter by a 'popular' boolean column, or by attendance)
+  const fetchPopularWorkshops = async () => {
+    setLoadingPopular(true);
+    const { data, error } = await supabase
+      .from("workshops")
+      .select("*")
+      .order("event_date", { ascending: false });
+    if (error) {
+      setErrorPopular(error.message);
+    } else {
+      // Pick 3 random workshops if available
+      let randomWorkshops = [];
+      if (data && data.length > 0) {
+        randomWorkshops = [...data].sort(() => 0.5 - Math.random()).slice(0, 3);
+      }
+      setPopularWorkshops(randomWorkshops);
+    }
+    setLoadingPopular(false);
+  };
+
+  const openModal = (workshop) => {
+    setSelectedWorkshop(workshop);
+    setIsModalOpen(true);
+    setFormData({ name: '', email: '', phone: '' });
+    setFormError(null);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedWorkshop(null);
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email) {
+      setFormError('Name and Email are required.');
+      return;
+    }
+    setFormLoading(true);
+    const { error } = await supabase
+      .from('workshop_registrations')
+      .insert({
+        workshop_id: selectedWorkshop.id,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+      });
+    if (error) {
+      setFormError(error.message);
+    } else {
+      alert('Registration successful!');
+      closeModal();
+    }
+    setFormLoading(false);
+  };
+
+  if (loading) return <div className="text-center py-10 text-gray-600">Loading...</div>;
+  if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
+  if (workshops.length === 0)
+    return <div className="text-center py-10 text-gray-500">No upcoming workshops</div>;
+
   return (
-    <div className="bg-white min-h-screen">
-      <section className="h-screen sm:h-[70vh] lg:h-[80vh] w-full overflow-hidden relative -mt-20 sm:-mt-16 md:-mt-20 lg:-mt-24">
+    <div className="w-full">
+      {/* Hero Section */}
+      <section className="relative h-[50vh] min-h-[320px] w-full overflow-hidden">
         <div className="absolute inset-0">
-          <Image
-            src="/Frame 1410119540(1).png"
-            alt="Hero background"
-            fill={true}
-            className="object-cover object-center"
-            unoptimized={true}
-            priority={true}
-            sizes="100vw"
+          <div
+            className="w-full h-full bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35)), url('/Frame 1.png')`,
+            }}
           />
         </div>
-        <div className="absolute inset-0 z-10 mt-30 flex items-center justify-center px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="prose prose-base sm:prose-lg text-white/90 leading-relaxed">
-              <h2 className="text-3xl font-semibold text-black mb-6 sm:mb-8 leading-tight">
-                50- Hours Yin Yoga Teacher Training in Mauritius
-              </h2>
-              <p className="mb-3 sm:mb-4 text-2xl text-black font-light">
-                Deepen your practice. Expand your teaching. Transform in
-                paradise
-              </p>
-              <h2 className="text-xl font-semibold text-black mb-6 sm:mb-8 leading-tight">
-                50 Hours | Yoga Alliance Certified
-              </h2>
+        {/* Optional future hero content container */}
+        {/* <div className="relative z-10 flex h-full items-center justify-center px-4 text-white">
+          <h1 className="text-3xl sm:text-4xl font-semibold">Workshops</h1>
+        </div> */}
+      </section>
+
+      {/* Key Highlights Section */}
+      <section className="relative z-10 py-12 px-4 sm:px-6 md:py-16 text-center bg-white">
+        <h2 className="text-3xl sm:text-4xl font-semibold mb-8 sm:mb-10">Key Highlights</h2>
+        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
+          {highlights.map((item, idx) => (
+            <div key={idx} className="flex flex-col items-center">
+              <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full mt-4 sm:mt-5 overflow-hidden shadow-lg mb-4 shrink-0">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  width={300}
+                  height={300}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+              <h3 className="text-xl sm:text-2xl font-semibold">{item.title}</h3>
+              <p className="text-sm text-gray-600 mt-1 max-w-[220px] sm:max-w-none">{item.description}</p>
             </div>
-          </div>
+          ))}
         </div>
       </section>
 
-      <div className="min-h-screen bg-white md:mt-24 mt-20">
-        <div className="max-w-screen-xl mx-auto px-0 py-0">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:h-[700px]">
-            <div className="space-y-3 sm:space-y-4 flex flex-col h-full lg:h-[700px]">
-              <div className="relative w-full flex-1 rounded-xl overflow-hidden shadow-lg bg-gray-200">
-                <Image
-                  key={currentImageIndex}
-                  src="/Frame 1410119543.png"
-                  alt={`${retreat.title} - Image ${currentImageIndex + 1}`}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 500px"
-                  style={{ objectFit: "cover" }}
-                  className="rounded-xl"
-                  onError={(e) => (e.currentTarget.src = mainPlaceholder)}
-                  priority={currentImageIndex === 0}
-                  unoptimized={true}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col h-full lg:h-[700px]">
-              <div className="bg-white overflow-hidden flex-1">
-                <div className="space-y-4 sm:space-y-6 p-4">
-                  <div>
-                    <div className="text-gray-700 text-lg leading-relaxed">
-                      <p className="mb-3">
-                        Discover the transformative practice of Yin Yoga on the
-                        serene island of Mauritius with The Quiet Space.
-                      </p>
-                      <p className="mb-3">
-                        Surrounded by pristine beaches and lush tropical beauty,
-                        this 50-hour Yin Yoga Teacher Training Course (TTC) is
-                        designed to guide you into the subtle art of stillness,
-                        awareness, and deep tissue release.
-                      </p>
-                      <p className="mb-3">
-                        Unlike dynamic styles of yoga, Yin works gently yet
-                        profoundly on the fascia, joints, and connective
-                        tissues, creating balance and harmony within body and
-                        mind.
-                      </p>
-                    </div>
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-semibold text-gray-900 mb-2 sm:mb-3">
-                      Training Details
-                    </h2>
-                    <div className="space-y-2 text-lg text-gray-700">
-                      <div>
-                        <span className="font-semibold">Location:</span> The
-                        Quiet Space, Mauritius
-                      </div>
-                      <div>
-                        <span className="font-semibold">Duration:</span> 6 Days
-                        Intensive (with optional extended practice)
-                      </div>
-                      <div>
-                        <span className="font-semibold">Certification:</span>{" "}
-                        50Hr YACEP (Yoga Alliance Continuing Education)
-                      </div>
-                    </div>
-                  </div>
-                  <div className="pt-2">
-                    <button
-                      onClick={() => setShowBookingForm(true)}
-                      className="w-full bg-[#c8a961] hover:bg-[#b88c4e] text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
-                    >
-                      Register Now
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* Upcoming Training Programs Section */}
+      <section className="py-12 px-2 sm:px-6">
+        <div className="p-2 sm:p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-3xl font-semibold text-center flex-1">Training Programs</h2>
           </div>
-          <section className="rounded-lg max-w-screen bg-[#faf8f5] mt-8">
-            <div className="max-w-screen mx-auto px-4 sm:px-6">
-              <div className="relative rounded-xl overflow-hidden">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center py-8 px-4 sm:px-8">
-                  <div>
-                    <h3 className="text-2xl font-semibold text-gray-900 mb-4">
-                      Why Yin Yoga Teacher Training at The Quiet Space?
-                    </h3>
-                    <ul className="list-inside space-y-3 text-gray-700">
-                      <li>
-                        ✔ Learn the art of stillness, alignment & mindfulness
-                      </li>
-                      <li>
-                        ✔ Yoga Alliance accredited 50 Hr TTC – teach worldwide
-                      </li>
-                      <li>✔ Practice in the serene beauty of Mauritius</li>
-                      <li>✔ Guided by experienced international teachers</li>
-                      <li>✔ Small group training for personal attention</li>
-                    </ul>
-                  </div>
-                  <div className="flex items-center justify-center md:justify-end">
-                    <div className="w-40 h-40 sm:w-48 sm:h-48">
-                      <Image
-                        src="/Group 4285.png"
-                        alt="Lotus vector"
-                        width={192}
-                        height={192}
-                        className="object-contain"
-                        unoptimized={true}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-          <section className="py-12 sm:py-16 md:py-20 lg:py-24">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              {/* Section Title */}
-              <div className="text-center mb-12 sm:mb-16">
-                <h2 className="text-3xl font-semibold text-gray-900 mb-4">
-                  Course Highlights
-                </h2>
-              </div>
-
-              {/* Team Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-10 md:gap-12">
-                {[
-                  {
-                    name: "Devesh",
-                    role: "Yin Philosophy & Foundations",
-                    src: "/new1.png", // Replace with actual image path for Devesh
-                    alt: "Devesh - Founder and lead teacher",
-                  },
-                  {
-                    name: "Jane Doe",
-                    role: "Archetypal Yin Postures & Variations",
-                    src: "/new1.png", // Replace with actual image path for Jane
-                    alt: "Jane Doe - Senior Yoga Instructor",
-                  },
-                  {
-                    name: "John Smith",
-                    role: "Meridian, Anatomy & Fascia Science",
-                    src: "/new1.png", // Replace with actual image path for John
-                    alt: "John Smith - Meditation Guide",
-                  },
-                  {
-                    name: "Alice Johnson",
-                    role: "Subtle Energy: Koshas, Prana & Nadis",
-                    src: "/new1.png", // Replace with actual image path for Alice
-                    alt: "Alice Johnson - Wellness Facilitator",
-                  },
-                  {
-                    name: "Alice Johnson",
-                    role: "Teaching Methodology & Sequencing",
-                    src: "/new1.png", // Replace with actual image path for Alice
-                    alt: "Alice Johnson - Wellness Facilitator",
-                  },
-                ].map((facilitator, index) => (
-                  <div key={index} className="text-center group">
-                    <div className="relative mb-4 sm:mb-6 mx-auto">
-                      <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 mx-auto rounded-full overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                        <Image
-                          src={facilitator.src}
-                          alt={facilitator.alt}
-                          width={256} // Match lg:w-64
-                          height={256} // Match lg:h-64
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                    </div>
-                    <p className="text-gray-600 text-sm sm:text-base lg:text-lg">
-                      {facilitator.role}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-          <section className="rounded-lg max-w-screen bg-[#faf8f5] mt-8">
-            <div className="max-w-screen mx-auto px-4 sm:px-6">
-              <div className="relative rounded-xl overflow-hidden">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center py-8 px-4 sm:px-8">
-                  <div>
-                    <h3 className="text-2xl font-semibold text-gray-900 mb-4">
-                      What You&apos;ll Take Home
-                    </h3>
-                    <ul className="list-inside space-y-3 text-gray-700">
-                      <li>✔ Confidence to lead Yin Yoga classes</li>
-                      <li>✔ A deep personal Yin practice</li>
-                      <li>✔ Tools to balance body, mind & energy</li>
-                      <li>✔ Globally recognized certification</li>
-                      <li>✔ A transformative experience in paradise</li>
-                    </ul>
-                  </div>
-                  <div className="flex items-center justify-center md:justify-end">
-                    <div className="w-40 h-40 sm:w-48 sm:h-48">
-                      <Image
-                        src="/Group 4285.png"
-                        alt="Lotus vector"
-                        width={192}
-                        height={192}
-                        className="object-contain"
-                        unoptimized={true}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-          <section className="w-full py-10 bg-white">
-            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4 sm:px-8">
-              {/* What's Included */}
-              <div className="bg-[#faf8f5] p-8 shadow-none flex flex-col items-center">
-                <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-                  What&apos;s Included
-                </h2>
-                <ul className="w-full space-y-6">
-                  <li className="flex items-center gap-4 border-b border-gray-200 pb-4">
-                    <span className="inline-block w-8 h-8">
-                      <img
-                        src="/ion_bed-outline.png"
-                        alt="Bed Icon"
-                        className="w-8 h-8"
-                      />
-                    </span>
-                    <span className="text-lg text-gray-800">
-                      Comfortable stay in serene surroundings
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-4 border-b border-gray-200 pb-4">
-                    <span className="inline-block w-8 h-8">
-                      <img
-                        src="/healthicons_hot-meal-outline-24px.png"
-                        alt="Food Icon"
-                        className="w-8 h-8"
-                      />
-                    </span>
-                    <span className="text-lg text-gray-800">
-                      Nourishing vegetarian/vegan meals
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-4 border-b border-gray-200 pb-4">
-                    <span className="inline-block w-8 h-8">
-                      <img
-                        src="/hugeicons_yoga-02.png"
-                        alt="Yoga Icon"
-                        className="w-8 h-8"
-                      />
-                    </span>
-                    <span className="text-lg text-gray-800">
-                      Daily yoga, meditation & mindfulness
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-4">
-                    <span className="inline-block w-8 h-8">
-                      <img
-                        src="/famicons_book-outline.png"
-                        alt="Book Icon"
-                        className="w-8 h-8"
-                      />
-                    </span>
-                    <span className="text-lg text-gray-800">
-                      Guided workshops & reflective practices
-                    </span>
-                  </li>
-                </ul>
-              </div>
-              {/* What's Not Included */}
-              <div className="bg-[#faf8f5] p-8 shadow-none flex flex-col items-center">
-                <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-                  What&apos;s Not Included
-                </h2>
-                <ul className="w-full space-y-6">
-                  <li className="flex items-center gap-4 border-b border-gray-200 pb-4">
-                    <span className="inline-block w-8 h-8">
-                      <img
-                        src="/mynaui_aeroplane.png"
-                        alt="Airplane Icon"
-                        className="w-8 h-8"
-                      />
-                    </span>
-                    <span className="text-lg text-gray-800">
-                      Airfare / travel to retreat location
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-4 border-b border-gray-200 pb-4">
-                    <span className="inline-block w-8 h-8">
-                      <img
-                        src="/solar_walking-bold.png"
-                        alt="Excursion Icon"
-                        className="w-8 h-8"
-                      />
-                    </span>
-                    <span className="text-lg text-gray-800">
-                      Optional excursions
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-4 border-b border-gray-200 pb-4">
-                    <span className="inline-block w-8 h-8">
-                      <img
-                        src="/streamline_travel-places-hot-spring-relax-location-outdoor-recreation-spa.png"
-                        alt="Spa Icon"
-                        className="w-8 h-8"
-                      />
-                    </span>
-                    <span className="text-lg text-gray-800">
-                      Personal spa treatments or therapies
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-4">
-                    <span className="inline-block w-8 h-8">
-                      <img
-                        src="/mynaui_shopping-bag.png"
-                        alt="Shopping Icon"
-                        className="w-8 h-8"
-                      />
-                    </span>
-                    <span className="text-lg text-gray-800">
-                      Personal expenses & shopping
-                    </span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </section>
-          <section className="max-w-screen-xl mx-auto mt-4 px-4 sm:px-6">
-            <div className="bg-white p-6 sm:p-8">
-              <h3 className="text-3xl text-center font-semibold text-gray-900 mb-8">
-                Why Choose the quiet space ?
-              </h3>
-              <ul className="list-disc list-inside space-y-3 text-gray-700 text-sm sm:text-base">
-                <li>
-                  Expert international facilitators with decades of experience
-                  in healing and yoga.
-                </li>
-                <li>
-                  A <strong>tailor-made program</strong> designed around your
-                  individual needs.
-                </li>
-                <li>
-                  A unique combination of{" "}
-                  <strong>
-                    mindfulness, therapeutic practices, and island healing
-                    energy
-                  </strong>
-                  .
-                </li>
-                <li>
-                  Small-group setting for intimacy, attention, and personal
-                  growth.
-                </li>
-              </ul>
-              <p className="mt-4 text-gray-700 text-sm sm:text-base">
-                This isn&apos;t just a retreat—it&apos;s an{" "}
-                <strong>awakening of your inner light.</strong>
-              </p>
-            </div>
-          </section>
-          <section className="max-w-screen-xl rounded-lg mb-6 bg-[#faf8f5] mx-auto mt-8 px-4 sm:px-6">
-            <div className="p-6 sm:p-8">
-              <h3 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-4 text-center">
-                Cancellation Policy
-              </h3>
-
-              <p className="text-gray-700 text-sm sm:text-base mb-4">
-                At <strong>The Quiet Space</strong>, every retreat is prepared
-                with great care and love. Because our retreat spaces are
-                extremely limited, each booking is significant. For this reason,
-                we follow a <strong>non-refundable policy</strong> on all
-                reservations.
-              </p>
-
-              <p className="text-gray-700 text-sm sm:text-base mb-6">
-                We kindly ask you to confirm your plans before securing your
-                place, as once registered, your booking is considered final.
-                This allows us to maintain the quality and exclusivity of the
-                retreat experience for all participants.
-              </p>
-
-              <h4 className="text-lg font-semibold text-gray-900 mb-3">
-                Important Notes
-              </h4>
-              <ol className="list-decimal list-inside text-gray-700 space-y-3 mb-6 text-sm sm:text-base">
-                <li>
-                  <strong>All bookings are non-refundable</strong>, regardless
-                  of the reason for cancellation.
-                  <div className="mt-2 ml-4 space-y-1 text-gray-700">
-                    <div>
-                      a. <strong>Transfer your booking</strong> to another
-                      person (a friend, family member, or colleague).
-                    </div>
-                    <div>
-                      b. <strong>Request a date change</strong> (subject to
-                      availability and retreat schedule).
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  In rare cases of <strong>force majeure</strong> (natural
-                  disasters, government restrictions, or unforeseen events
-                  beyond our control), The Quiet Space reserves the right to
-                  reschedule or provide an alternative option.
-                </li>
-              </ol>
-
-              <h4 className="text-lg font-semibold text-gray-900 mb-3">
-                Force Majeure
-              </h4>
-              <ol className="list-decimal list-inside text-gray-700 space-y-2 text-sm sm:text-base">
-                <li>
-                  The Quiet Space reserves the right to modify or cancel
-                  bookings in the event of unforeseen circumstances or force
-                  majeure situations that are beyond our control.
-                </li>
-                <li>
-                  In such cases, guests will be notified promptly, and
-                  alternative options or a refund will be provided at our
-                  discretion.
-                </li>
-              </ol>
-            </div>
-          </section>
-          {/* Rest of sections... */}
-
-          <button
-            onClick={() => setShowBookingForm(true)}
-            className="w-full max-w-screen-xl mb-12 mx-auto block bg-[#c8a961] hover:bg-[#b88c4e] text-white py-3 px-6 rounded-xl font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
-          >
-            Register Now
-          </button>
-        </div>
-      </div>
-
-      {/* Booking Form Modal */}
-      {showBookingForm && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900/30 backdrop-blur-md">
-          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-2xl space-y-4 sm:space-y-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center">
-              <h3 className="text-xl font-semibold text-gray-900">
-                Book Your Spot
-              </h3>
-              <button
-                onClick={() => setShowBookingForm(false)}
-                className="text-gray-500 hover:text-gray-700"
+          {workshops.length > 0 && (
+            <div className="flex flex-row flex-nowrap gap-6 md:gap-10 py-4 px-1 md:px-8 justify-center">
+              <div
+                className="bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col md:flex-row items-stretch w-[85vw] sm:w-[80vw] md:w-[640px] flex-shrink-0 hover:scale-[1.02] transition-transform duration-300 snap-start"
               >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
+                {/* Image Section */}
+                <div className="w-full md:w-2/5 flex items-center justify-center p-2 md:p-3">
+                  <Image
+                    src="/Frame 4292.png"
+                    alt="Yin Yoga Teacher Training"
+                    width={400}
+                    height={250}
+                    className="rounded-xl object-cover w-full h-44 md:h-full md:min-h-[240px] max-h-[300px]"
+                    unoptimized={true}
                   />
-                </svg>
-              </button>
-            </div>
-            <div className="flex gap-4 mb-4">
-              <label className="flex items-center">
-                <input type="radio" checked readOnly className="mr-2" />
-                Retreat
-              </label>
-              <label className="flex items-center">
-                <input type="radio" disabled className="mr-2" />
-                Workshop
-              </label>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Wellness Program
-                </label>
-                <select
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
-                  value={wellnessProgram}
-                  onChange={(e) => setWellnessProgram(e.target.value)}
-                >
-                  <option value="">Select</option>
-                  {wellnessPrograms.map((prog) => (
-                    <option key={prog} value={prog}>
-                      {prog}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Destination
-                </label>
-                <select
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                >
-                  <option value="">Select</option>
-                  {destinations.map((dest) => (
-                    <option key={dest} value={dest}>
-                      {dest}
-                    </option>
-                  ))}
-                </select>
+                </div>
+                {/* Details Section */}
+                <div className="flex-1 flex flex-col justify-between px-4 py-2 md:py-5 md:px-6">
+                  <div>
+                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1 md:mb-2 line-clamp-2">Yin Yoga Teacher Training</h3>
+                    <div className="text-gray-700 text-sm md:text-base mb-2">
+                      <span className="block"><span className="font-medium">Details:</span> 50 Hours | Yoga Alliance Certified</span>
+                      <span className="block"><span className="font-medium">Location:</span> Mauritius</span>
+                    </div>
+                    <p className="text-gray-600 text-sm md:text-base line-clamp-2 md:line-clamp-3">Discover the transformative practice of Yin Yoga on the serene island of Mauritius with The Quiet Space.</p>
+                  </div>
+                  {/* Button can be customized or removed if not needed */}
+                  <button 
+                    className="w-full border border-gray-400 text-gray-900 py-2 rounded-lg font-medium hover:bg-gray-100 transition-all duration-200"
+                    onClick={() => window.location.href = "/yoga-teacher-training/details"}
+                  >
+                    View Details
+                  </button>
+                </div>
               </div>
             </div>
-            <div>
-              <label className="block font-semibold text-gray-700 mb-1">
-                Accommodation Options
-              </label>
-              <div className="flex flex-wrap gap-4">
-                {accommodationOptions.map((opt) => (
-                  <label key={opt} className="flex items-center">
-                    <input
-                      type="radio"
-                      name="accommodation"
-                      value={opt}
-                      checked={accommodation === opt}
-                      onChange={(e) => setAccommodation(e.target.value)}
-                      className="mr-2"
-                    />
-                    {opt}
-                  </label>
-                ))}
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Full Name
-                </label>
+          )}
+        </div>
+      </section>
+
+
+      {/* Registration Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+            <h2 className="text-xl font-bold mb-4">Register for {selectedWorkshop?.name}</h2>
+            {formError && <p className="text-red-500 mb-4">{formError}</p>}
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
                 <input
                   type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  required
                 />
               </div>
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Number of Persons
-                </label>
-                <select
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
-                  value={numPersons}
-                  onChange={(e) => setNumPersons(e.target.value)}
-                >
-                  <option value="">Select</option>
-                  {numberOfPersons.map((n) => (
-                    <option key={n} value={n}>
-                      {n}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Email
-                </label>
+              <div className="mb-4">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
                 <input
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  required
                 />
               </div>
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Date
-                </label>
+              <div className="mb-4">
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone (optional)</label>
                 <input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                 />
               </div>
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">
-                  Country
-                </label>
-                <select
-                  className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
+              <div className="flex justify-end gap-4">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
                 >
-                  <option value="">Select</option>
-                  {countries.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={formLoading}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {formLoading ? 'Submitting...' : 'Submit'}
+                </button>
               </div>
-            </div>
-            <div>
-              <label className="block font-semibold text-gray-700 mb-1">
-                Price
-              </label>
-              <input
-                type="text"
-                value={`₹${
-                  retreat.price ? retreat.price.toFixed(2) : "1000.00"
-                } per person`}
-                className="w-full border border-gray-300 rounded-lg p-2.5 bg-gray-100"
-                disabled
-              />
-            </div>
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                checked={agreed}
-                onChange={(e) => setAgreed(e.target.checked)}
-                className="mr-2"
-              />
-              <span className="text-sm text-gray-600">
-                I agree to the terms and conditions
-              </span>
-            </div>
-            <p className="text-xs text-gray-500">
-              Please note that the prices listed are exclusive of applicable
-              taxes (VAT)
-            </p>
-            <button
-              onClick={handleBookAndPay}
-              className="w-full bg-[#c1a050] hover:from-yellow-500 hover:to-yellow-600 text-white py-2.5 rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
-            >
-              Proceed to Payment
-            </button>
-            <button
-              onClick={() => setShowBookingForm(false)}
-              className="w-full bg-gray-200 text-gray-700 py-2.5 rounded-lg font-semibold hover:bg-gray-300 transition-all"
-            >
-              Cancel
-            </button>
+            </form>
           </div>
         </div>
       )}
+
+      {/* Testimonials Section */}
+      <section className="py-12 bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center mb-8">Program Testimonials</h2>
+          {loadingTestimonials ? (
+            <p className="text-center">Loading testimonials...</p>
+          ) : (
+            <div className="flex overflow-x-auto space-x-6 pb-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+              {testimonials.map((testimonial) => (
+                <div
+                  key={testimonial.id}
+                  className="min-w-[300px] max-w-[300px] bg-white p-6 rounded-lg shadow-md"
+                >
+                  <div className="flex items-center mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <svg
+                        key={i}
+                        className="w-5 h-5 text-yellow-400"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.15c.969 0 1.371 1.24.588 1.81l-3.357 2.44a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.357-2.44a1 1 0 00-1.175 0l-3.357 2.44c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.524 9.397c-.783-.57-.38-1.81.588-1.81h4.15a1 1 0 00.95-.69l1.286-3.97z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="text-gray-600 mb-4">{testimonial.testimonial}</p>
+                  <p className="font-semibold">{testimonial.name}</p>
+                  <p className="text-gray-500">{testimonial.location}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Continuation: How It Works & CTA */}
+      <section className="py-12">
+        <div className="max-w-5xl mx-auto px-4">
+          <h2 className="text-3xl font-semibold mb-6">How It Works</h2>
+          <ul className="list-disc ml-6 space-y-4 marker:text-[#c1a050] text-lg text-gray-700">
+            <li><strong>Sign up online</strong> through our secure form</li>
+            <li><strong>Choose your 4 classes/week</strong> from our schedule (in-studio, online, or hybrid)</li>
+            <li><strong>Show up, practice, transform</strong></li>
+            <li><strong>Take your practice home</strong> with simple techniques and resources we share</li>
+          </ul>
+
+          <h3 className="mt-10 text-2xl font-semibold">Ready to Begin?</h3>
+          <p className="text-lg text-gray-700 mt-4">Invest in your health, your peace, and your spirit.</p>
+          <p className="text-lg text-gray-700 mt-2 mb-6">Click below to sign up and step onto the mat with us.</p>
+          <div className="flex justify-center">
+            <a
+              href="#featured-articles"
+              className="inline-flex items-center bg-[#c1a050] text-white px-6 py-3 rounded-lg hover:bg-[#a88d42] font-medium"
+            >
+              Sign Up Now
+            </a>
+          </div>
+        </div>
+      </section>
     </div>
   );
-}
+};
+
+export default AboutSections;
