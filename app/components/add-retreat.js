@@ -1,19 +1,17 @@
 'use client';
-
 import { useState, useRef, useEffect } from 'react';
 import { supabase } from '@/lib/supabse';
 import { useRouter } from 'next/navigation';
-
 export default function AddRetreatPage({ initialData = null, isEdit = false, onClose }) {
   const [title, setTitle] = useState(initialData?.title || '');
   const [date, setDate] = useState(initialData?.date || '');
-  const [location, setLocation] = useState(initialData?.location || '');
+  const [locations, setLocations] = useState(initialData?.location || []); // Changed to array
   const [description, setDescription] = useState(initialData?.description || '');
   const [schedule, setSchedule] = useState(initialData?.schedule || '');
   const [included, setIncluded] = useState(initialData?.included || '');
-  const [price, setPrice] = useState(initialData?.price || ''); // <-- NEW
-  const [image, setImage] = useState(null); // for new upload
-  const [gallery, setGallery] = useState([]); // for new upload
+  const [price, setPrice] = useState(initialData?.price || '');
+  const [image, setImage] = useState(null);
+  const [gallery, setGallery] = useState([]);
   const [imagePreview, setImagePreview] = useState(initialData?.image_url || null);
   const [galleryPreviews, setGalleryPreviews] = useState(initialData?.gallery_images || []);
   const [teachers, setTeachers] = useState(initialData?.teachers ? initialData.teachers.map(t => ({ ...t, image: null, preview: t.image_url || null })) : []);
@@ -21,12 +19,10 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-
   const router = useRouter();
   const dateInputRef = useRef(null);
   const imageInputRef = useRef(null);
   const galleryInputRef = useRef(null);
-
   useEffect(() => {
     return () => {
       if (imagePreview) URL.revokeObjectURL(imagePreview);
@@ -34,15 +30,14 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
       teachers.forEach(t => t.preview && URL.revokeObjectURL(t.preview));
     };
   }, [imagePreview, galleryPreviews, teachers]);
-
   const validateForm = () => {
     if (!title.trim()) return 'Title is required.';
     if (!date) return 'Date is required.';
-    if (!location.trim()) return 'Location is required.';
+    if (!locations.length || locations.some(loc => !loc.trim())) return 'At least one non-empty location is required.';
     if (!description.trim()) return 'Description is required.';
     if (!schedule.trim()) return 'Schedule is required.';
     if (!included.trim()) return 'Included is required.';
-    if (price === '' || isNaN(Number(price))) return 'Price is required and must be a number.'; // <-- NEW
+    if (price === '' || isNaN(Number(price))) return 'Price is required and must be a number.';
     if (new Date(date) < new Date()) return 'Date cannot be in the past.';
     if (teachers.some(t => !t.name.trim() || !t.title.trim() || !t.description.trim() || !t.focus_areas.trim())) {
       return 'All teacher fields are required if added.';
@@ -52,17 +47,13 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
     }
     return '';
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationError = validateForm();
     if (validationError) return setError(validationError);
-
     setUploading(true);
     setError('');
-
     try {
-      // Main image upload
       let imageUrl = imagePreview;
       if (image) {
         const fileExt = image.name.split('.').pop().toLowerCase();
@@ -73,8 +64,6 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
         const { data } = supabase.storage.from('retreat-images').getPublicUrl(fileName);
         imageUrl = data.publicUrl;
       }
-
-      // Gallery upload
       let galleryUrls = Array.isArray(galleryPreviews) ? [...galleryPreviews] : [];
       if (gallery.length > 0) {
         const galleryPromises = gallery.map(async (file, index) => {
@@ -88,8 +77,6 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
         });
         galleryUrls = [...galleryUrls, ...await Promise.all(galleryPromises)];
       }
-
-      // Teacher images upload
       const teachersData = [];
       if (teachers.length > 0) {
         const teacherPromises = teachers.map(async (t, index) => {
@@ -107,24 +94,19 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
         });
         teachersData.push(...await Promise.all(teacherPromises));
       }
-
-      // FAQs
       const faqsData = faqs.map(cat => ({ category: cat.category, faqs: cat.faqs.map(q => ({ question: q.question, answer: q.answer })) }));
-
       if (isEdit && initialData?.id) {
-        // Update existing retreat
         const { error: updateError } = await supabase.from('retreats').update({
-          title, date, location, description, schedule, image_url: imageUrl, included, gallery_images: galleryUrls,
-          teachers: teachersData, faqs: faqsData, price: price !== '' ? Number(price) : null // <-- NEW
+          title, date, location: locations, description, schedule, image_url: imageUrl, included, gallery_images: galleryUrls,
+          teachers: teachersData, faqs: faqsData, price: price !== '' ? Number(price) : null
         }).eq('id', initialData.id);
         if (updateError) throw new Error(updateError.message);
         setSuccess(true);
         setTimeout(() => { setSuccess(false); if (onClose) onClose(); }, 1000);
       } else {
-        // Insert new retreat
         const { error: insertError } = await supabase.from('retreats').insert({
-          title, date, location, description, schedule, image_url: imageUrl, included, gallery_images: galleryUrls,
-          teachers: teachersData, faqs: faqsData, price: price !== '' ? Number(price) : null // <-- NEW
+          title, date, location: locations, description, schedule, image_url: imageUrl, included, gallery_images: galleryUrls,
+          teachers: teachersData, faqs: faqsData, price: price !== '' ? Number(price) : null
         });
         if (insertError) throw new Error(insertError.message);
         setSuccess(true);
@@ -137,15 +119,14 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
       setUploading(false);
     }
   };
-
   const handleReset = () => {
     setTitle(initialData?.title || '');
     setDate(initialData?.date || '');
-    setLocation(initialData?.location || '');
+    setLocations(initialData?.location || []); // Changed to array
     setDescription(initialData?.description || '');
     setSchedule(initialData?.schedule || '');
     setIncluded(initialData?.included || '');
-    setPrice(initialData?.price || ''); // <-- NEW
+    setPrice(initialData?.price || '');
     setImage(null);
     setGallery([]);
     setImagePreview(initialData?.image_url || null);
@@ -158,33 +139,30 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
     if(imageInputRef.current) imageInputRef.current.value = '';
     if(galleryInputRef.current) galleryInputRef.current.value = '';
   };
-
   const handleImageChange = (e) => {
     const file = e.target.files?.[0] || null;
     setImage(file);
     setImagePreview(file ? URL.createObjectURL(file) : null);
   };
-
   const handleGalleryChange = (e) => {
     const files = Array.from(e.target.files || []);
     setGallery(files);
     setGalleryPreviews(files.map(f => URL.createObjectURL(f)));
   };
-
-  // Teacher handlers
   const addTeacher = () => setTeachers([...teachers, { name:'', title:'', description:'', focus_areas:'', image:null, preview:null }]);
   const removeTeacher = (i) => setTeachers(teachers.filter((_, idx) => idx !== i));
   const updateTeacher = (i, field, value) => { const t = [...teachers]; t[i][field]=value; setTeachers(t); };
   const handleTeacherImageChange = (i,e) => { const file=e.target.files?.[0]||null; const t=[...teachers]; t[i].image=file; t[i].preview=file?URL.createObjectURL(file):null; setTeachers(t); };
-
-  // FAQ handlers
   const addFaqCategory = () => setFaqs([...faqs,{category:'',faqs:[]}]);
   const removeFaqCategory = (i) => setFaqs(faqs.filter((_,idx)=>idx!==i));
   const updateFaqCategory = (i,value)=>{ const f=[...faqs]; f[i].category=value; setFaqs(f); };
   const addFaqToCategory = (ci)=>{ const f=[...faqs]; f[ci].faqs.push({question:'',answer:''}); setFaqs(f); };
   const removeFaqFromCategory=(ci,fi)=>{ const f=[...faqs]; f[ci].faqs=f[ci].faqs.filter((_,idx)=>idx!==fi); setFaqs(f); };
   const updateFaqInCategory=(ci,fi,field,value)=>{ const f=[...faqs]; f[ci].faqs[fi][field]=value; setFaqs(f); };
-
+  // Location handlers
+  const addLocation = () => setLocations([...locations, '']);
+  const removeLocation = (i) => setLocations(locations.filter((_, idx) => idx !== i));
+  const updateLocation = (i, value) => { const locs = [...locations]; locs[i] = value; setLocations(locs); };
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-teal-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-2xl p-8">
@@ -196,13 +174,40 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
             {!isEdit && <button onClick={handleReset} className="ml-4 text-blue-600 hover:text-blue-800 font-semibold">Add Another</button>}
           </div>
         )}
-
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Retreat Info */}
           <div className="grid gap-6">
             <input type="text" placeholder="Retreat Title" value={title} onChange={e=>setTitle(e.target.value)} className="w-full px-4 py-2 border rounded-lg" required />
             <input type="date" ref={dateInputRef} value={date} onChange={e=>setDate(e.target.value)} className="w-full px-4 py-2 border rounded-lg" required />
-            <input type="text" placeholder="Location" value={location} onChange={e=>setLocation(e.target.value)} className="w-full px-4 py-2 border rounded-lg" required />
+            <div>
+              <h2 className="text-lg font-semibold mb-2">Locations</h2>
+              {locations.map((loc, i) => (
+                <div key={i} className="flex items-center mb-2">
+                  <input
+                    type="text"
+                    placeholder={`Location ${i + 1}`}
+                    value={loc}
+                    onChange={e => updateLocation(i, e.target.value)}
+                    className="w-full px-4 py-2 border rounded-lg"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeLocation(i)}
+                    className="ml-2 text-red-600 hover:text-red-800"
+                    disabled={locations.length === 1}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addLocation}
+                className="bg-blue-500 text-white px-3 py-1 rounded mt-2"
+              >
+                Add Location
+              </button>
+            </div>
             <input
               type="number"
               placeholder="Price"
@@ -217,19 +222,14 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
             <textarea placeholder="Schedule" value={schedule} onChange={e=>setSchedule(e.target.value)} className="w-full px-4 py-2 border rounded-lg" rows={4} required/>
             <textarea placeholder="What's Included" value={included} onChange={e=>setIncluded(e.target.value)} className="w-full px-4 py-2 border rounded-lg" rows={3} required/>
           </div>
-
-          {/* Images */}
           <div>
             <input type="file" accept="image/jpeg,image/png,image/gif" ref={imageInputRef} onChange={handleImageChange} />
             {imagePreview && <img src={imagePreview} alt="Main" className="max-w-xs mt-2 rounded" />}
           </div>
-
           <div>
             <input type="file" multiple accept="image/jpeg,image/png,image/gif" ref={galleryInputRef} onChange={handleGalleryChange} />
             {galleryPreviews && galleryPreviews.length>0 && <div className="grid grid-cols-3 gap-2 mt-2">{galleryPreviews.map((url,i)=><img key={i} src={url} className="rounded" alt={`Gallery ${i+1}`} />)}</div>}
           </div>
-
-          {/* Teachers */}
           <div>
             <h2 className="text-lg font-semibold mb-2">Teachers</h2>
             {teachers.map((t,i)=>(
@@ -245,8 +245,6 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
             ))}
             <button type="button" onClick={addTeacher} className="bg-blue-500 text-white px-3 py-1 rounded">Add Teacher</button>
           </div>
-
-          {/* FAQs */}
           <div>
             <h2 className="text-lg font-semibold mb-2">FAQs</h2>
             {faqs.map((cat,i)=>(
@@ -265,8 +263,6 @@ export default function AddRetreatPage({ initialData = null, isEdit = false, onC
             ))}
             <button type="button" onClick={addFaqCategory} className="bg-blue-500 text-white px-3 py-1 rounded">Add FAQ Category</button>
           </div>
-
-          {/* Submit */}
           <div className="flex gap-4 mt-4">
             <button type="submit" disabled={uploading} className="bg-indigo-600 text-white px-4 py-2 rounded">{uploading ? (isEdit ? 'Updating...' : 'Uploading...') : (isEdit ? 'Update Retreat' : 'Add Retreat')}</button>
             <button type="button" onClick={handleReset} className="bg-gray-200 px-4 py-2 rounded">Reset</button>
