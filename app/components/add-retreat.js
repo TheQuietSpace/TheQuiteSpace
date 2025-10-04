@@ -1,3 +1,7 @@
+//this section is a React component for adding or editing retreat details, including form validation, image uploads to Supabase storage, and dynamic fields for teachers and FAQs.
+
+
+
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { supabase } from '@/lib/supabse';
