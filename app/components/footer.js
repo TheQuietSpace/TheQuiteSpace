@@ -180,7 +180,7 @@ const Footer = () => {
               </Link>
               <span className="opacity-60">|</span>
               <Link
-                href="/apply-membership"
+                href="/membership"
                 className="hover:underline opacity-80 hover:opacity-100 transition-opacity whitespace-nowrap"
               >
                 Apply For Membership

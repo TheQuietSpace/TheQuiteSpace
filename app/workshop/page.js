@@ -234,7 +234,7 @@ const AboutSections = () => {
                       onClick={() => openModal(workshop)}
                       className="w-full border border-gray-400 text-gray-900 py-2 rounded-lg font-medium hover:bg-gray-100 transition-all duration-200"
                     >
-                      Register now
+                      View Details
                     </button>
                   </div>
                 </div>
@@ -319,7 +319,7 @@ const AboutSections = () => {
                     onClick={() => openModal(workshop)}
                     className="w-full border border-gray-400 text-gray-900 py-2 rounded-lg font-medium mt-4 hover:bg-gray-100 transition-all duration-200"
                   >
-                    Register now
+                    View Details
                   </button>
                 </div>
               ))}

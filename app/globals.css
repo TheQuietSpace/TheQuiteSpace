@@ -18,6 +18,10 @@ body {
   font-family: var(--font-poppins), "Poppins", sans-serif;
 }
 
+body[data-page="white"] {
+  background: #ffffff !important;
+}
+
 .blog-card {
   border-radius: 8px;
   overflow: hidden;

@@ -273,35 +273,35 @@ const AboutSections = () => {
                 title: "Silence as Nourishment",
                 description:
                   "In a world that never stops speaking, we choose silence not as emptiness, but as fullness. Here, silence becomes a teacher, a healer, and a friend.",
-                src: "/2.svg",
+                src: "/1.png",
                 alt: "Silence icon",
               },
               {
                 title: "Presence Before Perfection",
                 description:
                   "We honor the beauty of being present over the illusion of being perfect. Every breath, every pause, every moment in this space is complete as it is.",
-                src: "/3.svg",
+                src: "/2.png",
                 alt: "Presence icon",
               },
               {
                 title: "Wholeness in Simplicity",
                 description:
                   "We return to what is essential. Through yoga, meditation, and mindful living, we discover that life’s quietest moments carry the deepest truths.",
-                src: "/4.svg",
+                src: "/3.png",
                 alt: "Wholeness icon",
               },
               {
                 title: "Connection Through Stillness",
                 description:
                   "True connection is born not in noise but in presence. The Quiet Space is where souls meet beyond words where we remember that we already belong.",
-                src: "/5.svg",
+                src: "/4.png",
                 alt: "Connection icon",
               },
               {
                 title: "Living with Gentle Power",
                 description:
                   "From the stillness of the quiet, a strength arises soft yet unshakable, tender yet transformative. This is the power we carry back into the world.",
-                src: "/6.svg",
+                src: "/5.png",
                 alt: "Gentle power icon",
               },
             ].map((item, idx) => (
