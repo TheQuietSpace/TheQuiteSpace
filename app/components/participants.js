@@ -116,7 +116,7 @@ export default function ParticipantsList() {
           </table>
         </div>
       )}
-      //this is me.
+      
     </div>
   );
 }
